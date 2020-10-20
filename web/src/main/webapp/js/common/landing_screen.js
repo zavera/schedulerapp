@@ -49,6 +49,7 @@ function initRegistration() {
     getRegistrationStaticLists();
 
     initFooter();
+    updateActiveDirectory();
 }
 
 function resetParameters() {
@@ -58,6 +59,32 @@ function resetParameters() {
 
 function registrationLink() {
     window.location.href = "registration.html";
+}
+
+// LDAP Extension: determine if Use Active Directory checkbox is checked.
+function isActiveDirectory() {
+    return $("#registration_activeDirectory").is(':checked');
+}
+
+// LDAP Extension: handle when active directory checkbox changes
+function updateActiveDirectory() {
+    if (isActiveDirectory()) {
+        var ecommonsId = $.trim($("#registration_ecommonsId").val());
+        if (ecommonsId.indexOf('\\') < 0) {
+            ecommonsId = DEFAULT_DOMAIN + '\\' + ecommonsId;
+            $("#registration_ecommonsId").val(ecommonsId);
+        }
+        $("#registration_password").val('');
+        $("#registration_passwordConfirm").val('');
+        $("#registration_password_row").hide();
+    } else {
+        var ecommonsId = $.trim($("#registration_ecommonsId").val());
+        if (ecommonsId.indexOf('\\') >= 0) {
+            ecommonsId = ecommonsId.substring(ecommonsId.indexOf('\\') + 1);
+            $("#registration_ecommonsId").val(ecommonsId);
+        }
+        $("#registration_password_row").show();
+    }
 }
 
 function cancelRegistration() {
@@ -78,17 +105,25 @@ function submitRegistration() {
         showError('#registration_lastNameValidation');
         isValid = false;
     }
-    if ($.trim($("#registration_ecommonsId").val()).length < 1) {
+    // LDAP Extension: if active directory user, then validate that username contains domain
+    if ($.trim($("#registration_ecommonsId").val()).length > 0) {
+        if (isActiveDirectory() && !/^\w+\\\w+$/.test($.trim($("#registration_ecommonsId").val()))) {
+            showError('#registration_ecommonsIdValidation', 'username must include Active Directory domain name');
+            isValid = false;
+        }
+    } else {
         showError('#registration_ecommonsIdValidation');
         isValid = false;
     }
 
-    if ($.trim($("#registration_password").val()).length < 1) {
+    // LDAP Extension: password required if not active directory user
+    if (!isActiveDirectory() && $.trim($("#registration_password").val()).length < 1) {
         showError('#registration_passwordValidation');
         isValid = false;
     }
 
-    if ($.trim($("#registration_password").val()).length > 0) {
+    // LDAP Extension: validate password if not active directory user
+    if (!isActiveDirectory() && $.trim($("#registration_password").val()).length > 0) {
         if ($.trim($("#registration_passwordConfirm").val()).length < 1) {
             showError('#registration_passwordConfirmValidation');
             isValid = false;
@@ -201,7 +236,8 @@ function submitRegistration() {
         middleName: $.trim($("#registration_middleName").val()),
         lastName: $.trim($("#registration_lastName").val()),
         ecommonsId: $.trim($("#registration_ecommonsId").val()),
-        password: $.trim($("#registration_password").val()),
+        // LDAP Extension: use blank password for active directory user
+        password: (isActiveDirectory() ? '' : $.trim($("#registration_password").val())),
         department: (departmentValue != "" ? departmentValue : null),
         division: (divisionValue != "" ? divisionValue : null),
         institutionId: $.trim($('#registration_institution').combobox("getValue")),
@@ -216,7 +252,8 @@ function submitRegistration() {
         active: false
     });
 
-    $.post("rest/app/registerUser", {data: jsonData}, function (data) {
+    // LDAP Extension: reference rest/appExtension/registerUser path
+    $.post("rest/appExtension/registerUser", {data: jsonData}, function (data) {
             var parsedData = JSON.parse(data);
             $('#registration_responseLoading').css({visibility: "hidden"});
             var confirmationMessage;
@@ -288,7 +325,7 @@ function submitResetPasswordLink() {
     $('#index_passwordResetLoading').css({visibility: "visible"});
     var jsonData = JSON.stringify({email: $('#index_email').val()});
 
-    $.post("rest/app/unAuthenticatedPasswordReset", {data: jsonData},
+    $.post("rest/appExtension/unAuthenticatedPasswordReset", {data: jsonData},
         function (data) {
             var parsedData = JSON.parse(data);
             var result = parsedData.result;
