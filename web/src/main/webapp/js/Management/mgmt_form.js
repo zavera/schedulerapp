@@ -27,11 +27,42 @@
  */
 var app_selectedUser = JSON.parse(sessionStorage.getItem("app_selectedUser"));
 
+// LDAP Extension: determine if Use Active Directory checkbox is checked.
+function isActiveDirectory() {
+    return $("#mgmt_activeDirectory").is(':checked');
+}
+
+// LDAP Extension: handle when active directory checkbox changes
+function updateActiveDirectory() {
+    console.log('updateActiveDirectory() ' + isActiveDirectory());
+    if (isActiveDirectory()) {
+        var ecommonsId = $.trim($("#mgmt_ecommonsId").val());
+        if (ecommonsId.indexOf('\\') < 0) {
+            ecommonsId = DEFAULT_DOMAIN + '\\' + ecommonsId;
+            $("#mgmt_ecommonsId").val(ecommonsId);
+        }
+        $("#mgmt_password").val('');
+        $("#mgmt_passwordConfirm").val('');
+        $("#mgmt_password").prop("disabled", true);
+        $("#mgmt_passwordConfirm").prop("disabled", true);
+    } else {
+        var ecommonsId = $.trim($("#mgmt_ecommonsId").val());
+        if (ecommonsId.indexOf('\\') >= 0) {
+            ecommonsId = ecommonsId.substring(ecommonsId.indexOf('\\') + 1);
+            $("#mgmt_ecommonsId").val(ecommonsId);
+        }
+        $("#mgmt_password").prop("disabled", false);
+        $("#mgmt_passwordConfirm").prop("disabled", false);
+    }
+}
+
 function mgmt_setFormMode(mode) {
     mgmt_formMode = mode;
     $('.formElementRequired').css({visibility: "hidden"});
     app_selectedUser = JSON.parse(sessionStorage.getItem("app_selectedUser"));
     if (mode == 'view') {
+        // LDAP Extension: Hide active directory checkbox
+        $('#mgmt_activeDirectoryRow').hide();
         renderBreadcrumbs('mgmt_user_view_form');
         $('.formElementRequired').css({visibility: "hidden"});
         $('#mgmt_user_form_title').text('Additional Details');
@@ -74,8 +105,13 @@ function mgmt_setFormMode(mode) {
         $('#mgmt_restoreButton').css({display: "none"});
         $('#mgmt_user_form_buttons').css({visibility: "visible"});
         mgmt_clearForm();
+        // LDAP Extension: Show active directory checkbox, set it to checked, and update it
+        $('#mgmt_activeDirectoryRow').show();
+        $('#mgmt_activeDirectory').prop('checked', true);
+        updateActiveDirectory();
     }
     else if (mode == 'edit') {
+        $('#mgmt_activeDirectoryRow').show();
         renderBreadcrumbs('mgmt_user_edit_form');
         $('.formTable td').css({height: "50px"});
         $('.formElementRequired').css({visibility: "visible"});
@@ -89,6 +125,10 @@ function mgmt_setFormMode(mode) {
         $('.requiredIcon').css({visibility: "visible"});
         $('#mgmt_restoreButton').css({display: "inline"});
         mgmt_loadEditForm();
+        // LDAP Extension: Show active directory checkbox, set it to checked if active directory username, and update it
+        $('#mgmt_activeDirectoryRow').show();
+        $('#mgmt_activeDirectory').prop('checked', /^\w+\\\w+$/.test($.trim($("#mgmt_ecommonsId").val())));
+        updateActiveDirectory();
     }
 }
 
@@ -159,12 +199,25 @@ function processUserForm() {
         showError('#mgmt_lastNameValidation');
         isValid = false;
     }
-    if ($.trim($("#mgmt_ecommonsId").val()).length < 1) {
+    // LDAP Extension: if active directory user, then validate that username contains domain
+    if ($.trim($("#mgmt_ecommonsId").val()).length > 0) {
+        if (isActiveDirectory() && !/^\w+\\\w+$/.test($.trim($("#mgmt_ecommonsId").val()))) {
+            showError('#mgmt_ecommonsIdValidation', 'username must include Active Directory domain name');
+            isValid = false;
+        }
+    } else {
         showError('#mgmt_ecommonsIdValidation');
         isValid = false;
     }
 
-    if ($.trim($("#mgmt_password").val()).length > 0) {
+    // LDAP Extension: password required if not active directory user
+    if (!isActiveDirectory() && $.trim($("#mgmt_password").val()).length < 1) {
+        showError('#mgmt_passwordValidation');
+        isValid = false;
+    }
+
+    // LDAP Extension: validate password if not active directory user
+    if (!isActiveDirectory() && $.trim($("#mgmt_password").val()).length > 0) {
         if ($.trim($("#mgmt_passwordConfirm").val()).length < 1) {
             showError('#mgmt_passwordConfirmValidation');
             isValid = false;
@@ -177,11 +230,6 @@ function processUserForm() {
             showError('#mgmt_passwordValidation', 'must contain a lowercase, uppercase, digit, and special character');
             isValid = false;
         }
-        if ($.trim($("#mgmt_password").val()) != $.trim($("#mgmt_passwordConfirm").val())) {
-            showError('#mgmt_passwordValidation', 'passwords must match');
-            isValid = false;
-        }
-    } else {
         if ($.trim($("#mgmt_password").val()) != $.trim($("#mgmt_passwordConfirm").val())) {
             showError('#mgmt_passwordValidation', 'passwords must match');
             isValid = false;
@@ -282,7 +330,8 @@ function processUserForm() {
         middleName: $.trim($("#mgmt_middleName").val()),
         lastName: $.trim($("#mgmt_lastName").val()),
         ecommonsId: $.trim($("#mgmt_ecommonsId").val()),
-        password: $.trim($("#mgmt_password").val()),
+        // LDAP Extension: use blank password for active directory user
+        password: (isActiveDirectory() ? '' : $.trim($("#mgmt_password").val())),
         institutionRoleType: $.trim($("#mgmt_institutionRole").combobox("getValue")),
         department: (departmentValue != "" ? departmentValue : null),
         division: (divisionValue != "" ? divisionValue : null),
@@ -300,10 +349,10 @@ function processUserForm() {
         generateNewPassword: generateNewPassword
     });
 
-    var url = "rest/management/createUser";
+    var url = "rest/managementExtension/createUser";
 
     if (mgmt_formMode == 'edit') {
-        url = "rest/management/updateUser";
+        url = "rest/managementExtension/updateUser";
     }
 
     $.post(url, {data: jsonData}, function (data) {
