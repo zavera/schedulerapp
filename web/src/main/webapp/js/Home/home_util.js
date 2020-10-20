@@ -269,7 +269,7 @@ function cancelAppointment() {
     todaysVisits = false;
 
     var view = home_calendar.view;
-    if (view.name === "agendaDay") {
+    if (view.type === "timeGridDay") {
         todaysVisits = true;
     }
 
