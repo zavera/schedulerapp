@@ -183,6 +183,8 @@ var expandOrCollapseImgTitle = {
     EXPAND: 'Expand'
 };
 
+// LDAP Extension: default active directory domain
+var DEFAULT_DOMAIN = 'university';
 function removeEventsWithGivenClassNames(calendar, classNames) {
     calendar.batchRendering(function () {
         var events = calendar.getEvents();
