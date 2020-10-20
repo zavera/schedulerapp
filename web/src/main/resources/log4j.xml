@@ -61,19 +61,24 @@
     </appender>
 
     <!-- ================ loggers =============== -->
-
     <!-- loggers for hibernate -->
-    <logger name="org.hibernate.SQL" additivity="false">
-        <level value="debug" />
+    <logger name="org.hibernate.SQL" additivity="true">
+        <level value="error" />
         <appender-ref ref="rollingFileAppender"/>
     </logger>
     <logger name="org.hibernate.type" additivity="false">
-        <level value="trace" />
+        <level value="error" />
         <appender-ref ref="rollingFileAppender"/>
     </logger>
 
-    <logger name="org.hibernate.tuple.PropertyFactory" additivity="false">
-        <level value="debug" />
+    <logger name="org.hibernate.type.descriptor.sql" additivity="true">
+
+        <level value="error"/>
+        <appender-ref ref="rollingFileAppender"/>
+    </logger>
+
+    <logger name="org.hibernate.tuple.PropertyFactory" additivity="true">
+        <level value="error" />
         <appender-ref ref="rollingFileAppender"/>
     </logger>
 
