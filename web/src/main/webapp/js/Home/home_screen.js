@@ -73,6 +73,10 @@ function authDataCallback(data) {
     user.active = parsedData.active;
     user.authStatus = parsedData.authStatus;
     user.previousLoginTime = parsedData.previousLoginTime;
+    // LDAP Extension: set previous login time to never for first-time active directory user
+    if (user.previousLoginTime == "" && /^\w+\\\w+$/.test(user.ecommonsId)) {
+        user.previousLoginTime = "never";
+    }
     sessionStorage.setItem("userData", JSON.stringify(user));
     $('#index_loginLoading').css({visibility: "hidden"});
 
