@@ -29,9 +29,9 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sec="http://www.springframework.org/schema/security"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
                     http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-                    http://www.springframework.org/schema/security 
+                    http://www.springframework.org/schema/security
                     http://www.springframework.org/schema/security/spring-security-4.2.xsd">
 
 
@@ -50,6 +50,8 @@
 		<sec:csrf  disabled="true"/>
 
 		<sec:intercept-url pattern="/rest/app/**" access="permitAll()" />
+		<!-- LDAP Extension: permit anonymous access to /rest/appExtension path -->
+		<sec:intercept-url pattern="/rest/appExtension/**" access="permitAll()" />
 		<sec:intercept-url pattern="/rest/**" access="isFullyAuthenticated()" /> <!--security annotations will properly protect the REST API -->
 		<sec:intercept-url pattern="/login.html" access="permitAll()" />
 		<sec:intercept-url pattern="/registration.html" access="permitAll()" />
@@ -95,7 +97,7 @@
 			access="hasAnyRole('ROLE_SUPER_ADMIN','ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW')" />
 		<sec:intercept-url pattern="/sublocation_closure_screen.html"
 			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER')" />
-		
+
 		<sec:intercept-url pattern="/resource_form.html"
 						   access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW')" />
 		<sec:intercept-url pattern="/resource_screen.html"
@@ -141,20 +143,23 @@
 		<sec:form-login login-page="/login.html"
 			always-use-default-target="true" default-target-url="/home.html"
 			authentication-failure-url="/login.html?error=true" />
-			
+
 		<sec:logout logout-success-url="/login.html"
 			invalidate-session="true"/>
-			
+
 		<sec:access-denied-handler error-page="/access_denied.html" />
 	</sec:http>
 
-
+	<!-- LDAP Extension: use SchedulerHybridAuthenticationProvider -->
 	<sec:authentication-manager>
-		<sec:authentication-provider ref="schedulerDbAuthenticationProvider" />
+		<sec:authentication-provider ref="schedulerHybridAuthenticationProvider" />
 	</sec:authentication-manager>
 
-	<bean id="schedulerDbAuthenticationProvider"
-		class="edu.harvard.catalyst.scheduler.service.SchedulerDbAuthenticationProvider">
-		<constructor-arg ref="authService" />
+	<!-- LDAP Extension: use SchedulerHybridAuthenticationProvider -->
+	<bean id="schedulerHybridAuthenticationProvider"
+		  class="edu.harvard.catalyst.scheduler.service.SchedulerHybridAuthenticationProvider">
+		<constructor-arg ref="authExtensionService" />
+		<constructor-arg value="${ldapServerUrl}" />
+		<constructor-arg value="${ldapDefaultDomain}" />
 	</bean>
 </beans>
