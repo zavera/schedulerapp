@@ -79,6 +79,8 @@
 
   <!--
 
+      Copyright (c) 2019 Prognosis Data Corp. Added LDAP Extension.
+
       Copyright (c) 2015-2016, President and Fellows of Harvard College
 
       Redistribution and use in source and binary forms, with or without
@@ -132,31 +134,39 @@
             </div>
             <table class="formTable">
               <tr>
+                <td class="formLabel">Active Directory User
+                </td>
+                <td>
+                  <input type="checkbox" id="registration_activeDirectory" tabindex="1" checked
+                         onclick="javascript:updateActiveDirectory();"/>
+                </td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
                 <td class="formLabel">First Name
                   <div class="requiredIcon">*</div>
                 </td>
                 <td>
-                  <input type="text" id="registration_firstName" class="formTextInput" tabindex="1"/>
+                  <input type="text" id="registration_firstName" class="formTextInput" tabindex="2"/>
                   <span id="registration_firstNameValidation" class="formElementRequired"></span>
                 </td>
                 <td class="formLabel">Primary Phone
                   <div class="requiredIcon">*</div>
                 </td>
                 <td>
-                  <input type="text" id="registration_primaryPhone" class="formTextInput"
-                         tabindex="11"/>
+                  <input type="text" id="registration_primaryPhone" class="formTextInput" tabindex="21"/>
                   <span id="registration_primaryPhoneValidation" class="formElementRequired"></span>
                 </td>
               </tr>
               <tr>
                 <td class="formLabel">Middle Name</td>
                 <td>
-                  <input type="text" id="registration_middleName" class="formTextInput" tabindex="2"/>
+                  <input type="text" id="registration_middleName" class="formTextInput" tabindex="3"/>
                 </td>
                 <td class="formLabel">Secondary Phone</td>
                 <td>
-                  <input type="text" id="registration_secondaryPhone" class="formTextInput"
-                         tabindex="12"/>
+                  <input type="text" id="registration_secondaryPhone" class="formTextInput" tabindex="23"/>
                   <span id="registration_secondaryPhoneValidation" class="formElementRequired"></span>
                 </td>
               </tr>
@@ -165,12 +175,12 @@
                   <div class="requiredIcon">*</div>
                 </td>
                 <td>
-                  <input type="text" id="registration_lastName" class="formTextInput" tabindex="3"/>
+                  <input type="text" id="registration_lastName" class="formTextInput" tabindex="4"/>
                   <span id="registration_lastNameValidation" class="formElementRequired"></span>
                 </td>
                 <td class="formLabel">Credential</td>
                 <td>
-                        <select id="registration_credential" class="formSelectInput" tabindex="13"></select>
+                  <select id="registration_credential" class="formSelectInput" tabindex="24"></select>
                 </td>
               </tr>
               <tr>
@@ -178,52 +188,50 @@
                   <div class="requiredIcon">*</div>
                 </td>
                 <td>
-                  <input type="text" id="registration_ecommonsId" class="formTextInput" tabindex="4"
-                         maxlength="8"/>
+                  <input type="text" id="registration_ecommonsId" class="formTextInput" tabindex="5" maxlength="255"/>
                   <span id="registration_ecommonsIdValidation" class="formElementRequired"></span>
                 </td>
                 <td class="formLabel">Title
                   <div class="requiredIcon">*</div>
                 </td>
                 <td>
-                    <select id="registration_role" class="formSelectInput" tabindex="14"></select>
-                    <span id="registration_roleValidation" class="formElementRequired"></span>
+                  <select id="registration_role" class="formSelectInput" tabindex="25"></select>
+                  <span id="registration_roleValidation" class="formElementRequired"></span>
                 </td>
               </tr>
               <tr>
                 <td class="formLabel">Faculty Rank</td>
                 <td>
-                        <select id="registration_facultyRank" class="formSelectInput"
-                          tabindex="15"></select>
+                  <select id="registration_facultyRank" class="formSelectInput" tabindex="6"></select>
                 </td>
                 <td class="formLabel">Department</td>
                 <td>
-                        <select id="registration_department" class="formSelectInput" tabindex="6"></select>
+                  <select id="registration_department" class="formSelectInput" tabindex="26"></select>
                 </td>
               </tr>
               <tr>
                 <td class="formLabel">Fax</td>
                 <td>
-                  <input type="text" id="registration_fax" class="formTextInput" tabindex="16"/>
+                  <input type="text" id="registration_fax" class="formTextInput" tabindex="7"/>
                   <span id="registration_faxValidation" class="formElementRequired"></span>
                 </td>
                 <td class="formLabel">Division</td>
                 <td>
-                    <select id="registration_division" class="formSelectInput" tabindex="7"></select>
+                  <select id="registration_division" class="formSelectInput" tabindex="27"></select>
                 </td>
               </tr>
               <tr>
                 <td class="formLabel">Pager</td>
                 <td>
-                  <input type="text" id="registration_pager" class="formTextInput" tabindex="17"/>
+                  <input type="text" id="registration_pager" class="formTextInput" tabindex="8"/>
                   <span id="registration_pagerValidation" class="formElementRequired"></span>
                 </td>
                 <td class="formLabel">Institution
                   <div class="requiredIcon">*</div>
                 </td>
                 <td>
-                    <select id="registration_institution" class="formSelectInput" tabindex="8"></select>
-                    <span id="registration_institutionValidation" class="formElementRequired"></span>
+                  <select id="registration_institution" class="formSelectInput" tabindex="28"></select>
+                  <span id="registration_institutionValidation" class="formElementRequired"></span>
                 </td>
               </tr>
               <tr>
@@ -231,25 +239,23 @@
                   <div class="requiredIcon">*</div>
                 </td>
                 <td>
-                  <input type="text" id="registration_email" class="formTextInput" tabindex="18"/>
+                  <input type="text" id="registration_email" class="formTextInput" tabindex="9"/>
                   <span id="registration_emailValidation" class="formElementRequired"></span>
                 </td>
                 <td class="formLabel registration_confirmFormItem">Confirm Email
                   <div class="requiredIcon">*</div>
                 </td>
                 <td>
-                  <input type="text" id="registration_emailConfirm" class="formTextInput"
-                         tabindex="19"/>
+                  <input type="text" id="registration_emailConfirm" class="formTextInput" tabindex="10"/>
                   <span id="registration_emailConfirmValidation" class="formElementRequired"></span>
                 </td>
               </tr>
-              <tr>
+              <tr id="registration_password_row">
                 <td class="formLabel registration_passwordFormItem">Password
                   <div class="requiredIcon">*</div>
                 </td>
                 <td class="registration_passwordFormItem">
-                  <input type="password" id="registration_password" class="formTextInput"
-                         tabindex="9"/>
+                  <input type="password" id="registration_password" class="formTextInput" tabindex="11"/>
                   <span id="registration_passwordValidation" class="formElementRequired"></span>
                 </td>
                 <td class="formLabel registration_confirmFormItem registration_passwordFormItem">Confirm
@@ -257,10 +263,8 @@
                   <div class="requiredIcon">*</div>
                 </td>
                 <td>
-                  <input type="password" id="registration_passwordConfirm" class="formTextInput"
-                         tabindex="10"/>
-                                    <span id="registration_passwordConfirmValidation"
-                                          class="formElementRequired"></span>
+                  <input type="password" id="registration_passwordConfirm" class="formTextInput" tabindex="12"/>
+                  <span id="registration_passwordConfirmValidation" class="formElementRequired"></span>
                 </td>
               </tr>
               <tr>
@@ -268,10 +272,10 @@
                   <span id="registration_formValidation" class="formElementRequired"></span>
                   <input type="button" id="registration_cancelButton"
                          onclick="javascript:cancelRegistration();" name="button" value="Cancel"
-                         class="formButton"/>
+                         class="formButton" tabindex="31"/>
                   <input type="button" id="registration_submitButton"
                          onclick="javascript:submitRegistration();" name="button" value="Save"
-                         class="formButton"/>
+                         class="formButton" tabindex="32"/>
                 </td>
               </tr>
             </table>
