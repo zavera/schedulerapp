@@ -94,6 +94,8 @@
   </script>
 
   <!--
+      Copyright (c) 2019 Prognosis Data Corp. Added LDAP Extension.
+
       Copyright (c) 2015-2016, President and Fellows of Harvard College
 
       Redistribution and use in source and binary forms, with or without
@@ -148,30 +150,40 @@
           = Required Field
         </div>
         <table class="formTable">
+          <tr id="mgmt_activeDirectoryRow">
+            <td class="formLabel">Active Directory User
+            </td>
+            <td>
+              <input type="checkbox" id="mgmt_activeDirectory" tabindex="1"
+                     onclick="javascript:updateActiveDirectory();"/>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
           <tr>
             <td class="formLabel">First Name
               <div class="requiredIcon">*</div>
             </td>
             <td>
-              <input type="text" id="mgmt_firstName" class="formTextInput" tabindex="1"/>
+              <input type="text" id="mgmt_firstName" class="formTextInput" tabindex="2"/>
               <span id="mgmt_firstNameValidation" class="formElementRequired"></span>
             </td>
             <td class="formLabel">Primary Phone
               <div class="requiredIcon">*</div>
             </td>
             <td>
-              <input type="text" id="mgmt_primaryPhone" class="formTextInput" tabindex="11"/>
+              <input type="text" id="mgmt_primaryPhone" class="formTextInput" tabindex="22"/>
               <span id="mgmt_primaryPhoneValidation" class="formElementRequired"></span>
             </td>
           </tr>
           <tr>
             <td class="formLabel">Middle Name</td>
             <td>
-              <input type="text" id="mgmt_middleName" class="formTextInput" tabindex="2"/>
+              <input type="text" id="mgmt_middleName" class="formTextInput" tabindex="3"/>
             </td>
             <td class="formLabel">Secondary Phone</td>
             <td>
-              <input type="text" id="mgmt_secondaryPhone" class="formTextInput" tabindex="12"/>
+              <input type="text" id="mgmt_secondaryPhone" class="formTextInput" tabindex="23"/>
               <span id="mgmt_secondaryPhoneValidation" class="formElementRequired"></span>
             </td>
           </tr>
@@ -180,12 +192,12 @@
               <div class="requiredIcon">*</div>
             </td>
             <td>
-              <input type="text" id="mgmt_lastName" class="formTextInput" tabindex="3"/>
+              <input type="text" id="mgmt_lastName" class="formTextInput" tabindex="4"/>
               <span id="mgmt_lastNameValidation" class="formElementRequired"></span>
             </td>
             <td class="formLabel">Credential</td>
             <td>
-              <select id="mgmt_credential" class="formSelectInput" tabindex="13"></select>
+              <select id="mgmt_credential" class="formSelectInput" tabindex="24"></select>
               <span id="mgmt_credentialReadOnly" class="formTextReadOnly"></span>
             </td>
           </tr>
@@ -194,14 +206,14 @@
               <div class="requiredIcon">*</div>
             </td>
             <td>
-              <input type="text" id="mgmt_ecommonsId" class="formTextInput" tabindex="4" maxlength="8"/>
+              <input type="text" id="mgmt_ecommonsId" class="formTextInput" tabindex="5" maxlength="255"/>
               <span id="mgmt_ecommonsIdValidation" class="formElementRequired"></span>
             </td>
             <td class="formLabel">Title
               <div class="requiredIcon">*</div>
             </td>
             <td>
-              <select id="mgmt_role" class="formSelectInput" tabindex="14"></select>
+              <select id="mgmt_role" class="formSelectInput" tabindex="25"></select>
               <span id="mgmt_roleValidation" class="formElementRequired"></span>
             </td>
           </tr>
@@ -211,33 +223,33 @@
             </td>
             <td>
               <select id="mgmt_institutionRole" onchange="javascript:institutionRoleChangeClick();"
-                      class="formSelectInput" tabindex="5"></select>
+                      class="formSelectInput" tabindex="6"></select>
               <span id="mgmt_institutionRoleValidation" class="formElementRequired"></span>
             </td>
             <td class="formLabel">Faculty Rank</td>
             <td>
-              <select id="mgmt_facultyRank" class="formSelectInput" tabindex="15"></select>
+              <select id="mgmt_facultyRank" class="formSelectInput" tabindex="26"></select>
             </td>
           </tr>
           <tr>
             <td class="formLabel">Department</td>
             <td>
-              <select id="mgmt_department" class="formSelectInput" tabindex="6"></select>
+              <select id="mgmt_department" class="formSelectInput" tabindex="7"></select>
             </td>
             <td class="formLabel">Fax</td>
             <td>
-              <input type="text" id="mgmt_fax" class="formTextInput" tabindex="16"/>
+              <input type="text" id="mgmt_fax" class="formTextInput" tabindex="27"/>
               <span id="mgmt_faxValidation" class="formElementRequired"></span>
             </td>
           </tr>
           <tr>
             <td class="formLabel">Division</td>
             <td>
-              <select id="mgmt_division" class="formSelectInput" tabindex="7"></select>
+              <select id="mgmt_division" class="formSelectInput" tabindex="8"></select>
             </td>
             <td class="formLabel">Pager</td>
             <td>
-              <input type="text" id="mgmt_pager" class="formTextInput" tabindex="17"/>
+              <input type="text" id="mgmt_pager" class="formTextInput" tabindex="28"/>
               <span id="mgmt_pagerValidation" class="formElementRequired"></span>
             </td>
           </tr>
@@ -246,14 +258,14 @@
               <div class="requiredIcon">*</div>
             </td>
             <td>
-              <select id="mgmt_institution" class="formSelectInput" tabindex="8"></select>
+              <select id="mgmt_institution" class="formSelectInput" tabindex="9"></select>
               <span id="mgmt_institutionValidation" class="formElementRequired"></span>
             </td>
             <td class="formLabel">Email
               <div class="requiredIcon">*</div>
             </td>
             <td>
-              <input type="text" id="mgmt_email" class="formTextInput" tabindex="18"/>
+              <input type="text" id="mgmt_email" class="formTextInput" tabindex="29"/>
               <span id="mgmt_emailValidation" class="formElementRequired"></span>
             </td>
           </tr>
@@ -262,14 +274,14 @@
               <div class="requiredIcon">*</div>
             </td>
             <td class="mgmt_passwordFormItem">
-              <input type="password" id="mgmt_password" class="formTextInput" tabindex="9"/>
+              <input type="password" id="mgmt_password" class="formTextInput" tabindex="10"/>
               <span id="mgmt_passwordValidation" class="formElementRequired"></span>
             </td>
             <td class="formLabel mgmt_confirmFormItem">Confirm Email
               <div class="requiredIcon">*</div>
             </td>
             <td>
-              <input type="text" id="mgmt_emailConfirm" class="formTextInput" tabindex="19"/>
+              <input type="text" id="mgmt_emailConfirm" class="formTextInput" tabindex="30"/>
               <span id="mgmt_emailConfirmValidation" class="formElementRequired"></span>
             </td>
           </tr>
@@ -278,12 +290,12 @@
               <div class="requiredIcon">*</div>
             </td>
             <td>
-              <input type="password" id="mgmt_passwordConfirm" class="formTextInput" tabindex="10"/>
+              <input type="password" id="mgmt_passwordConfirm" class="formTextInput" tabindex="11"/>
               <span id="mgmt_passwordConfirmValidation" class="formElementRequired"></span>
             </td>
             <td class="formLabel">Notification Email</td>
             <td>
-              <input type="text" id="mgmt_notificationEmail" class="formTextInput" tabindex="20"/></td>
+              <input type="text" id="mgmt_notificationEmail" class="formTextInput" tabindex="31"/></td>
           </tr>
           <tr id="mgmt_user_form_buttons">
             <td colspan="6">
