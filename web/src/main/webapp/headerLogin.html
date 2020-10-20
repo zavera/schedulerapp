@@ -1,5 +1,7 @@
 <!--
 
+    Copyright (c) 2019 Prognosis Data Corp. Added LDAP Extension.
+
     Copyright (c) 2015-2016, President and Fellows of Harvard College
 
     Redistribution and use in source and binary forms, with or without
@@ -54,15 +56,15 @@
     </div>
     <div>
             <span id="index_passwordResetMsg"
-                  style="color:blue;font-size:12px;margin-bottom:10px;margin-top:5px;display:none">Password reset instructions will be sent to your email</span>
-            <span id="index_passwordResetSuccess"
-                  style="color:green;font-size:12px;margin-bottom:10px;margin-top:5px;display:none">Password reset instructions sent</span>
-            <span id="index_passwordResetFailure"
-                  style="color:red;font-size:12px;margin-bottom:10px;margin-top:5px;display:none">user not found in system with submitted email</span>
+                  style="color:blue;font-size:12px;margin-bottom:10px;margin-top:5px;display:none">Password reset instructions for non-Active Directory users will be sent to your email</span>
+      <span id="index_passwordResetSuccess"
+            style="color:green;font-size:12px;margin-bottom:10px;margin-top:5px;display:none">Password reset instructions sent</span>
+      <span id="index_passwordResetFailure"
+            style="color:red;font-size:12px;margin-bottom:10px;margin-top:5px;display:none">user not found in system with submitted email or is Active Directory user</span>
     </div>
     <br/>
-        <span id="index_loginError"
-              style="color:red;font-size:12px;margin-bottom:5px;margin-top:0px;display:none"></span>
+    <span id="index_loginError"
+          style="color:red;font-size:12px;margin-bottom:5px;margin-top:0px;display:none"></span>
   </div>
 </div>
 
