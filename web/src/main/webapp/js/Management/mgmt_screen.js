@@ -42,6 +42,18 @@ var MgmtPage = (function () {
     };
 }());
 
+// LDAP Extension: hide password change controls if active directory user
+function updatePasswordChangeForm() {
+    user = JSON.parse(sessionStorage.getItem("userData"));
+    if (/^\w+\\\w+$/.test(user.ecommonsId)) {
+        $("#mgmt_passwordChangeDiv").hide();
+        $("#mgmt_passwordChangeNotAllowedDiv").show();
+    } else {
+        $("#mgmt_passwordChangeNotAllowedDiv").hide();
+        $("#mgmt_passwordChangeDiv").show();
+    }
+}
+
 function getMgmtStaticLists(callback) {
     $.get("rest/app/getStaticLists", {}, function (data) {
 
@@ -246,7 +258,7 @@ function passwordResetClick() {
     $('#mgmt_passwordChangeLoading').css({visibility: "visible"});
     var jsonData = JSON.stringify({id: user.id, password: $.trim($("#mgmt_passwordChange").val())});
 
-    $.post("rest/management/updatePassword", {data: jsonData}, function (data) {
+    $.post("rest/managementExtension/updatePassword", {data: jsonData}, function (data) {
         var parsedData = JSON.parse(data);
         $('#mgmt_responseLoading').css({visibility: "hidden"});
         var confirmationMessage = "";
@@ -285,6 +297,10 @@ function cancelUserClick() {
         sessionStorage.setItem("mode", JSON.stringify('view'));
         window.location.href = "mgmt_detail.html";
     }
+}
+
+function cancelPasswordClick() {
+    window.location.href = 'home.html';
 }
 
 //This specifies a name for this piece of code which will appear when debugging
