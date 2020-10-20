@@ -167,7 +167,7 @@ function getCalendarBySublocation(sublocation) {
 
     view = home_calendar.view;
 
-    if (view.name === "month") {
+    if (view.type === "dayGridMonth") {
         todaysVisits = false;
         searching_appointments = false;
     }
