@@ -63,6 +63,6 @@ public class VersionInfo {
 
         // display mode for 'default' translated to 'classic'
         // ? better way to do this ?
-        this.subjectMode = subjectMode.equalsIgnoreCase("STANDALONE") ? displayForEpicMode : displayForDefaultMode;
+        this.subjectMode = subjectMode.equalsIgnoreCase("epic") ? displayForEpicMode : displayForDefaultMode;
     }
 }
