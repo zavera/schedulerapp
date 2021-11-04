@@ -1576,7 +1576,7 @@ function renderSubjectMrnField(mrnField, mrnInfoList, searchMrn, options) {
         }
 
         //keep track of whether the default value for the mrn is available
-        if (searchMrn != null && searchMrn.length > 0 && mrnInfo.value == searchMrn) {
+        if (searchMrn != null && searchMrn.length > 0 && mrnInfo.value == searchMrn.toUpperCase()) {
             if (group == "Available") {
                 searchMrnAvailable = true;
             }
@@ -1606,7 +1606,7 @@ function renderSubjectMrnField(mrnField, mrnInfoList, searchMrn, options) {
     if (searchMrn != null && searchMrn.length > 0) {
         if (searchMrnAvailable) {
             //select the MRN that the search was performed with
-            defaultValue = searchMrn;
+            defaultValue = searchMrn.toUpperCase();
         } else {
             //do not select the search mrn since it is not available
             prompt = searchMrnText;
@@ -1748,8 +1748,9 @@ function showError(item, message) {
     $(item).css({opacity: 0.0, visibility: "visible"}).animate({opacity: 1.0});
 }
 
+//edit function name to indicate inclusiveness of c
 function containsDigitsOnly(value) {
-    var digitOnlyRegexObj = /^[0-9]+$/;
+    var digitOnlyRegexObj = /^c?[0-9]+$/i;
     return digitOnlyRegexObj.test(value);
 }
 

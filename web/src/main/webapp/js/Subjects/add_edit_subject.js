@@ -1267,13 +1267,13 @@ StandaloneSubjectDetails.isValidForm = function(){
     }
 
     var candidateMrn = $.trim($("#subject_mrn").val());
-    var mrnRegexObj = /^[0-9]+$/;
+    var mrnRegexObj = /^c?[0-9]+$/i;
     if (candidateMrn.length < 1) {
         showError('#subject_mrnValidation');
         isValid = false;
     }
     else if (!mrnRegexObj.test(candidateMrn)) {
-        showError('#subject_mrnValidation', "MRN can only contain digits");
+        showError('#subject_mrnValidation', "MRN should only contain digits or begin with a C.");
         isValid = false;
     }
 

@@ -69,7 +69,7 @@ public class SubjectDAO extends SiteDAO {
     public void saveSubjectMrn(SubjectMrn newMrn) {
         final Session session = session();
 
-        String encryptedMrnVal = SubjectDataEncryptor.encrypt(newMrn.getMrn());
+        String encryptedMrnVal = SubjectDataEncryptor.encrypt(newMrn.getMrn().toUpperCase());
         newMrn.setMrn(encryptedMrnVal);
 
         session.saveOrUpdate(newMrn);
@@ -79,7 +79,7 @@ public class SubjectDAO extends SiteDAO {
 
     public SubjectMrn getSubjectMrnForSubject(SubjectMrn subjectMrn) {
         final StringBuilder findSubjectMrnQueryString = new StringBuilder();
-        String encryptedMrn = SubjectDataEncryptor.encrypt(subjectMrn.getMrn());
+        String encryptedMrn = SubjectDataEncryptor.encrypt(subjectMrn.getMrn().toUpperCase());
         //does this subject mrn already exist for this subject?
         findSubjectMrnQueryString.append("FROM SubjectMrn sm WHERE sm.mrn = :mrn and (sm.site is NULL or sm.site = " +
                                          ":site) and sm.subject = :subject");
@@ -588,7 +588,7 @@ public class SubjectDAO extends SiteDAO {
 
             final Query query = newQuery(findSubjects.toString());
 
-            String encryptedMrn = SubjectDataEncryptor.encrypt(mrnInfoDTO.getValue());
+            String encryptedMrn = SubjectDataEncryptor.encrypt(mrnInfoDTO.getValue().toUpperCase());
             query.setParameter("mrn", encryptedMrn);
 
             if (mrnInfoDTO.getInstitution() != null) {
@@ -749,7 +749,7 @@ public class SubjectDAO extends SiteDAO {
                     findSubjects.append(" or ");
                 }
 
-                String mrn = mrnInfoDTOList.get(i).getValue();
+                String mrn = mrnInfoDTOList.get(i).getValue().toUpperCase();
 
                 String encryptedMrn = SubjectDataEncryptor.encrypt(mrn);
 
@@ -787,7 +787,7 @@ public class SubjectDAO extends SiteDAO {
 
     public SubjectMrn getSubjectMrnByMrnAndSite(String mrn, String site) {
         final StringBuilder findSubjectMrnQueryString = new StringBuilder();
-        String encryptedMrn = SubjectDataEncryptor.encrypt(mrn);
+        String encryptedMrn = SubjectDataEncryptor.encrypt(mrn.toUpperCase());
         findSubjectMrnQueryString.append("FROM SubjectMrn sm WHERE sm.subject.archivalStatus IS NULL and sm.mrn = :mrn and (sm.site is NULL or sm.site = " +
                                          ":site) ");
 

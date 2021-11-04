@@ -106,7 +106,7 @@ public class MrnSortTest extends AbstractSpringWiredJunit4Test {
         StudySubject result= new StudySubject();
         SubjectMrn mrn1 = new SubjectMrn();
 
-        mrn1.setMrn(SubjectDataEncryptor.encrypt(mrn));
+        mrn1.setMrn(SubjectDataEncryptor.encrypt(mrn.toUpperCase()));
         mrn1.setSite("bwh");
         mrn1.setStatus("A");
         result.setSubjectMrn(mrn1);

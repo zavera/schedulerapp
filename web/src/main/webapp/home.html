@@ -662,6 +662,22 @@
                             <div id="scheduleWizard_comment"></div>
                         </td>
                     </tr>
+
+                    <tr>
+                        <td class="formLabel">Comment Type:</td>
+                        <td>
+                            <div id="commentFilterContainer">
+                                <select id="commentFilterSelected" onchange="javascript:filterCommentViewChangeClick();" name="select">
+                                    <option id="filter" value="0">choose</option>
+                                    <option id="filter1" value="1">Nutrition</option>
+                                    <option id="filter2" value="2">EBL</option>
+                                    <option id="filter3" value="3">Nursing</option>
+                                    <option id="filter4" value="4">Other</option>
+                                </select>
+                            </div>
+                        </td>
+
+                    </tr>
                 </table>
                 <div class="wizardButtons">
                     <input type="button" class="formButton" value="Schedule"
