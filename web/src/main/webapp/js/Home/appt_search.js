@@ -565,8 +565,8 @@ AppointmentSearchForm.Schedule.validate = function (schedulingRestriction) {
     }
 
     if (!MiscUtil.isNotUndefinedOrNullOrEmpty(schedulingRestriction) && schedulingRestriction !== 0) {
-        var startDateDiff = startDateTime.getTime() < new Date().addDays(schedulingRestriction).getTime();
-
+        //using the day cut off versus the time cut off
+        var startDateDiff = startDateTime.getTime() < new Date().addDays(schedulingRestriction+1).setHours(0,0,0,0);
         if (!UserRoleUtil.userIsCrcStaff() && startDateDiff) {
             errorMsg = 'There is a scheduling restriction. Please see above.';
             $("#schedulingRestrictionWarning").addClass("redBorder");
