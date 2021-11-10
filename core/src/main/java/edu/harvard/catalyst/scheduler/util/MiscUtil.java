@@ -32,10 +32,12 @@ import com.google.common.base.Strings;
 import edu.harvard.catalyst.scheduler.dto.SearchDTO;
 import edu.harvard.catalyst.scheduler.dto.response.CalendarVisitsResponse;
 import edu.harvard.catalyst.scheduler.entity.InstitutionRoleType;
+import org.joda.time.DateTime;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 
@@ -423,8 +425,11 @@ public class MiscUtil {
             if (restriction == 0) return true;
             Date startDate = new Date(epochStartDate);
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            calendar.add(Calendar.DATE, restriction-1);
+            calendar.set(Calendar.HOUR_OF_DAY,0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND,0);
+            calendar.add(Calendar.DATE, restriction);
             return calendar.getTime().compareTo(startDate) < 0;
         }
         return true;
