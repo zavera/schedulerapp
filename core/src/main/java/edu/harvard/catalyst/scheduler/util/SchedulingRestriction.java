@@ -31,6 +31,7 @@ public class SchedulingRestriction {
     private static final SchedulingRestriction instance = new SchedulingRestriction();
     private final String schedulingRestriction =
             PropertyHelper.getProperties("scheduler.properties", getClass()).getProperty("schedulingRestriction");
+    private final String midnightRestriction = PropertyHelper.getProperties("scheduler.properties", getClass()).getProperty("addTillMidnight");
     private final String lastMinuteIndicator =
             PropertyHelper.getProperties("scheduler.properties", getClass()).getProperty("lastMinuteIndicator");
 
@@ -43,6 +44,11 @@ public class SchedulingRestriction {
     public int getSchedulingRestriction() {
         return this.getRestriction(schedulingRestriction);
     }
+
+    public boolean getMidnightRestriction() {
+        return !midnightRestriction.equalsIgnoreCase("false");
+    }
+
 
     public int getLastMinuteIndicator() {
         return this.getRestriction(lastMinuteIndicator);

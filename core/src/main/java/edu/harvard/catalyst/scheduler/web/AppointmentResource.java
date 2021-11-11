@@ -688,6 +688,14 @@ public class AppointmentResource extends SecuredResource {
     }
 
     @GET
+    @Path("/getMidnightRestriction")
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    public String getMidnightRestriction() {
+        return gson.toJson(SchedulingRestriction.getInstance().getMidnightRestriction());
+    }
+
+
+    @GET
     @Path("/getLastMinuteRestriction")
     @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
     public String getLastMinuteRestriction() {
