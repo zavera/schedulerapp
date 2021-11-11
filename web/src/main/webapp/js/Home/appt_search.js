@@ -523,7 +523,7 @@ AppointmentSearchForm.handleTooltip = function (elem) {
     $(elem).tooltip('open');
 };
 
-AppointmentSearchForm.Schedule.validate = function (schedulingRestriction) {
+AppointmentSearchForm.Schedule.validate = function (schedulingRestriction,midnightRestriction) {
     AppointmentSearchForm.clearErrors();
 
     var isValid = true;
@@ -564,34 +564,28 @@ AppointmentSearchForm.Schedule.validate = function (schedulingRestriction) {
         }
     }
 
-    $.ajax({
-        type: "GET",
-        url: "rest/appointment/getMidnightRestriction",
-        data: "",
-        success: function (data) {
-            var midnightRestriction =  !(data === "false");
-
-            if (!MiscUtil.isNotUndefinedOrNullOrEmpty(schedulingRestriction) && schedulingRestriction !== 0) {
-                var endInterval = new Date().addDays(schedulingRestriction).getTime();
-                if(midnightRestriction){
-                    var endInterval = new Date().addDays(schedulingRestriction+1).setHours(0,0,0,0);
-                }
-           // var startDateDiff = startDateTime.getTime() < new Date().addDays(schedulingRestriction).getTime();
-            var startDateDiff = startDateTime.getTime() < endInterval;
-            if (!UserRoleUtil.userIsCrcStaff() && startDateDiff) {
-                errorMsg = 'There is a scheduling restriction. Please see above.';
-                $("#schedulingRestrictionWarning").addClass("redBorder");
-                isValid = false;
-            }
-            if (!isValid) {
-                AppointmentSearchForm.Schedule.showError(errorMsg);
-            }
-            return isValid;
-
+    if (!MiscUtil.isNotUndefinedOrNullOrEmpty(schedulingRestriction) && schedulingRestriction !== 0) {
+        //using the day cut off versus the time cut off
+        if(midnightRestriction){
+            var endInterval = new Date().addDays(schedulingRestriction+1).setHours(0,0,0,0);
         }
+        else{
+            var endInterval = new Date().addDays(schedulingRestriction).getTime();
         }
-    });
+        var startDateDiff = startDateTime.getTime() < endInterval;
 
+        //var startDateDiff = startDateTime.getTime() < new Date().addDays(schedulingRestriction+1).setHours(0,0,0,0);
+        if (!UserRoleUtil.userIsCrcStaff() && startDateDiff) {
+            errorMsg = 'There is a scheduling restriction. Please see above.';
+            $("#schedulingRestrictionWarning").addClass("redBorder");
+            isValid = false;
+        }
+    }
+
+    if (!isValid) {
+        AppointmentSearchForm.Schedule.showError(errorMsg);
+    }
+    return isValid;
 };
 
 AppointmentSearchForm.Schedule.clearError = function () {
@@ -609,17 +603,15 @@ AppointmentSearchForm.Schedule.showError = function (msg) {
 };
 
 
-AppointmentSearchForm.Schedule.searchApptAvailability = function () {
-    AppointmentSearchForm.clearErrors();
+AppointmentSearchForm.Schedule.getMidnightRestriction = function(data) {
+    var schedulingRestriction = parseInt(data);
     $.ajax({
         type: "GET",
-        url: "rest/appointment/getSchedulingRestriction",
-        data: "",
+        url: "rest/appointment/getMidnightRestriction",
         success: function (data) {
-            var schedulingRestriction = parseInt(data);
 
-            if (AppointmentSearchForm.Schedule.validate(schedulingRestriction)) {
-
+            var midnightRestriction = !(data === 'false');
+            if (AppointmentSearchForm.Schedule.validate(schedulingRestriction,midnightRestriction)) {
                 AppointmentSearchForm.isSearching = true;
 
                 no_appointments_found = true;
@@ -647,6 +639,16 @@ AppointmentSearchForm.Schedule.searchApptAvailability = function () {
                 }
             }
         }
+    })
+}
+
+AppointmentSearchForm.Schedule.searchApptAvailability = function () {
+    AppointmentSearchForm.clearErrors();
+    $.ajax({
+        type: "GET",
+        url: "rest/appointment/getSchedulingRestriction",
+        data: "",
+        success: AppointmentSearchForm.Schedule.getMidnightRestriction
     });
 };
 
