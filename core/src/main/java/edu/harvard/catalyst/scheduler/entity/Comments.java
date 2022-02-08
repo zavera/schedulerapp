@@ -37,10 +37,14 @@ public class Comments extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 925242937038265036L;
     private String comment;
+
+
+    private ScheduledVisitComment scheduledVisitComment;
     private VisitTemplate visitTemplate;
     private BookedVisit bookedVisit;
     private User user;
     private Date date;
+
 
     public Comments() {
         super(null);
@@ -51,11 +55,28 @@ public class Comments extends BaseEntity implements Serializable {
     public String getComment() {
         return comment;
     }
-
     public void setComment(String comment) {
         this.comment = comment;
     }
-    
+
+
+
+    @JoinColumn(name = "scheduled_visit_comment", referencedColumnName = "id")
+    @ManyToOne(optional = true)
+    public ScheduledVisitComment getScheduledVisitComment(){
+        return scheduledVisitComment;
+    }
+    public void setScheduledVisitComment(ScheduledVisitComment scheduledVisitComment){
+        this.scheduledVisitComment = scheduledVisitComment;
+    }
+
+
+    public void setSc(BookedVisit bookedVisit) {
+        this.bookedVisit = bookedVisit;
+    }
+
+
+
     @JoinColumn(name = "visit_template", referencedColumnName = "id")
     @ManyToOne(optional = true)
     public VisitTemplate getVisitTemplate() {

@@ -160,6 +160,15 @@ public class AppointmentService {
         return appointmentDAO.findAppointmentCommentsByVisit(bookedVisit);
     }
 
+
+    // @Transactional
+    public List<ScheduledVisitComment> getAppointmentCommentTypes() {
+        return appointmentDAO.findAppointmentCommentTypes();
+    }
+
+
+
+
     public Long getTotalAppointmentComments(final int bookedVisitId) {
         return appointmentDAO.findTotalAppointmentCommentsByVisit(bookedVisitId);
     }
@@ -2218,7 +2227,7 @@ public class AppointmentService {
 
         appointmentDAO.createEntity(independentVisit);
 
-        createCommentsRecordIfNonemptyComment(independentVisit, user, ipAddress);
+        createCommentsRecordIfNonemptyComment(independentVisit, user, ipAddress,visitSpecsDTO.getAllComments());
 
         final List<TemplateResource> templateResourcesByVisit = templateResourceDAO.findTemplateResourcesByVisit(selectedVisit);
 
@@ -2503,10 +2512,27 @@ public class AppointmentService {
     }
 
     Comments createCommentsRecordIfNonemptyComment(final BookedVisit bookedVisit, final User user, final String
-            ipAddress) {
+            ipAddress,Map<Integer, String> allComments) {
 
         Comments comments = null;
         final String commentString = bookedVisit.getComment();
+
+        for (Integer key : allComments.keySet()) {
+            if(MiscUtil.isNonNullNonEmpty(allComments.get(key))){
+                final ScheduledVisitComment scheduledVisitComment = appointmentDAO.findScheduledVisitCommentById(key);
+                final String visitComment = allComments.get(key);
+                comments = new Comments();
+                comments.setComment(visitComment);
+                comments.setBookedVisit(bookedVisit);
+                comments.setUser(user);
+                comments.setDate(new Date());
+                comments.setScheduledVisitComment(scheduledVisitComment);
+                appointmentDAO.createEntity(comments);
+                auditService.logAppointmentActivity(ipAddress, bookedVisit, user, BookedVisitActivityLogStatics.COMMENTED);
+            };
+        }
+
+
         if (MiscUtil.isNonNullNonEmpty(commentString)) {
             comments = new Comments();
             comments.setComment(commentString);
@@ -2574,7 +2600,7 @@ public class AppointmentService {
         final BookedVisit bv = appointmentDAO.findBookedVisitById(visitSpecsDTO.getId());
         bv.setComment(visitSpecsDTO.getComment());
         appointmentDAO.updateEntity(bv);
-        return createCommentsRecordIfNonemptyComment(bv, user, ipAddress);
+        return createCommentsRecordIfNonemptyComment(bv, user, ipAddress,visitSpecsDTO.getAllComments());
     }
 
     // @Transactional
@@ -3550,7 +3576,7 @@ public class AppointmentService {
 
     // todo: unit test
     void checkMealsAndPersistVisit(final UserSession userSession, final String ipAddress, final String institution,
-                                   final String templatePath, final BookedVisit resVisit) {
+                                   final String templatePath, final BookedVisit resVisit, Map<Integer, String> allComments) {
         for (final BookedResource br : resVisit.getBookedResourceList()) {
             br.setBookedVisit(resVisit);
 
@@ -3563,7 +3589,7 @@ public class AppointmentService {
 
         persistVisit(resVisit, userSession, ipAddress);
         persistBookedResources(resources, resVisit);
-        createCommentsRecordIfNonemptyComment(resVisit, userSession.getUser(), ipAddress);
+        createCommentsRecordIfNonemptyComment(resVisit, userSession.getUser(), ipAddress,allComments);
     }
 
     List<Resource> setupBookedResourcesForAppointmentWithVisitTime(final VisitSpecsDTO visitSpecsDTO, final User user, final
@@ -3945,7 +3971,7 @@ public class AppointmentService {
 
             if (genderBlockMessage == null) {
                 appointmentService.checkMealsAndPersistVisit(userSession, ipAddress, institution,
-                                                                templatePath, bookedVisit);
+                                                                templatePath, bookedVisit,visitSpecsDTO.getAllComments());
             } else {
                 visitSpecsDTO.setDoubleRoomMessage(genderBlockMessage);
             }
@@ -3966,7 +3992,7 @@ public class AppointmentService {
                                                                                 startDate, endDate);
 
             appointmentService.checkMealsAndPersistVisit(userSession, ipAddress, institution,
-                                                            templatePath, resVisit);
+                                                            templatePath, resVisit, visitSpecsDTO.getAllComments());
         }
     }
 

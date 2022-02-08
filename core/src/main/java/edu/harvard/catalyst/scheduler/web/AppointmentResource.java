@@ -170,6 +170,19 @@ public class AppointmentResource extends SecuredResource {
                 visitId);
     }
 
+
+    @GET
+    @Path("/getAppointmentCommentTypes")
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    public String getAppointmentCommentTypes() {
+
+
+        final List<ScheduledVisitComment> appointmentCommentTypes  = service.getAppointmentCommentTypes();
+        return gson.toJson(appointmentCommentTypes);
+    }
+
+
+
     @GET
     @Path("/getAppointmentComments")
     @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})

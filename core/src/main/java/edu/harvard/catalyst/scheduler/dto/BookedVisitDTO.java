@@ -28,6 +28,7 @@
 package edu.harvard.catalyst.scheduler.dto;
 
 import java.util.Date;
+import java.util.Map;
 
 public class BookedVisitDTO extends BooleanResultDTO {
     
@@ -46,6 +47,7 @@ public class BookedVisitDTO extends BooleanResultDTO {
     private Date checkOutDate;
     private Date cancelDate;
     private String comment;
+    private int bookedVisitCommentId;
     private int uniqueid;
     private Date scheduleDate;
     private String cancelStatusReasonName;

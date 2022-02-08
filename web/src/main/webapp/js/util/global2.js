@@ -123,6 +123,9 @@ var apptInitialDisplay = false;
 var enteredPage;
 var dayOfWeekString = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 var monthString = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+var commentTypes = {};
+
 var isEpicMode = false;
 var studies;
 var epicGenders = [{id: "M", name: "Male"}, {id: "F", name: "Female"}, {id: "U", name: "Unreported"}];
@@ -183,8 +186,26 @@ var expandOrCollapseImgTitle = {
     EXPAND: 'Expand'
 };
 
+
+
+
+
+
+
 // LDAP Extension: default active directory domain
 var DEFAULT_DOMAIN = 'university';
+
+//get static list of comment types
+function getCommentTypes() {
+
+    $.getJSON("rest/appointment/getAppointmentCommentTypes", function (data){
+        commentTypes = data;
+    });
+};
+
+
+
+
 function removeEventsWithGivenClassNames(calendar, classNames) {
     calendar.batchRendering(function () {
         var events = calendar.getEvents();

@@ -539,6 +539,20 @@ public class AppointmentDAO extends SiteDAO {
         return VisitCommentsResponse.fromTemplateApprovalHistoryList(criteriaHelper.getQuery().list());
     }
 
+
+
+
+    public ScheduledVisitComment findScheduledVisitCommentById(final Integer id){
+        return this.findById(ScheduledVisitComment.class,id);
+    }
+
+    public List<ScheduledVisitComment> findAppointmentCommentTypes() {
+        final String hql = "SELECT svc FROM ScheduledVisitComment svc WHERE svc.active = true";
+        final Query query = newQuery(hql);
+        return query.list();
+    }
+
+
     public long findTotalAppointmentCommentsByVisit(final int bookedVisitId) {
 
         final String findTotalVisitComments = "SELECT COUNT(c) FROM Comments c"

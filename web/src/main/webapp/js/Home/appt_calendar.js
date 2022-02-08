@@ -719,6 +719,10 @@ function apptCalendarEventClick(event, jsEvent, view) {
     $('.formTextAreaSmaller').css({display: "block"});
     $("#wizard_comment_txtArea").val('');
     $("#scheduleWizard_comment_txtArea").val('');
+    commentTypes.forEach(function(element){
+        let commentDivId = element.name+"_comment_txtArea";
+        $("#"+commentDivId).val('');
+    });
     $("#checkoutWizard_comment").val('');
     appt_list_view = false;
     initial_load = true;

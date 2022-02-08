@@ -1299,7 +1299,15 @@ AppointmentSearchForm.scheduleDialog = function () {
                 $("#appt_wizard_scheduleAppointment").css({"display": "none"});
                 $('#appt_wizard_changeAppointmentSearch').css({display: "none"});
                 $.blockUI();
+                var allComments = {};
                 scheduleComment = $.trim($("#scheduleWizard_comment_txtArea").val());
+                commentTypes.forEach(function(element){
+                    let commentDivId = element.name+"_comment_txtArea";
+                    let eachComment = $.trim($("#"+commentDivId).val());
+                    if( eachComment.length > 0){
+                        allComments[element.id] = eachComment;
+                    }
+                });
                 double_start = start;
                 $("#appt_wizard_scheduleAppointment").css({"display": "none"});
                 var jsonData = JSON.stringify({
@@ -1307,6 +1315,7 @@ AppointmentSearchForm.scheduleDialog = function () {
                     subjectMrnId: AppointmentSearchForm.selectedSubject.subjectMrnId,
                     visit: AppointmentSearchForm.selectedVisit.id,
                     comment: scheduleComment,
+                    allComments: allComments,
                     user: user.id
                 });
                 var isInpatient = MiscUtil.isInpatientVisit(AppointmentSearchForm.selectedVisit.visitTypeId);
@@ -1345,6 +1354,17 @@ AppointmentSearchForm.displaySearchAppt = function (event) {
     AppointmentCalendar.populateApptSearchDialogs(event);
 
     WidgetUtil.commentBox($("#scheduleWizard_comment"), {width: "240px"});
+
+    commentTypes.forEach(function (element) {
+        let commentDivId = element.name + "_comment";
+        if($.isEmptyObject($.find('#'+commentDivId))){
+            $('#commentTable').append('<tr><td class = "formLabel">' + element.name + '</td><td><div id = ' + commentDivId + '></div></td></tr>');
+        }
+        WidgetUtil.commentBox(document.getElementById(commentDivId), {width: "240px"});
+    })
+
+
+
 };
 
 var BookedResources = {};
@@ -1412,7 +1432,15 @@ AppointmentCalendar.apptCalendarEventClick = function (eventClickInfo) {
     $('.formTextAreaSmaller').css({display: "block"});
     $("#wizard_comment_txtArea").val('');
     $("#scheduleWizard_comment_txtArea").val('');
+    $("#scheduleWizard_ebl_comment_txtArea").val('');
+    $("#scheduleWizard_nutrition_comment_txtArea").val('');
+    $("#scheduleWizard_nursing_comment_txtArea").val('');
+    $("#scheduleWizard_lab_comment_txtArea").val('');
+    $("#scheduleWizard_pharmacy_comment_txtArea").val('');
+    $("#scheduleWizard_other_comment_txtArea").val('');
+
     $("#checkoutWizard_comment").val('');
+
     appt_list_view = false;
     initial_load = true;
 

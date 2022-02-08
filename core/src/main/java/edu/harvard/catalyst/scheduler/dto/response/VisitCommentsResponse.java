@@ -29,6 +29,7 @@ package edu.harvard.catalyst.scheduler.dto.response;
 
 import edu.harvard.catalyst.scheduler.entity.Comments;
 import edu.harvard.catalyst.scheduler.core.SchedulerRuntimeException;
+import edu.harvard.catalyst.scheduler.entity.ScheduledVisitComment;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,6 +49,7 @@ public class VisitCommentsResponse {
         private String ecommonsId;
         private Date commentDate;
         private String comment;
+        private String scheduledVisitCommentType;
 
 
         VisitComment(Comments comments) {
@@ -62,6 +64,11 @@ public class VisitCommentsResponse {
         this.ecommonsId = comments.getUser().getEcommonsId();
         this.commentDate = comments.getDate();
         this.comment = comments.getComment();
+
+        if(comments.getScheduledVisitComment() != null){
+            this.scheduledVisitCommentType = comments.getScheduledVisitComment().getName();
+        }
+
         }
 
         public String getComment() {

@@ -548,7 +548,7 @@ public final class ReportDAOTest extends AbstractSpringWiredJunit4Test {
         subject.setMiddleName(subjectMiddleName);
         subject.setLastName(subjectLastName);
 
-        String encryptedMrn = SubjectDataEncryptor.encrypt(mrn);
+        String encryptedMrn = SubjectDataEncryptor.encrypt(mrn.toUpperCase());
         SubjectMrn subjectMrn = new SubjectMrn(
                 subject, encryptedMrn, null, null
         );

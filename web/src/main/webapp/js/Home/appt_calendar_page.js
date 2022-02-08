@@ -105,6 +105,8 @@ function homeInit(){
     $.blockUI({ignoreIfBlocked: true});
 
     getSchedulingOptionsStaticList(homeMain);
+    getCommentTypes();
+
 }
 
 function homeMain(){

@@ -192,6 +192,21 @@ ApptTables.expandFn = function (container, visitId) {
     });
 };
 
+
+
+
+ApptTables.commentTypes = function () {
+
+    $.getJSON("rest/appointment/getAppointmentCommentTypes", function (data){
+        data.forEach(function (element) {
+            var commentdivId = element.name+element.id;
+            $('#commentTable').append('<tr><td class = "formLabel">'+element.name+'</td><td><div id = '+commentdivId+'></div></td></tr>');
+            WidgetUtil.commentBox(document.getElementById(commentdivId), {width: "240px"});
+        })
+    });
+    };
+
+
 ApptTables.loadVisitsIntoApptTablesWidget = function() {
 
     var columns = [];
@@ -474,6 +489,14 @@ BookedVisitCommentsTable.pushAllColumns = function (columns) {
         width: 40,
         extractDataFunction: function (val) {
             return showValue(val.comment);
+        }
+    }))
+
+    columns.push(new Column({
+        columnName: "Scheduling Comment Type",
+        width: 40,
+        extractDataFunction: function (val) {
+            return showValue(val.scheduledVisitCommentType);
         }
     }));
 

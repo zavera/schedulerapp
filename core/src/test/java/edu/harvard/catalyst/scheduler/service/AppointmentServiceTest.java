@@ -2761,6 +2761,7 @@ public final class AppointmentServiceTest {
 
         DefaultAppointmentConfirmer defaultAppointmentConfirmer =
                 new AppointmentService.DefaultAppointmentConfirmer();
+        VisitSpecsDTO visitSpecs = new VisitSpecsDTO();
 
         doReturn(o.bookedVisitM).when(o.serviceSpy)
                 .createBookedVisit(refEq(o.visitSpecsDtoM), refEq(o.userSessionM),
@@ -2799,7 +2800,7 @@ public final class AppointmentServiceTest {
 
         doNothing().when(o.serviceSpy)
                 .checkMealsAndPersistVisit(o.userSessionM, o.ipAddress, o.institution,
-                        o.templatePath, o.bookedVisitM);
+                        o.templatePath, o.bookedVisitM, visitSpecs.getAllComments());
 
         defaultAppointmentConfirmer.confirmVisitBooking(
                 o.serviceSpy, o.visitSpecsDtoM, o.userSessionM,
@@ -2808,7 +2809,7 @@ public final class AppointmentServiceTest {
 
         verify(o.serviceSpy, times(1))
                 .checkMealsAndPersistVisit(o.userSessionM, o.ipAddress,
-                        o.institution, o.templatePath, o.bookedVisitM);
+                        o.institution, o.templatePath, o.bookedVisitM, visitSpecs.getAllComments());
 
         //// case where bvSubjectMrn is null -- do not check for gender block
         when(o.bookedVisitM.getSubjectMrn()).thenReturn(null);
@@ -2825,7 +2826,7 @@ public final class AppointmentServiceTest {
         // should not have been called this time. 2 before, still 2
         verify(o.serviceSpy, times(2))
                 .checkMealsAndPersistVisit(o.userSessionM, o.ipAddress,
-                        o.institution, o.templatePath, o.bookedVisitM);
+                        o.institution, o.templatePath, o.bookedVisitM, visitSpecs.getAllComments());
     }
 
     @Test
@@ -2834,6 +2835,7 @@ public final class AppointmentServiceTest {
 
         DefaultAppointmentConfirmer defaultAppointmentConfirmer =
                 new AppointmentService.DefaultAppointmentConfirmer();
+        VisitSpecsDTO visitSpecs = new VisitSpecsDTO();
 
         doReturn(o.bookedVisitM).when(o.serviceSpy)
                 .createBookedVisit(refEq(o.visitSpecsDtoM), refEq(o.userSessionM),
@@ -2842,7 +2844,7 @@ public final class AppointmentServiceTest {
 
         doNothing().when(o.serviceSpy)
                 .checkMealsAndPersistVisit(o.userSessionM, o.ipAddress, o.institution,
-                        o.templatePath, o.bookedVisitM);
+                        o.templatePath, o.bookedVisitM, visitSpecs.getAllComments());
 
         defaultAppointmentConfirmer.confirmVisitBookingAfterDoubleRoomMessage(
                 o.serviceSpy, o.visitSpecsDtoM, o.userSessionM,
@@ -2859,7 +2861,7 @@ public final class AppointmentServiceTest {
 
         verify(o.serviceSpy, times(1))
                 .checkMealsAndPersistVisit(o.userSessionM, o.ipAddress,
-                        o.institution, o.templatePath, o.bookedVisitM);
+                        o.institution, o.templatePath, o.bookedVisitM, visitSpecs.getAllComments());
     }
 
     @Test
@@ -3124,6 +3126,7 @@ public final class AppointmentServiceTest {
         User user = new User();
 
         BookedVisit bookedVisit = new BookedVisit();
+        VisitSpecsDTO visitSpecs = new VisitSpecsDTO();
         bookedVisit.setComment(commentString);
 
         // mocked methods
@@ -3138,7 +3141,7 @@ public final class AppointmentServiceTest {
 
         // paydirt
 
-        Comments comment = appointmentService.createCommentsRecordIfNonemptyComment(bookedVisit, user, ipAddress);
+        Comments comment = appointmentService.createCommentsRecordIfNonemptyComment(bookedVisit, user, ipAddress,visitSpecs.getAllComments());
 
         // verify internal method calls
 

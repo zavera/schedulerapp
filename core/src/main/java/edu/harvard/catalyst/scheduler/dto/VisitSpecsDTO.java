@@ -32,10 +32,8 @@
 package edu.harvard.catalyst.scheduler.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
-
-import edu.harvard.catalyst.scheduler.entity.BookedResource;
+import java.util.Map;
 
 /**
  * 
@@ -58,6 +56,9 @@ public class VisitSpecsDTO extends BooleanResultDTO implements Serializable {
     private int checkoutStatusReason;
 
     private String comment;
+
+    private Map<Integer,String> allComments;
+
     private long checkInDate;
     private long checkOutDate;
     private long cancelDate;
@@ -126,6 +127,11 @@ public class VisitSpecsDTO extends BooleanResultDTO implements Serializable {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
+
+    public Map<Integer, String> getAllComments(){return allComments; }
+    public void setAllComments(){this.allComments = allComments; }
+
 
     public int getAppointmentStatusReason() {
         return appointmentStatusReason;
