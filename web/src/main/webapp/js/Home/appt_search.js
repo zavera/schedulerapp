@@ -1300,7 +1300,7 @@ AppointmentSearchForm.scheduleDialog = function () {
                 $('#appt_wizard_changeAppointmentSearch').css({display: "none"});
                 $.blockUI();
                 var allComments = {};
-                scheduleComment = $.trim($("#scheduleWizard_comment_txtArea").val());
+               // scheduleComment = $.trim($("#scheduleWizard_comment_txtArea").val());
                 commentTypes.forEach(function(element){
                     let commentDivId = element.name+"_comment_txtArea";
                     let eachComment = $.trim($("#"+commentDivId).val());
@@ -1314,7 +1314,6 @@ AppointmentSearchForm.scheduleDialog = function () {
                     study: AppointmentSearchForm.selectedStudy.id,
                     subjectMrnId: AppointmentSearchForm.selectedSubject.subjectMrnId,
                     visit: AppointmentSearchForm.selectedVisit.id,
-                    comment: scheduleComment,
                     allComments: allComments,
                     user: user.id
                 });
@@ -1353,7 +1352,7 @@ AppointmentSearchForm.displaySearchAppt = function (event) {
 
     AppointmentCalendar.populateApptSearchDialogs(event);
 
-    WidgetUtil.commentBox($("#scheduleWizard_comment"), {width: "240px"});
+    //WidgetUtil.commentBox($("#scheduleWizard_comment"), {width: "240px"});
 
     commentTypes.forEach(function (element) {
         let commentDivId = element.name + "_comment";
@@ -1431,7 +1430,7 @@ AppointmentCalendar.apptCalendarEventClick = function (eventClickInfo) {
     $.blockUI();
     $('.formTextAreaSmaller').css({display: "block"});
     $("#wizard_comment_txtArea").val('');
-    $("#scheduleWizard_comment_txtArea").val('');
+    //$("#scheduleWizard_comment_txtArea").val('');
     $("#scheduleWizard_ebl_comment_txtArea").val('');
     $("#scheduleWizard_nutrition_comment_txtArea").val('');
     $("#scheduleWizard_nursing_comment_txtArea").val('');

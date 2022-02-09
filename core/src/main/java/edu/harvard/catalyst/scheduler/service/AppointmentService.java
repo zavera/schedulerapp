@@ -2227,7 +2227,7 @@ public class AppointmentService {
 
         appointmentDAO.createEntity(independentVisit);
 
-        createCommentsRecordIfNonemptyComment(independentVisit, user, ipAddress,visitSpecsDTO.getAllComments());
+        createCommentsRecordIfNonemptyComment(independentVisit, user, ipAddress);
 
         final List<TemplateResource> templateResourcesByVisit = templateResourceDAO.findTemplateResourcesByVisit(selectedVisit);
 
@@ -2515,10 +2515,8 @@ public class AppointmentService {
             ipAddress,Map<Integer, String> allComments) {
 
         Comments comments = null;
-        final String commentString = bookedVisit.getComment();
-
         for (Integer key : allComments.keySet()) {
-            if(MiscUtil.isNonNullNonEmpty(allComments.get(key))){
+            if (MiscUtil.isNonNullNonEmpty(allComments.get(key))) {
                 final ScheduledVisitComment scheduledVisitComment = appointmentDAO.findScheduledVisitCommentById(key);
                 final String visitComment = allComments.get(key);
                 comments = new Comments();
@@ -2529,10 +2527,17 @@ public class AppointmentService {
                 comments.setScheduledVisitComment(scheduledVisitComment);
                 appointmentDAO.createEntity(comments);
                 auditService.logAppointmentActivity(ipAddress, bookedVisit, user, BookedVisitActivityLogStatics.COMMENTED);
-            };
+            }
+
         }
+        return comments;
+    }
 
+    Comments createCommentsRecordIfNonemptyComment(final BookedVisit bookedVisit, final User user, final String
+        ipAddress){
 
+        Comments comments = null;
+        final String commentString = bookedVisit.getComment();
         if (MiscUtil.isNonNullNonEmpty(commentString)) {
             comments = new Comments();
             comments.setComment(commentString);
@@ -2600,7 +2605,7 @@ public class AppointmentService {
         final BookedVisit bv = appointmentDAO.findBookedVisitById(visitSpecsDTO.getId());
         bv.setComment(visitSpecsDTO.getComment());
         appointmentDAO.updateEntity(bv);
-        return createCommentsRecordIfNonemptyComment(bv, user, ipAddress,visitSpecsDTO.getAllComments());
+        return createCommentsRecordIfNonemptyComment(bv, user, ipAddress);
     }
 
     // @Transactional

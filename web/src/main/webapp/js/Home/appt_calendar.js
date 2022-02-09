@@ -692,7 +692,7 @@ function displayedSearchAppt(event) {
     resetUI();
     loadBookedResourcesData(currentPage, eventid);
 
-    WidgetUtil.commentBox($("#scheduleWizard_comment"), {width: "240px"});
+    //WidgetUtil.commentBox($("#scheduleWizard_comment"), {width: "240px"});
     $("#appt_wizard_searchedDetails").dialog({modal: true, height: 800, width: 700});
 }
 
@@ -718,7 +718,7 @@ function apptCalendarEventClick(event, jsEvent, view) {
     $.blockUI();
     $('.formTextAreaSmaller').css({display: "block"});
     $("#wizard_comment_txtArea").val('');
-    $("#scheduleWizard_comment_txtArea").val('');
+    //$("#scheduleWizard_comment_txtArea").val('');
     commentTypes.forEach(function(element){
         let commentDivId = element.name+"_comment_txtArea";
         $("#"+commentDivId).val('');
