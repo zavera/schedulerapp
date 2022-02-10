@@ -2534,7 +2534,7 @@ public class AppointmentService {
     }
 
     Comments createCommentsRecordIfNonemptyComment(final BookedVisit bookedVisit, final User user, final String
-        ipAddress){
+            ipAddress) {
 
         Comments comments = null;
         final String commentString = bookedVisit.getComment();

@@ -2746,6 +2746,9 @@ public final class AppointmentServiceTest {
         Subject subjectM = mock(Subject.class);
         UserSession userSessionM = mock(UserSession.class);
 
+        Map<Integer,String> commentsMap = Collections.emptyMap();
+
+
         List<BookedResource> bookedResourceList = Lists.newArrayList();
         Date startDate = new Date();
         Date endDate = new Date();
@@ -2761,7 +2764,7 @@ public final class AppointmentServiceTest {
 
         DefaultAppointmentConfirmer defaultAppointmentConfirmer =
                 new AppointmentService.DefaultAppointmentConfirmer();
-        VisitSpecsDTO visitSpecs = new VisitSpecsDTO();
+        //VisitSpecsDTO visitSpecs = new VisitSpecsDTO();
 
         doReturn(o.bookedVisitM).when(o.serviceSpy)
                 .createBookedVisit(refEq(o.visitSpecsDtoM), refEq(o.userSessionM),
@@ -2770,6 +2773,7 @@ public final class AppointmentServiceTest {
         when(o.bookedVisitM.getSubjectMrn()).thenReturn(o.subjectMrnM);
         when(o.subjectMrnM.getSubject()).thenReturn(o.subjectM);
         when(o.bookedVisitM.getBookedResourceList()).thenReturn(o.bookedResourceList);
+        when(o.visitSpecsDtoM.getAllComments()).thenReturn(o.commentsMap);
 
         doReturn(o.genderBlockMessage).when(o.serviceSpy)
                 .checkForGenderBlock(refEq(o.subjectM), refEq(o.bookedResourceList));
@@ -2800,7 +2804,7 @@ public final class AppointmentServiceTest {
 
         doNothing().when(o.serviceSpy)
                 .checkMealsAndPersistVisit(o.userSessionM, o.ipAddress, o.institution,
-                        o.templatePath, o.bookedVisitM, visitSpecs.getAllComments());
+                        o.templatePath, o.bookedVisitM, o.commentsMap);
 
         defaultAppointmentConfirmer.confirmVisitBooking(
                 o.serviceSpy, o.visitSpecsDtoM, o.userSessionM,
@@ -2809,7 +2813,7 @@ public final class AppointmentServiceTest {
 
         verify(o.serviceSpy, times(1))
                 .checkMealsAndPersistVisit(o.userSessionM, o.ipAddress,
-                        o.institution, o.templatePath, o.bookedVisitM, visitSpecs.getAllComments());
+                        o.institution, o.templatePath, o.bookedVisitM, o.commentsMap);
 
         //// case where bvSubjectMrn is null -- do not check for gender block
         when(o.bookedVisitM.getSubjectMrn()).thenReturn(null);
@@ -2826,7 +2830,7 @@ public final class AppointmentServiceTest {
         // should not have been called this time. 2 before, still 2
         verify(o.serviceSpy, times(2))
                 .checkMealsAndPersistVisit(o.userSessionM, o.ipAddress,
-                        o.institution, o.templatePath, o.bookedVisitM, visitSpecs.getAllComments());
+                        o.institution, o.templatePath, o.bookedVisitM, o.commentsMap);
     }
 
     @Test
@@ -2835,7 +2839,9 @@ public final class AppointmentServiceTest {
 
         DefaultAppointmentConfirmer defaultAppointmentConfirmer =
                 new AppointmentService.DefaultAppointmentConfirmer();
-        VisitSpecsDTO visitSpecs = new VisitSpecsDTO();
+
+
+        when(o.visitSpecsDtoM.getAllComments()).thenReturn(o.commentsMap);
 
         doReturn(o.bookedVisitM).when(o.serviceSpy)
                 .createBookedVisit(refEq(o.visitSpecsDtoM), refEq(o.userSessionM),
@@ -2844,7 +2850,7 @@ public final class AppointmentServiceTest {
 
         doNothing().when(o.serviceSpy)
                 .checkMealsAndPersistVisit(o.userSessionM, o.ipAddress, o.institution,
-                        o.templatePath, o.bookedVisitM, visitSpecs.getAllComments());
+                        o.templatePath, o.bookedVisitM, o.commentsMap);
 
         defaultAppointmentConfirmer.confirmVisitBookingAfterDoubleRoomMessage(
                 o.serviceSpy, o.visitSpecsDtoM, o.userSessionM,
@@ -2861,7 +2867,7 @@ public final class AppointmentServiceTest {
 
         verify(o.serviceSpy, times(1))
                 .checkMealsAndPersistVisit(o.userSessionM, o.ipAddress,
-                        o.institution, o.templatePath, o.bookedVisitM, visitSpecs.getAllComments());
+                        o.institution, o.templatePath, o.bookedVisitM, o.commentsMap);
     }
 
     @Test
@@ -3141,7 +3147,7 @@ public final class AppointmentServiceTest {
 
         // paydirt
 
-        Comments comment = appointmentService.createCommentsRecordIfNonemptyComment(bookedVisit, user, ipAddress,visitSpecs.getAllComments());
+        Comments comment = appointmentService.createCommentsRecordIfNonemptyComment(bookedVisit, user, ipAddress);
 
         // verify internal method calls
 

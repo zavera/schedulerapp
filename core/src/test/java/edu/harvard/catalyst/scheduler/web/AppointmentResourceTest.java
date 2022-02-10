@@ -157,6 +157,7 @@ public class AppointmentResourceTest implements TestHelpers {
         comments.setUser(user);
         comments.setDate(new Date());
         comments.setComment("user 1");
+        comments.setScheduledVisitComment(new ScheduledVisitComment());
         final Comments comments1 = new Comments();
         comments1.setId(2);
         final User user1 = new User();
@@ -165,6 +166,7 @@ public class AppointmentResourceTest implements TestHelpers {
         comments1.setUser(user1);
         comments1.setDate(new Date());
         comments1.setComment("user 2");
+        comments1.setScheduledVisitComment(new ScheduledVisitComment());
         final List<Comments> commentsList = new ArrayList<Comments>();
         commentsList.add(comments);
         commentsList.add(comments1);
