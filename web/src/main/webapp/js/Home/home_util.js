@@ -608,6 +608,20 @@ HomeAppointment.openAppointmentWindowCallback = function (data, className) {
     $('.dialog_study_id').text(studyId);
     $('.dialog_visit_id').text(visitId);
 
+    if(actionName == "Overbooked on: "){
+
+        commentTypes.forEach(function (element) {
+            var commentDivId = "scheduledvisit_"+element.name;
+            if($.isEmptyObject($.find('#'+commentDivId))){
+                $('#scheduledVisitCommentBoxes').append('<tr><td class = "formLabel">'+element.name+'</td><td><div id ='+commentDivId+'></div></td></tr>');
+                WidgetUtil.commentBox(document.getElementById(commentDivId), {width:"100%", height: "50px"});
+            }
+        })
+    }
+    else{
+        $('#scheduledVisitCommentBoxes').find("tr").remove();
+    }
+
     var viewCommentsButton;
     switch (className) {
         case "Scheduled":
