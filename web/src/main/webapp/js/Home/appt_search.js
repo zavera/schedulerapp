@@ -1355,7 +1355,7 @@ AppointmentSearchForm.displaySearchAppt = function (event) {
     //WidgetUtil.commentBox($("#scheduleWizard_comment"), {width: "240px"});
 
     commentTypes.forEach(function (element) {
-        let commentDivId = element.name + "_comment";
+        let commentDivId = element.id + "_scheduleWizard_comment";
         if($.isEmptyObject($.find('#'+commentDivId))){
             $('#commentTable').append('<tr><td class = "formLabel">' + element.name + '</td><td><div id = ' + commentDivId + '></div></td></tr>');
         }

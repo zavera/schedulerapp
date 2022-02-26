@@ -199,7 +199,7 @@ ApptTables.commentTypes = function () {
 
     $.getJSON("rest/appointment/getAppointmentCommentTypes", function (data){
         data.forEach(function (element) {
-            var commentdivId = element.name+element.id;
+            var commentdivId = element.id+"_scheduleWizard_comment";
             $('#commentTable').append('<tr><td class = "formLabel">'+element.name+'</td><td><div id = '+commentdivId+'></div></td></tr>');
             WidgetUtil.commentBox(document.getElementById(commentdivId), {width: "240px"});
         })

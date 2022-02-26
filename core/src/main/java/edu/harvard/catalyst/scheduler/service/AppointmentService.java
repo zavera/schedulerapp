@@ -2605,7 +2605,12 @@ public class AppointmentService {
         final BookedVisit bv = appointmentDAO.findBookedVisitById(visitSpecsDTO.getId());
         bv.setComment(visitSpecsDTO.getComment());
         appointmentDAO.updateEntity(bv);
-        return createCommentsRecordIfNonemptyComment(bv, user, ipAddress);
+        if(visitSpecsDTO.getAllComments().size() > 0) {
+            return createCommentsRecordIfNonemptyComment(bv, user, ipAddress,visitSpecsDTO.getAllComments());
+        }
+        else{
+            return createCommentsRecordIfNonemptyComment(bv, user, ipAddress);
+        }
     }
 
     // @Transactional

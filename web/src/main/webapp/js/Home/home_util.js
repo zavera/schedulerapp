@@ -233,26 +233,71 @@ function buildResourcesSelectsOptions(list, optionTextProperty, choiceLabel) {
     return html.join('');
 }
 
-function saveComment(element, commentCounter) {
-    var wizardcomment = $.trim(WidgetUtil.commentBox.getValue(element));
-    if (wizardcomment == null || search_string == '') {
-        util_showMainMessage("Please Enter the Comment Value.");
-        return;
-    }
-    jsonData = JSON.stringify({
-        id: eventid,
-        comment: wizardcomment});
+function saveComment(first, element, commentCounter) {
+    var numComments = 0;
+
+   if(!first) {
+       var wizardcomment = $.trim(WidgetUtil.commentBox.getValue(element));
+       if (wizardcomment == null || search_string == '') {
+           util_showMainMessage("Please Enter the Comment Value.");
+           return;
+       }
+
+       jsonData = JSON.stringify({
+           id: eventid,
+           comment: wizardcomment});
+   }
+
+    else {
+
+        var allComments = {};
+        // scheduleComment = $.trim($("#scheduleWizard_comment_txtArea").val());
+        commentTypes.forEach(function (element) {
+            let commentDivId = element.id + "_scheduledVisit_comment_txtArea";
+            var currentComment = $.trim(WidgetUtil.commentBox.getValue(commentDivId));
+            if (currentComment == null || search_string == '') {
+                util_showMainMessage("Please Enter the Comment Value.");
+                return;
+            }
+            let eachComment = $.trim($("#" + commentDivId).val());
+            if (eachComment.length > 0) {
+                allComments[element.id] = eachComment;
+                numComments++;
+            }
+        });
+
+       jsonData = JSON.stringify({
+           id: eventid,
+           allComments: allComments});
+   }
 
     $.post("rest/appointment/saveComment", {data: jsonData}, function (data) {
         parsedData = JSON.parse(data);
         util_showMainMessage("The comment has been saved.");
-        wizardcomment = null;
 
-        WidgetUtil.commentBox.clearValue(element);
+        if(!first){
+            wizardcomment = null;
 
-        var currentValue = WidgetUtil.counterDisplay.getValue(commentCounter);
-        WidgetUtil.counterDisplay.setValue(commentCounter, parseInt(currentValue) + 1);
-        searching_appointments = false;
+            WidgetUtil.commentBox.clearValue(element);
+
+            var currentValue = WidgetUtil.counterDisplay.getValue(commentCounter);
+            WidgetUtil.counterDisplay.setValue(commentCounter, parseInt(currentValue) + 1);
+            searching_appointments = false;
+
+        }
+
+        else{
+            commentTypes.forEach(function (element) {
+                let commentDivId = element.id + "_scheduledVisit_comment";
+                WidgetUtil.commentBox.clearValue('#'+commentDivId);
+            });
+
+            var currentValue = WidgetUtil.counterDisplay.getValue(commentCounter);
+            WidgetUtil.counterDisplay.setValue(commentCounter, parseInt(currentValue) + numComments);
+            searching_appointments = false;
+
+        }
+
     });
 }
 
@@ -611,7 +656,7 @@ HomeAppointment.openAppointmentWindowCallback = function (data, className) {
     if(actionName == "Overbooked on: "){
 
         commentTypes.forEach(function (element) {
-            var commentDivId = "scheduledvisit_"+element.name;
+            var commentDivId = element.id+"_scheduledVisit_comment";
             if($.isEmptyObject($.find('#'+commentDivId))){
                 $('#scheduledVisitCommentBoxes').append('<tr><td class = "formLabel">'+element.name+'</td><td><div id ='+commentDivId+'></div></td></tr>');
                 WidgetUtil.commentBox(document.getElementById(commentDivId), {width:"100%", height: "50px"});
