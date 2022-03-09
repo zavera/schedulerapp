@@ -28,8 +28,7 @@
 package edu.harvard.catalyst.scheduler.entity.reporttemplate;
 
 import static edu.harvard.catalyst.scheduler.entity.reporttemplate.Edge.JoinAssembly.wholeField;
-import static edu.harvard.catalyst.scheduler.entity.reporttemplate.Edge.JoinType.INNER;
-import static edu.harvard.catalyst.scheduler.entity.reporttemplate.Edge.JoinType.LEFT;
+import static edu.harvard.catalyst.scheduler.entity.reporttemplate.Edge.JoinType.*;
 
 import java.util.Set;
 
@@ -52,6 +51,7 @@ public final class BookedVisitGraph extends CommonGraph {
     private final Vertex lla_br = new Vertex("line_level_annotations", "lla_br");
     private final Vertex sm = new Vertex("subject_mrn", "sm");
     protected final Vertex u = new Vertex("user", "u");
+    protected final Vertex c = new Vertex("comments", "c");
 
     //NB: Holder idiom for thread-safe lazy init of fields
     private static final class Holder {
@@ -73,7 +73,9 @@ public final class BookedVisitGraph extends CommonGraph {
                     new Edge(br, tr, LEFT, "template_resource"),
                     new Edge(br, rsrc, INNER, "resource"),
                     new Edge(br, bra, LEFT, "booked_resource", Edge.JoinAssembly.rightField),
-                    new Edge(bra, lla_br, LEFT, "line_level_annotations"));
+                    new Edge(bra, lla_br, LEFT, "line_level_annotations"),
+                    new Edge(bv, c, LEFT , "booked_visit", Edge.JoinAssembly.rightField));
+
 
     private BookedVisitGraph() {
         myInit(specificEdges, rootVertex, true);

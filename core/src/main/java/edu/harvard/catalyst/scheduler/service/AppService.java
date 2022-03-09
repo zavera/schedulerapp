@@ -29,10 +29,7 @@ package edu.harvard.catalyst.scheduler.service;
 
 import com.google.gson.Gson;
 import edu.harvard.catalyst.scheduler.dto.statics.StudyStatusFilter;
-import edu.harvard.catalyst.scheduler.persistence.AuthDAO;
-import edu.harvard.catalyst.scheduler.persistence.ResourceDAO;
-import edu.harvard.catalyst.scheduler.persistence.StudyDAO;
-import edu.harvard.catalyst.scheduler.persistence.SubjectDAO;
+import edu.harvard.catalyst.scheduler.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,24 +44,26 @@ public class AppService {
     private final ResourceDAO resourceDAO;
     private final SubjectDAO subjectDAO;
     private final AuthDAO authDAO;
+    private final AppointmentDAO appointmentDAO;
 
 
     @Autowired
-    public AppService(final StudyDAO studyDAO, final ResourceDAO resourceDAO, final SubjectDAO subjectDAO, final AuthDAO authDAO) {
+    public AppService(final StudyDAO studyDAO, final ResourceDAO resourceDAO, final SubjectDAO subjectDAO, final AuthDAO authDAO,final AppointmentDAO appointmentDAO) {
         this.studyDAO = studyDAO;
         this.resourceDAO = resourceDAO;
         this.subjectDAO = subjectDAO;
         this.authDAO = authDAO;
+        this.appointmentDAO = appointmentDAO;
     }
 
     //Don't use - Needed for spring security cglib proxying
     AppService() {
-        this(null, null, null, null);
+        this(null, null, null, null,null);
     }
     
     Map<String, List<?>> getStaticListsMap() {
         final Map<String, List<?>> map = new HashMap<>();
-
+        map.put("commentTypes", appointmentDAO.findAppointmentCommentTypes());
         map.put("visitTypes", studyDAO.getVisitTypes());
         map.put("sublocations", resourceDAO.getSublocations());
         map.put("roles", studyDAO.getRoles());

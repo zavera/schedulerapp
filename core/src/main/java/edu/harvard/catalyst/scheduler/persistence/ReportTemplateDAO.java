@@ -273,6 +273,11 @@ public class ReportTemplateDAO extends SiteDAO {
         if (fieldProcessingEnum == FieldProcessingEnum.ResourceFromTr) {
             return findNameById("Resource", (Integer) o);
         }
+
+        if (fieldProcessingEnum == FieldProcessingEnum.CommentType) {
+            return findNameById("ScheduledVisitComment", (Integer) o);
+        }
+
         if (fieldProcessingEnum == FieldProcessingEnum.InstitutionFromStudy) {
             return findNameById("Institution", (Integer) o);
         }

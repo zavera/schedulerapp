@@ -91,6 +91,7 @@ var HomeAppointment = {};
 var Overbook = {};
 Overbook.overrideReasons = [];
 Overbook.overrideRooms = [];
+var schedulingMode = false;
 
 function getSchedulingOptionsStaticList(callbackFunc) {
     $.get("rest/app/getStaticLists", {}, function (data) {
@@ -233,32 +234,17 @@ function buildResourcesSelectsOptions(list, optionTextProperty, choiceLabel) {
     return html.join('');
 }
 
-function saveComment(first, element, commentCounter) {
+function saveComment(element, commentCounter) {
     var numComments = 0;
 
-   if(!first) {
-       var wizardcomment = $.trim(WidgetUtil.commentBox.getValue(element));
-       if (wizardcomment == null || search_string == '') {
-           util_showMainMessage("Please Enter the Comment Value.");
-           return;
-       }
 
-       jsonData = JSON.stringify({
-           id: eventid,
-           comment: wizardcomment});
-   }
-
-    else {
+    if(visitBookedStatus == 'Overbooked on: ' && schedulingMode ) {
 
         var allComments = {};
-        // scheduleComment = $.trim($("#scheduleWizard_comment_txtArea").val());
+        var allComment
+
         commentTypes.forEach(function (element) {
             let commentDivId = element.id + "_scheduledVisit_comment_txtArea";
-            var currentComment = $.trim(WidgetUtil.commentBox.getValue(commentDivId));
-            if (currentComment == null || search_string == '') {
-                util_showMainMessage("Please Enter the Comment Value.");
-                return;
-            }
             let eachComment = $.trim($("#" + commentDivId).val());
             if (eachComment.length > 0) {
                 allComments[element.id] = eachComment;
@@ -266,27 +252,37 @@ function saveComment(first, element, commentCounter) {
             }
         });
 
-       jsonData = JSON.stringify({
-           id: eventid,
-           allComments: allComments});
-   }
+        if(numComments === 0){
+            util_showMainMessage("Please Enter the Comment Value.");
+            return;
+        }
+
+        jsonData = JSON.stringify({
+            id: eventid,
+            allComments: allComments});
+    }
+
+    else{
+
+
+        var wizardcomment = $.trim(WidgetUtil.commentBox.getValue(element));
+        if (wizardcomment ==  '') {
+            util_showMainMessage("Please Enter the Comment Value.");
+            return;
+        }
+        jsonData = JSON.stringify({
+            id: eventid,
+            comment: wizardcomment
+        });
+
+    }
 
     $.post("rest/appointment/saveComment", {data: jsonData}, function (data) {
         parsedData = JSON.parse(data);
         util_showMainMessage("The comment has been saved.");
 
-        if(!first){
-            wizardcomment = null;
+        if((visitBookedStatus == 'Overbooked on: ') && schedulingMode ){
 
-            WidgetUtil.commentBox.clearValue(element);
-
-            var currentValue = WidgetUtil.counterDisplay.getValue(commentCounter);
-            WidgetUtil.counterDisplay.setValue(commentCounter, parseInt(currentValue) + 1);
-            searching_appointments = false;
-
-        }
-
-        else{
             commentTypes.forEach(function (element) {
                 let commentDivId = element.id + "_scheduledVisit_comment";
                 WidgetUtil.commentBox.clearValue('#'+commentDivId);
@@ -295,6 +291,20 @@ function saveComment(first, element, commentCounter) {
             var currentValue = WidgetUtil.counterDisplay.getValue(commentCounter);
             WidgetUtil.counterDisplay.setValue(commentCounter, parseInt(currentValue) + numComments);
             searching_appointments = false;
+
+        }
+
+        else{
+
+
+            wizardcomment = null;
+
+            WidgetUtil.commentBox.clearValue(element);
+
+            var currentValue = WidgetUtil.counterDisplay.getValue(commentCounter);
+            WidgetUtil.counterDisplay.setValue(commentCounter, parseInt(currentValue) + 1);
+            searching_appointments = false;
+
 
         }
 
@@ -548,7 +558,7 @@ HomeAppointment.openCheckedInAppointmentWindow = function (data, templateData,
 
     $("#appt_wizard_checkedin_visit_details table tbody.forTemplate").html(tableContent);
 
-
+    $(".comment_label_and_input").show();
     $("#wizard_checkoutReasons").html(checkOutReasonSelectOptions);
     document.getElementById("check_visit_activities_no").checked = false;
     document.getElementById("check_visit_activities_yes").checked = false;
@@ -653,19 +663,10 @@ HomeAppointment.openAppointmentWindowCallback = function (data, className) {
     $('.dialog_study_id').text(studyId);
     $('.dialog_visit_id').text(visitId);
 
-    if(actionName == "Overbooked on: "){
+    schedulingMode = false;
+    $(".comment_label_and_input").show();
+    $('#scheduledVisitCommentBoxes').find("tr").remove();
 
-        commentTypes.forEach(function (element) {
-            var commentDivId = element.id+"_scheduledVisit_comment";
-            if($.isEmptyObject($.find('#'+commentDivId))){
-                $('#scheduledVisitCommentBoxes').append('<tr><td class = "formLabel">'+element.name+'</td><td><div id ='+commentDivId+'></div></td></tr>');
-                WidgetUtil.commentBox(document.getElementById(commentDivId), {width:"100%", height: "50px"});
-            }
-        })
-    }
-    else{
-        $('#scheduledVisitCommentBoxes').find("tr").remove();
-    }
 
     var viewCommentsButton;
     switch (className) {
@@ -691,6 +692,22 @@ HomeAppointment.openAppointmentWindowCallback = function (data, className) {
                     data, templateData, baseTemplate);
             break;
     }
+
+    if(viewCommentsButton === 'viewScheduledCommentLink') {
+        schedulingMode = true;
+        if (actionName == "Overbooked on: ") {
+
+            $(".comment_label_and_input").css({display: "none"});
+            commentTypes.forEach(function (element) {
+                var commentDivId = element.id + "_scheduledVisit_comment";
+                if ($.isEmptyObject($.find('#' + commentDivId))) {
+                    $('#scheduledVisitCommentBoxes').append('<tr><td class = "formLabel">' + element.name + '</td><td><div id =' + commentDivId + '></div></td></tr>');
+                    WidgetUtil.commentBox(document.getElementById(commentDivId), {width: "100%", height: "50px"});
+                }
+            })
+        }
+    }
+
     if (user.institutionRole.id !== GENERAL_VIEW && viewCommentsButton !== undefined) {
         WidgetUtil.counterDisplay.create($("#" + viewCommentsButton), data.visitCommentsTotal, {
             wrapperClass: "inline-block",
@@ -725,6 +742,7 @@ function setGlobalVars(data) {
     userdata = data.userdata;
     omitted_activities = data.check_visit_activities_readonly;
     vary_duration = data.check_visit_duration_readonly;
+    visitBookedStatus = data.actionName;
 }
 
 function resetCloseDialogFunction() {

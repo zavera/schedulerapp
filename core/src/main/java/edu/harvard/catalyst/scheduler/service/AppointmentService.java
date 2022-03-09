@@ -2605,7 +2605,7 @@ public class AppointmentService {
         final BookedVisit bv = appointmentDAO.findBookedVisitById(visitSpecsDTO.getId());
         bv.setComment(visitSpecsDTO.getComment());
         appointmentDAO.updateEntity(bv);
-        if(visitSpecsDTO.getAllComments().size() > 0) {
+        if(MiscUtil.isNonNullNonEmpty(visitSpecsDTO.getAllComments())) {
             return createCommentsRecordIfNonemptyComment(bv, user, ipAddress,visitSpecsDTO.getAllComments());
         }
         else{

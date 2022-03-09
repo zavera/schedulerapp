@@ -383,6 +383,8 @@ public class Field extends BaseEntity implements Serializable {
         pair("line_level_annotations", "lla"),
         pair("study", "s"),
         pair("user", "u"),
+        pair("comments", "c"),
+        pair("scheduled_visit_comment", "svc"),
 
         pair("study_funding_source_cai", "sfs"),
         pair("subject_mrn", "sm"),

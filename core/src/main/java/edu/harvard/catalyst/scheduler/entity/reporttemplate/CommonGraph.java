@@ -63,6 +63,10 @@ public class CommonGraph extends Graph {
     protected final Vertex tra = new Vertex("template_resource_annotations", "tra");
     protected final Vertex lla_vt = new Vertex("line_level_annotations", "lla_vt");
     protected final Vertex rsrc = new Vertex("resource", "rsrc");
+    protected final Vertex c = new Vertex("comments", "c");
+    protected final Vertex svc = new Vertex("scheduled_visit_comment", "svc");
+
+
 
     protected final Set<Edge> commonEdges = Sets.newHashSet(
             new Edge(s, u_inv, LEFT, "principal_investigator"),
@@ -81,6 +85,7 @@ public class CommonGraph extends Graph {
             new Edge(s, sfs_f4, LEFT, "(sfs_f4.study = s.id and sfs_f4.one_to_four = 4)", wholeField),
             new Edge(tr, tra, LEFT, "template_resource", rightField),
             new Edge(tra, lla_vt, LEFT, "line_level_annotations")
+            //new Edge(c,svc, LEFT, "scheduled_visit_comment")
             );
 
     public enum GraphType {BookedVisit, StudyAndVisitTemplate}

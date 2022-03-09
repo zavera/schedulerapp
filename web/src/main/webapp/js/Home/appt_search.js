@@ -1302,7 +1302,7 @@ AppointmentSearchForm.scheduleDialog = function () {
                 var allComments = {};
                // scheduleComment = $.trim($("#scheduleWizard_comment_txtArea").val());
                 commentTypes.forEach(function(element){
-                    let commentDivId = element.id+"scheduleWizard_comment_txtArea";
+                    let commentDivId = element.id+"_scheduleWizard_comment_txtArea";
                     let eachComment = $.trim($("#"+commentDivId).val());
                     if( eachComment.length > 0){
                         allComments[element.id] = eachComment;

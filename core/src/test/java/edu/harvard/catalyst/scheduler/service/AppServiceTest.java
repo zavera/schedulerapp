@@ -36,10 +36,7 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 import edu.harvard.catalyst.scheduler.entity.VisitType;
-import edu.harvard.catalyst.scheduler.persistence.AuthDAO;
-import edu.harvard.catalyst.scheduler.persistence.ResourceDAO;
-import edu.harvard.catalyst.scheduler.persistence.StudyDAO;
-import edu.harvard.catalyst.scheduler.persistence.SubjectDAO;
+import edu.harvard.catalyst.scheduler.persistence.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -58,10 +55,14 @@ public final class AppServiceTest {
 
     @Mock
     private AuthDAO authDao;
+
+
+    @Mock
+    private AppointmentDAO appointmentDAO;
     
     @Test
     public void testVisitTypesFromGetStaticListsMap() {
-        final AppService service = new AppService(studyDao, resourceDao, subjectDao, authDao);
+        final AppService service = new AppService(studyDao, resourceDao, subjectDao, authDao,appointmentDAO);
 
         List<VisitType> dummyList = Lists.newArrayList();
 

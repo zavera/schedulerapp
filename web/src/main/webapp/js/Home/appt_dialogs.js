@@ -135,15 +135,17 @@ function commentDialog(first) {
     var viewCommentElement =  $("#viewCheckedInCommentLink");
 
     if (first) {
-        commentElement = undefined;
+        commentElement = $("#wizard_comment");
         viewCommentElement = $("#viewScheduledCommentLink");
     }
+
+    var wizardcomment = $.trim(WidgetUtil.commentBox.getValue(commentElement));
 
 
     DialogsUtil.showConfirmationDialog("#comment-dialog-confirm", {
         buttons: {
             "Yes": function () {
-                saveComment(first,commentElement, viewCommentElement);
+                saveComment(commentElement, viewCommentElement);
                 $(this).dialog("close");
             },
             "No": function () {

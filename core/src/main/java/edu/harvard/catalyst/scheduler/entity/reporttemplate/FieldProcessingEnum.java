@@ -33,17 +33,15 @@ import java.util.List;
  * @author Carl Woolf
  */
 public enum FieldProcessingEnum {
-    DEFAULT,
-    actualDuration,
-    scheduleDuration,
-    visitVariation,
-    actualDurationOvernights,
-    earliestBookedVisit,
-    latestBookedVisit,
-    decrypt,
+    AppointmentStatus(FieldSortType.InnerJoinShortStringDB),
+    AppointmentStatusReason(FieldSortType.LeftJoinShortStringDb),
+    CancellationStatus(FieldSortType.LeftJoinShortStringDb),
+    CentersAndInstitutions(FieldSortType.StudyFundingSource),
 
-    StudyStatus,
-    Resource,
+
+    Country(FieldSortType.LeftJoinShortStringDb),
+    Credential(FieldSortType.UserStaff),
+    DEFAULT,
 
     DefaultPlusAnnotations {
         @Override
@@ -51,50 +49,74 @@ public enum FieldProcessingEnum {
             return "LineLevelAnnotations";
         }
     },
-
-    SublocationFromTr(FieldSortType.TemplateResourceSublocation) {
-        @Override
-        public String getStaticClassName() {
-            return "Sublocation";
-        }
-    },
-    ResourceFromTr(FieldSortType.TemplateResourceResource) {
-        @Override
-        public String getStaticClassName() {
-            return "Resource";
-        }
-    },
     Department(FieldSortType.UserStaff),
+
     Division(FieldSortType.UserStaff),
-    FacultyRank(FieldSortType.UserStaff),
-    Credential(FieldSortType.UserStaff),
-    InstitutionRole(FieldSortType.UserStaff),
-    Role(FieldSortType.UserStaff),
-    Institution(FieldSortType.UserStaff),
-
-    CentersAndInstitutions(FieldSortType.StudyFundingSource),
-    FundingSource(FieldSortType.StudyFundingSource),
-
-    Sublocation(FieldSortType.InnerJoinShortStringDB),
-    AppointmentStatus(FieldSortType.InnerJoinShortStringDB),
-    VisitType(FieldSortType.InnerJoinShortStringDB),
 
     Ethnicity(FieldSortType.LeftJoinShortStringDb),
-    Gender(FieldSortType.LeftJoinShortStringDb),
 
+    FacultyRank(FieldSortType.UserStaff),
+
+    FundingSource(FieldSortType.StudyFundingSource),
+
+
+    Gender(FieldSortType.LeftJoinShortStringDb),
+    IRBInstitution(FieldSortType.LeftJoinShortStringDb),
+    Institution(FieldSortType.UserStaff),
     InstitutionFromStudy(FieldSortType.LeftJoinShortStringDbStudy) {
         @Override
         public String getStaticClassName() {
             return "Institution";
         }
     },
+    InstitutionRole(FieldSortType.UserStaff),
     MrnFromSubjectMrn,
-    AppointmentStatusReason(FieldSortType.LeftJoinShortStringDb),
-    CancellationStatus(FieldSortType.LeftJoinShortStringDb),
-    Country(FieldSortType.LeftJoinShortStringDb),
-    State(FieldSortType.LeftJoinShortStringDb),
     Race(FieldSortType.LeftJoinShortStringDb),
-    IRBInstitution(FieldSortType.LeftJoinShortStringDb);
+    Resource,
+
+    ResourceFromTr(FieldSortType.TemplateResourceResource) {
+        @Override
+        public String getStaticClassName() {
+            return "Resource";
+        }
+    },
+    Role(FieldSortType.UserStaff),
+
+
+    State(FieldSortType.LeftJoinShortStringDb),
+
+    StudyStatus,
+
+
+    Sublocation(FieldSortType.InnerJoinShortStringDB),
+    SublocationFromTr(FieldSortType.TemplateResourceSublocation) {
+        @Override
+        public String getStaticClassName() {
+            return "Sublocation";
+        }
+    },
+
+    CommentType(FieldSortType.LeftJoinShortStringDb) {
+        @Override
+        public String getStaticClassName() {
+            return "ScheduledVisitComment";
+        }
+    },
+
+
+
+    VisitComment(FieldSortType.LeftJoinShortStringDb){
+    },
+
+
+    VisitType(FieldSortType.InnerJoinShortStringDB),
+    actualDuration,
+    actualDurationOvernights,
+    decrypt,
+    earliestBookedVisit,
+    latestBookedVisit,
+    scheduleDuration,
+    visitVariation;
 
     FieldSortType sortType;
 
@@ -129,6 +151,7 @@ public enum FieldProcessingEnum {
                                     String orderBy) {
         return sortType.sortOrderByPhrase(sortScalarColumn, joinTable, orderBy);
     }
+
     public String postProcessQueryForSort(String query, TemplateCategoryField tcf) {
 
         return sortType.postProcessQueryForSort(query, tcf);
