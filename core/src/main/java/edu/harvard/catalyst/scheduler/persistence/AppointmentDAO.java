@@ -44,6 +44,7 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DateFormat;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Function;
@@ -540,8 +541,6 @@ public class AppointmentDAO extends SiteDAO {
     }
 
 
-
-
     public ScheduledVisitComment findScheduledVisitCommentById(final Integer id){
         return this.findById(ScheduledVisitComment.class,id);
     }
@@ -553,15 +552,19 @@ public class AppointmentDAO extends SiteDAO {
     }
 
 
+
+
     public long findTotalAppointmentCommentsByVisit(final int bookedVisitId) {
 
         final String findTotalVisitComments = "SELECT COUNT(c) FROM Comments c"
-                                                + " WHERE c.bookedVisit.id = :bookedVisit";
+                + " WHERE c.bookedVisit.id = :bookedVisit";
 
         final Query query = newQuery(findTotalVisitComments);
         query.setParameter("bookedVisit", bookedVisitId);
         return (Long)query.uniqueResult();
     }
+
+
 
     public List<TemplateResource> getSingleFloatTemplateResources(final VisitTemplate selectedVisit) {
         final String findFloatTemplateResource = "SELECT tr FROM TemplateResource tr"
@@ -873,6 +876,7 @@ public class AppointmentDAO extends SiteDAO {
 
         List<CalendarVisitsResponse> results = Lists.newArrayList();
 
+        final DateFormat dateFormat = DateUtility.dateHourMin();
         for (BookedVisit bv : resultRows) {
             final Integer eventId = bv.getId();
             final String appointmentStatus = bv.getAppointmentStatus().getName();
@@ -880,14 +884,15 @@ public class AppointmentDAO extends SiteDAO {
             final String piLastName = bv.getStudy().getInvestigator() != null ? bv.getStudy().getInvestigator().getLastName() : "";
             final String visitName = bv.getVisitTemplate().getName();
             final SubjectMrn decryptedSubjectMrn = bv.getSubjectMrnDecrypted();
-            final String subjectFirstName = bv.getSubjectMrn() == null ? "" : decryptedSubjectMrn.getSubject().getFirstName();
-            final String subjectLastName = bv.getSubjectMrn() == null ? NO_SUBJECT_ASSIGNED : decryptedSubjectMrn.getSubject().getLastName();
+            final Subject subject = decryptedSubjectMrn.getSubject();
+            final String subjectFirstName = bv.getSubjectMrn() == null ? "" : subject.getFirstName();
+            final String subjectLastName = bv.getSubjectMrn() == null ? NO_SUBJECT_ASSIGNED : subject.getLastName();
             final String subjectMrn = bv.getSubjectMrn() == null ? NA : decryptedSubjectMrn.getMrn();
-            final String scheduledStartTime = DateUtility.format(DateUtility.dateHourMin(), bv.getScheduledStartTime());
-            final String scheduledEndTime = DateUtility.format(DateUtility.dateHourMin(), bv.getScheduledEndTime());
-            final String room = this.findRoomString(bv.getId());
+            final String scheduledStartTime = DateUtility.format(dateFormat, bv.getScheduledStartTime());
+            final String scheduledEndTime = DateUtility.format(dateFormat, bv.getScheduledEndTime());
+            final String room = this.findRoomString(eventId);
             final Date schedulingTime = bv.getSchedulingTime();
-            final int commentCount = this.findAppointmentCommentsByVisit(bv).size();
+            //final int commentCount = this.findAppointmentCommentsByVisit(bv).size();
 
             final boolean allDay = isAllDay(homeView, bv.getVisitType());
             CalendarVisitsResponse calendarVisitsResponse = new CalendarVisitsResponse(
@@ -896,13 +901,12 @@ public class AppointmentDAO extends SiteDAO {
                     scheduledEndTime, allDay, bv.getVisitType().isInpatient());
             calendarVisitsResponse.setSubjectFirstName(subjectFirstName);
             calendarVisitsResponse.setSubjectMrn(subjectMrn);
-            calendarVisitsResponse.setCommentCount(commentCount);
+           // calendarVisitsResponse.setCommentCount(commentCount);
             if (schedulingTime != null) {
                 calendarVisitsResponse.setScheduleData(schedulingTime.getTime());
             }
             results.add(calendarVisitsResponse);
         }
-
         return results;
     }
 
