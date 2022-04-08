@@ -188,7 +188,7 @@ public class ReportTemplateResourceTest {
         ReportTemplateCreateUsersDTO reportTemplateCreateUsersDTO = new ReportTemplateCreateUsersDTO();
         List<Integer> templateCategoryFieldIds = Lists.newArrayList(new Integer(2), new Integer(3), new Integer(4));
         reportTemplateCreateUsersDTO.setSelectedTemplateCategoryFieldIds(templateCategoryFieldIds);
-        ReportTemplateMetadataDTO reportTemplateMetadataDTO = new ReportTemplateMetadataDTO(42, 42, "joey", "", "joey", new Date());
+        ReportTemplateMetadataDTO reportTemplateMetadataDTO = new ReportTemplateMetadataDTO(42, 42, "joey", "", "joey", new Date(),null);
 
         when(mockReportTemplateService.createUserReport(user, reportTemplateCreateUsersDTO, 42))
                 .thenReturn(reportTemplateMetadataDTO);

@@ -42,13 +42,17 @@ public class ReportTemplateMetadataDTO {
     private String reportTemplateType;
     private String reportTemplateBase;
     private Date latestUpdate;
+    private Boolean shared;
+
 
     public ReportTemplateMetadataDTO(Integer id,
                                      Integer reportTemplateId,
                                      String reportTemplateName,
                                      String reportTemplateType,
                                      String reportTemplateBase,
-                                     Date latestUpdate) {
+                                     Date latestUpdate,
+                                     Boolean shared
+                                   ) {
 
         this.id = id;
         this.reportTemplateId = reportTemplateId;
@@ -56,5 +60,7 @@ public class ReportTemplateMetadataDTO {
         this.reportTemplateType = reportTemplateType;
         this.reportTemplateBase = reportTemplateBase;
         this.latestUpdate = latestUpdate;
+        this.shared = shared;
+
     }
 }

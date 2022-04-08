@@ -140,6 +140,7 @@ function loadAllReportTemplates() {
             var customDisplayOutput = '';
             var adminDisplayOutput = '';
             var operationalDisplayOutput = '';
+            var sharedDisplayOutput = '';
             $.each(data, function (key, val) {
                 var displayOutput = '';
                 var viewReportName = val.reportTemplateName;
@@ -148,10 +149,16 @@ function loadAllReportTemplates() {
                 var viewReportType = val.reportTemplateType;
                 var viewReportUpdateTime = val.latestUpdate;
                 var viewReportBase = val.reportTemplateBase;
+                var shared = val.shared;
                 var title = "Display default field selections";
                 if (viewReportUpdateTime != undefined) {
                     viewReportType = 'Custom';
                     title = "";
+
+                }
+
+                if(val.shared){
+                    viewReportType = 'Shared'
                 }
                 displayOutput += createEachReportTemplateElement(title, viewUserReportId, viewReportType, viewReportId, viewReportUpdateTime, viewReportName, viewReportBase);
 
@@ -163,6 +170,9 @@ function loadAllReportTemplates() {
                 }
                 else if (viewReportType == 'Operational') {
                     operationalDisplayOutput += displayOutput;
+                }
+                else if (viewReportType == 'Shared'){
+                    sharedDisplayOutput += displayOutput;
                 }
             });
 
@@ -196,6 +206,16 @@ function loadAllReportTemplates() {
             else {
                 $('#OperationalList').html(operationalDisplayOutput);
             }
+
+            if (sharedDisplayOutput == '') {
+                $('#SharedList').html(noReportMsg);
+                $('#SharedList').attr("class", 'notAvailableReports');
+            }
+            else {
+                $('#SharedList').html(sharedDisplayOutput);
+            }
+
+
         },
         error: function (xhr, status, error) {
             alert("There was a problem with the report. Please select different parameters for the report.");
@@ -873,23 +893,32 @@ function displayAllActionBlocks() {
     $(".reportTrash").css({display: 'none'});
     $(".reportInfo").css({display: 'none'});
     $("#reportBottomSaveNew").css({display: 'none'});
+    $("#reportBottomSaveShared").css({display: 'none'});
     $("#reportTopSaveNew").css({display: 'none'});
     $("#reportBottomSave").css({display: 'none'});
+    $("#reportTopSaveShared").css({display: 'none'});
     $("#reportTopSave").css({display: 'none'});
     $(".reportExport").css({display: 'none'});
 
-    if (selectedReportType == 'Custom') {
+
+    if (selectedReportType == 'Custom' || selectedReportType == 'Shared') {
         $("#reportBottomSaveNew").css({display: 'inline'});
         $("#reportTopSaveNew").css({display: 'inline'});
         $(".reportTrash").css({display: 'inline'});
         $(".reportInfo").css({display: 'inline'});
+    } else {
+        $("#reportTopSaveShared").css({display: 'inline'});
+        $("#reportBottomSaveShared").css({display: 'inline'});
     }
+
     $(".reportExport").css({display: 'inline'});
+
     $("#reportBottomSave").css({display: 'inline'});
     $("#reportTopSave").css({display: 'inline'});
     $('#clearSelectedFieldsLink').css({display: 'block'});
     $("#sortGroup").css({display: 'block'});
     $("#filterGroup").css({display: 'block'});
+
 }
 
 function sortDropDownLists(selectId) {
@@ -1286,7 +1315,7 @@ function selectedSortFilterOrderIds() {
     }
 }
 
-function saveReport(event, isNewReport) {
+function saveReport(event, isNewReport,isShared) {
     preventDefaultAction(event);
 
     for (var key in filterSelectedListMap) {
@@ -1392,7 +1421,8 @@ function saveReport(event, isNewReport) {
                         filterSelectedIds: filterSelectedIds,
                         sortSelectedIds: sortSelectedIds,
                         tcfIdToStringSortList: sortSelectedListMap,
-                        tcfIdToStringFilterList: filterSelectedListMap
+                        tcfIdToStringFilterList: filterSelectedListMap,
+                        shared: isShared
                     });
 
                     var reportUrl = "rest/reports/templates/" + parseInt(selectedUserReportId) + "/update-users-report";

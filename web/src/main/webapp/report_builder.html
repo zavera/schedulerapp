@@ -42,6 +42,7 @@
 
   <script src="js/widget/widget_util.js" type="text/javascript"></script>
   <script src="js/ReportBuilder/report_templates.js" type="text/javascript"></script>
+
   
   <script type="text/javascript">
 
@@ -98,7 +99,7 @@
       <div style="clear: both;"></div>
 
       <div class="tree">
-        <ul style="padding-left: 15%;">
+        <ul>
           <li>
                       <span class="parentNode savedReportsHeader" id="Custom">
                           <img src="css/images/icon_savedreports.png"
@@ -107,6 +108,19 @@
             <ul id="CustomList" style="cursor: default"></ul>
           </li>
         </ul>
+
+
+          <ul >
+            <li>
+                      <span class="parentNode savedReportsHeader" id="Shared">
+                          <img src="css/images/icon_savedreports.png"
+                               class="parentHeaderImages"/> Shared Reports </span>
+              <ul id="selectedSharedList" class="parentTree" style="cursor: default"></ul>
+              <ul id="SharedList" style="cursor: default"></ul>
+            </li>
+          </ul>
+
+
         <ul class="parentTree">
           <li>
                       <span class="parentNode adminReportsheader" id="Administrative"><img
@@ -169,9 +183,15 @@
                  title="Export Report"
                  onclick="exportToExcel();" class="reportExport"/>
 
-            <input type="button" value="Save as New" class="saveButtons" onclick="saveReport(event, true);"
+
+
+            <input type="button" value="Save as Shared" class="saveButtons" onclick="saveReport(event, false,true);"
+                   id="reportTopSaveShared"/>
+
+
+            <input type="button" value="Save as New" class="saveButtons" onclick="saveReport(event, true,false);"
                    id="reportTopSaveNew"/>
-            <input type="button" value="Save" onclick="saveReport(event, false);"
+            <input type="button" value="Save" onclick="saveReport(event, false,false);"
                    class="saveButtons activeButton" id="reportTopSave"/>
           </div>
         </div>
@@ -348,9 +368,14 @@
           <img src="css/images/icon_export.png" hspace="5" style="vertical-align: middle;" title="Export Report"
                onclick="exportToExcel();" class="reportExport"/>
 
-          <input type="button" value="Save as New" class="saveButtons" onclick="saveReport(event, true);"
+
+          <input type="button" value="Save as Shared" class="saveButtons" onclick="saveReport(event, true,true);"
+                 id="reportBottomSaveShared"/>
+
+
+          <input type="button" value="Save as New" class="saveButtons" onclick="saveReport(event, true,false);"
                  id="reportBottomSaveNew"/>
-          <input type="button" value="Save" onclick="saveReport(event, false);" class="saveButtons activeButton"
+          <input type="button" value="Save" onclick="saveReport(event, false,false);" class="saveButtons activeButton"
                  id="reportBottomSave"/>
         </div>
       </div>

@@ -159,6 +159,16 @@ public class ReportTemplateResource extends SecuredResource {
         return gson.toJson(reportMetadataDTOs);
     }
 
+
+    @GET
+    @Path("/sharedTemplates")
+    @AuthorizedRoles({ROLE_SUPER_ADMIN})
+    public String getSharedReportTemplateList() {
+        final List<ReportTemplateMetadataDTO> reportMetadataDTOs = reportTemplateService.getSharedReportTemplateList();
+        return gson.toJson(reportMetadataDTOs);
+    }
+
+
     @GET
     @Path("/templates/{id}")
     @AuthorizedRoles({ROLE_SUPER_ADMIN})

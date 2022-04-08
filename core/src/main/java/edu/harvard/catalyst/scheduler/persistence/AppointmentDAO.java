@@ -874,9 +874,9 @@ public class AppointmentDAO extends SiteDAO {
 
     List<CalendarVisitsResponse> bookedVisitsDTO(final boolean homeView, List<BookedVisit> resultRows) {
 
-        List<CalendarVisitsResponse> results = Lists.newArrayList();
+        List<CalendarVisitsResponse> results = Lists.newLinkedList();
 
-        final DateFormat dateFormat = DateUtility.dateHourMin();
+        DateFormat dateFormat = DateUtility.dateHourMin();
         for (BookedVisit bv : resultRows) {
             final Integer eventId = bv.getId();
             final String appointmentStatus = bv.getAppointmentStatus().getName();
@@ -884,13 +884,12 @@ public class AppointmentDAO extends SiteDAO {
             final String piLastName = bv.getStudy().getInvestigator() != null ? bv.getStudy().getInvestigator().getLastName() : "";
             final String visitName = bv.getVisitTemplate().getName();
             final SubjectMrn decryptedSubjectMrn = bv.getSubjectMrnDecrypted();
-            final Subject subject = decryptedSubjectMrn.getSubject();
-            final String subjectFirstName = bv.getSubjectMrn() == null ? "" : subject.getFirstName();
-            final String subjectLastName = bv.getSubjectMrn() == null ? NO_SUBJECT_ASSIGNED : subject.getLastName();
-            final String subjectMrn = bv.getSubjectMrn() == null ? NA : decryptedSubjectMrn.getMrn();
+            //final String subjectFirstName = bv.getSubjectMrn() == null ? "" : decryptedSubjectMrn.getSubject().getFirstName();
+            final String subjectLastName = bv.getSubjectMrn() == null ? NO_SUBJECT_ASSIGNED : decryptedSubjectMrn.getSubject().getLastName();
+            //final String subjectMrn = bv.getSubjectMrn() == null ? NA : decryptedSubjectMrn.getMrn();
             final String scheduledStartTime = DateUtility.format(dateFormat, bv.getScheduledStartTime());
             final String scheduledEndTime = DateUtility.format(dateFormat, bv.getScheduledEndTime());
-            final String room = this.findRoomString(eventId);
+            final String room = this.findRoomString(bv.getId());
             final Date schedulingTime = bv.getSchedulingTime();
             //final int commentCount = this.findAppointmentCommentsByVisit(bv).size();
 
@@ -899,14 +898,15 @@ public class AppointmentDAO extends SiteDAO {
                     eventId, visitName, piLastName, room, localId,
                     subjectLastName, appointmentStatus, scheduledStartTime,
                     scheduledEndTime, allDay, bv.getVisitType().isInpatient());
-            calendarVisitsResponse.setSubjectFirstName(subjectFirstName);
-            calendarVisitsResponse.setSubjectMrn(subjectMrn);
-           // calendarVisitsResponse.setCommentCount(commentCount);
+            //calendarVisitsResponse.setSubjectFirstName(subjectFirstName);
+            //calendarVisitsResponse.setSubjectMrn(subjectMrn);
+            //calendarVisitsResponse.setCommentCount(commentCount);
             if (schedulingTime != null) {
                 calendarVisitsResponse.setScheduleData(schedulingTime.getTime());
             }
             results.add(calendarVisitsResponse);
         }
+
         return results;
     }
 

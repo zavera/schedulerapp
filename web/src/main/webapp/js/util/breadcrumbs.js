@@ -53,6 +53,8 @@ var breadCrumbFunctions = (function () {
 
         'report_screen': homeModuleLink + " <span class='breadcrumbSep'> &gt; </span> Standard Reports",
 
+        'shared_report_screen': homeModuleLink + " <span class='breadcrumbSep'> &gt; </span> Shared Reports",
+
         'report_builder_screen': homeModuleLink + " <span class='breadcrumbSep'> &gt; </span> Report Builder",
 
         'mgmt_screen': homeModuleLink + " <span class='breadcrumbSep'> &gt; </span> Management",

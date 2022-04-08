@@ -52,19 +52,27 @@ public class TemplateUser extends BaseEntity implements Serializable {
     private Date lastUpdateTime;
 
     Set<TemplateUserSelection> userSelections;
+    private Boolean shared;
 
     public TemplateUser() {
         super(null);
     }
 
-    public TemplateUser(ReportTemplate reportTemplate, User user, String name) {
+    public TemplateUser(ReportTemplate reportTemplate, User user, String name, Boolean shared) {
         super(null);
 
         this.reportTemplate = reportTemplate;
         this.user = user;
         this.name = name;
         this.lastUpdateTime = Calendar.getInstance().getTime();
+        this.shared = shared;
     }
+
+
+    @Column(name = "shared")
+    public Boolean getShared(){return shared;}
+
+    public void setShared(Boolean shared) {this.shared = shared;}
 
     @JoinColumn(name = "report_template_id", referencedColumnName = "id")
     @ManyToOne(optional = false)

@@ -382,19 +382,47 @@ public class ReportTemplateDAO extends SiteDAO {
             final Integer id = (Integer) obj[0];
             final String name = (String) obj[1];
             final String type = (String) obj[2];
-            return new ReportTemplateMetadataDTO(id, id, name, type, name, null);
+            return new ReportTemplateMetadataDTO(id, id, name, type, name, null,null);
         }).toList();
 
         finalList.addAll(findUsersReportListByTypeAndUser(user, null));
         return finalList;
     }
 
+
+    public List<ReportTemplateMetadataDTO> findAllSharedReportTemplates(){
+
+
+        final String query = "select tu.name, tu.shared, rt.display_name, " +
+                " tu.last_update_time, tu.id, tu.report_template_id, rt.type from template_user tu, report_template rt where tu.shared = 1 " +
+                "and tu.report_template_id = rt.id;";
+
+        final NativeQuery nativeQuery = newNativeQuery(query);
+
+
+        final List<Object[]> listOfResultSetObjects = nativeQuery.list();
+
+        return enrich(listOfResultSetObjects).map(obj -> {
+
+            final String name = (String) obj[0];
+            final Boolean shared = (Boolean) obj[1];
+            final String baseReport = (String) obj[2];
+            //final String ecommons = (String) obj[4];
+            final Date lastUpdate = (Date) obj[3];
+            final Integer id = (Integer) obj[4];
+            final Integer reportTemplateId = (Integer) obj[5];
+            final String reportType = (String) obj[6];
+            return new ReportTemplateMetadataDTO(id, reportTemplateId, name, reportType, baseReport, lastUpdate,shared);
+        }).toList();
+    };
+
+
     public List<ReportTemplateMetadataDTO> findUsersReportListByTypeAndUser(final User user, final Integer selectedTemplate) {
         String excludeClause = " ";
         if (selectedTemplate != null) {
             excludeClause = " and tu.id != "+ selectedTemplate;
         }
-        final String query = "select tu.id, tu.report_template_id, tu.name, t.type, t.display_name, tu.last_update_time " +
+        final String query = "select tu.id, tu.report_template_id, tu.name, t.type, t.display_name, tu.last_update_time, tu.shared " +
                              "FROM report_template t, template_user tu " +
                              "WHERE tu.report_template_id = t.id " +
                 excludeClause +
@@ -412,7 +440,8 @@ public class ReportTemplateDAO extends SiteDAO {
             final String type = (String) obj[3];
             final String baseReport = (String) obj[4];
             final Date latestUpdate = (Date) obj[5];
-            return new ReportTemplateMetadataDTO(id, reportTemplateId, name, type, baseReport, latestUpdate);
+            final Boolean shared = (Boolean) obj[6];
+            return new ReportTemplateMetadataDTO(id, reportTemplateId, name, type, baseReport, latestUpdate,shared);
         }).toList();
     }
 

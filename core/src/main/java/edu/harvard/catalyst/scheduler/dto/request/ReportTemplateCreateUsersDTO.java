@@ -43,6 +43,7 @@ public class ReportTemplateCreateUsersDTO {
     private List<Integer> sortSelectedIds;
     private Map<Integer, String> tcfIdToStringSortList;
     private Map<Integer, String> tcfIdToStringFilterList;
+    private Boolean shared;
 
     public String getReportName() {
         return reportName;
@@ -51,6 +52,11 @@ public class ReportTemplateCreateUsersDTO {
     public void setReportName(String reportName) {
         this.reportName = reportName;
     }
+
+
+    public Boolean getShared() {return shared;}
+
+    public void setShared() {this.shared = shared;}
 
     public List<Integer> getSelectedTemplateCategoryFieldIds() {
         return selectedTemplateCategoryFieldIds;

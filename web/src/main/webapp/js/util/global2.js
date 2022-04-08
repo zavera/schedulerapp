@@ -311,6 +311,12 @@ function reportModule() {
     window.location.href = "report.html";
 }
 
+function sharedReportModule() {
+    sessionStorage.setItem("userData", JSON.stringify(user));
+    window.location.href = "shared_report.html";
+}
+
+
 function reportsModule() {
     sessionStorage.setItem("userData", JSON.stringify(user));
     window.location.href = "report_builder.html";

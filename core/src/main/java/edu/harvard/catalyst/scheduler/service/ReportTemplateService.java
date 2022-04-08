@@ -230,6 +230,14 @@ public class ReportTemplateService {
         return reportTemplateDAO.findTemplateListByTypeAndUser(user);
     }
 
+
+
+    public List<ReportTemplateMetadataDTO> getSharedReportTemplateList() {
+        return reportTemplateDAO.findAllSharedReportTemplates();
+    }
+
+
+
     public List<ReportTemplateMetadataDTO> sortSavedReportTemplateList(final User user, final Integer id) {
         return reportTemplateDAO.findUsersReportListByTypeAndUser(user, id);
     }
@@ -387,12 +395,12 @@ public class ReportTemplateService {
         String name = reportTemplateCreateUsersDTO.getReportName();
         boolean exists = checkSavedReportNameExists(name, null, true, user);
         if (!exists) {
-            TemplateUser templateUser = new TemplateUser(reportTemplate, user, name);
+            TemplateUser templateUser = new TemplateUser(reportTemplate, user, name,reportTemplateCreateUsersDTO.getShared());
             reportTemplateDAO.createEntity(templateUser);
             createTcfsForSavedReport(reportTemplateCreateUsersDTO, templateUser);
             reportTemplateMetadataDTO = new ReportTemplateMetadataDTO(templateUser.getId(),
                     templateUser.getReportTemplate().getId(), templateUser.getName(), "Administrative",
-                    templateUser.getReportTemplate().getDisplayName(), templateUser.getLastUpdateTime());
+                    templateUser.getReportTemplate().getDisplayName(), templateUser.getLastUpdateTime(), templateUser.getShared());
         }
         return reportTemplateMetadataDTO;
     }
@@ -422,7 +430,7 @@ public class ReportTemplateService {
             createTcfsForSavedReport(reportTemplateCreateUsersDTO, templateUser);
             reportTemplateMetadataDTO = new ReportTemplateMetadataDTO(templateUser.getId(),
                     templateUser.getReportTemplate().getId(), templateUser.getName(), "Administrative",
-                    templateUser.getReportTemplate().getDisplayName(), templateUser.getLastUpdateTime());
+                    templateUser.getReportTemplate().getDisplayName(), templateUser.getLastUpdateTime(),templateUser.getShared());
         }
         return reportTemplateMetadataDTO;
     }
