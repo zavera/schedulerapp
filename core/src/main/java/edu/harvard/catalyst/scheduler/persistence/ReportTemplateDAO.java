@@ -393,9 +393,10 @@ public class ReportTemplateDAO extends SiteDAO {
     public List<ReportTemplateMetadataDTO> findAllSharedReportTemplates(){
 
 
-        final String query = "select tu.name, tu.shared, rt.display_name, " +
-                " tu.last_update_time, tu.id, tu.report_template_id, rt.type from template_user tu, report_template rt where tu.shared = 1 " +
-                "and tu.report_template_id = rt.id;";
+        final String query = "select tu.name, u.ecommons_id, " +
+                " tu.last_update_time, tu.id from template_user tu, report_template rt," +
+                " user u where tu.shared = 1 " +
+                "and tu.report_template_id = rt.id and tu.user_id = u.id;";
 
         final NativeQuery nativeQuery = newNativeQuery(query);
 
@@ -405,14 +406,12 @@ public class ReportTemplateDAO extends SiteDAO {
         return enrich(listOfResultSetObjects).map(obj -> {
 
             final String name = (String) obj[0];
-            final Boolean shared = (Boolean) obj[1];
-            final String baseReport = (String) obj[2];
-            //final String ecommons = (String) obj[4];
-            final Date lastUpdate = (Date) obj[3];
-            final Integer id = (Integer) obj[4];
-            final Integer reportTemplateId = (Integer) obj[5];
-            final String reportType = (String) obj[6];
-            return new ReportTemplateMetadataDTO(id, reportTemplateId, name, reportType, baseReport, lastUpdate,shared);
+            final String ecommons = (String) obj[1];
+            final Date lastUpdate = (Date) obj[2];
+            final Integer id = (Integer) obj[3];
+
+
+            return new ReportTemplateMetadataDTO(id,ecommons, name, lastUpdate);
         }).toList();
     };
 

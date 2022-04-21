@@ -71,6 +71,7 @@ function report_renderSharedReportGrid() {
             " <table id='sharedReports' class='hoverable'>" +
             "  <tr>" +
             "   <td><strong>Name</strong></td> " +
+            "   <td><strong>User</strong></td> " +
 
             "   <td><strong>Last Update</strong></td>" +
             "  </tr> ";
@@ -78,6 +79,8 @@ function report_renderSharedReportGrid() {
         $.each(data, function () {
             out += "<tr onclick='getSharedReportSelectedRowId(" + this.id + ")'>"
             out += "   <td>" + this.reportTemplateName + "</td>" +
+
+                "       <td>" + this.ecommons + "</td>" +
 
                 "      <td>" + this.latestUpdate + "</td>" +
                 " </tr>";

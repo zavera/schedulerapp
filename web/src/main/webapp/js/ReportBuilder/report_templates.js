@@ -52,6 +52,8 @@ var sortSelectOptions;
 var filterSelectOptions;
 var previousSelectedCustomReport = "";
 
+var previousSelectedSharedReport = "";
+
 var filterListMap = {};
 var filterSelectedListMap = {};
 var filterSelectedIds = [];
@@ -152,14 +154,17 @@ function loadAllReportTemplates() {
                 var shared = val.shared;
                 var title = "Display default field selections";
                 if (viewReportUpdateTime != undefined) {
-                    viewReportType = 'Custom';
+                    if(val.shared){
+                        viewReportType = 'Shared';
+                    }
+                    else {
+                        viewReportType = 'Custom';
+                    }
                     title = "";
 
                 }
 
-                if(val.shared){
-                    viewReportType = 'Shared'
-                }
+
                 displayOutput += createEachReportTemplateElement(title, viewUserReportId, viewReportType, viewReportId, viewReportUpdateTime, viewReportName, viewReportBase);
 
                 if (viewReportType == 'Custom') {
@@ -177,6 +182,8 @@ function loadAllReportTemplates() {
             });
 
             $('#selectedCustomList').html("");
+
+            $('#selectedSharedList').html("");
 
             if (customDisplayOutput == '') {
                 $('#CustomList').attr("class", 'notAvailableReports');
@@ -214,6 +221,13 @@ function loadAllReportTemplates() {
             else {
                 $('#SharedList').html(sharedDisplayOutput);
             }
+
+            var numSharedItems = $("#SharedList li").length;
+            $('#SharedList').attr("class", '');
+            if (numSharedItems >= 5) {
+                $('#SharedList').attr("class", 'borderList');
+            }
+
 
 
         },
@@ -260,6 +274,7 @@ function selectRadioButton() {
 function loadCategoriesMetadata(reportId, reportType, userReportId, reportName, obj, reportBase, lastUpdatedTime) {
     resetToggleCategories();
     $('#selectedCustomList').html("");
+    $('#selectedSharedList').html("");
     if (reportType != 'Custom') {
         previousSelectedCustomReport = "";
         sortSavedReportList(0);
@@ -280,15 +295,28 @@ function loadCategoriesMetadata(reportId, reportType, userReportId, reportName, 
     $('#editReportName').css({display: 'none'});
     $('#CustomList').append(previousSelectedCustomReport);
 
-    if (selectedReportType == 'Custom') {
+    if (selectedReportType == 'Custom' || selectedReportType == 'Shared') {
         var objParent = obj.parentNode;
         var outerParent = objParent.parentNode;
         var outermostParent = outerParent.parentNode;
         var parent = outermostParent.parentNode;
-        $('#selectedCustomList').html(outermostParent.outerHTML);
-        if (previousSelectedCustomReport == "") {
-            $('#selectedReportName').html(outermostParent.innerText);
+        if(selectedReportType == 'Custom'){
+            $('#selectedCustomList').html(outermostParent.outerHTML);
+            if (previousSelectedCustomReport == "") {
+                $('#selectedReportName').html(outermostParent.innerText);
+            }
         }
+
+        else{
+
+            $('#selectedSharedList').html(outermostParent.outerHTML);
+            if (previousSelectedSharedReport == "") {
+                $('#selectedReportName').html(outermostParent.innerText);
+            }
+
+        }
+
+
         var child = $(outermostParent).find(' > span ');
         child.css({"color": "#000000", "font-weight": "300"});
         var child1 = $(outermostParent).find(' > span > span ');
@@ -298,6 +326,12 @@ function loadCategoriesMetadata(reportId, reportType, userReportId, reportName, 
         previousSelectedCustomReport = outermostParent;
         parent.removeChild(outermostParent);
         sortSavedReportList(selectedUserReportId);
+        categoryUrl = 'rest/reports/templates/users/' + selectedUserReportId;
+        $('#editReportName').css({display: 'inline'});
+    }
+
+    if (selectedReportType == 'Shared' ) {
+
         categoryUrl = 'rest/reports/templates/users/' + selectedUserReportId;
         $('#editReportName').css({display: 'inline'});
     }
@@ -897,24 +931,44 @@ function displayAllActionBlocks() {
     $("#reportTopSaveNew").css({display: 'none'});
     $("#reportBottomSave").css({display: 'none'});
     $("#reportTopSaveShared").css({display: 'none'});
+
+
+    $("#reportTopSaveSharedNew").css({display: 'none'});
+    $("#reportTopSaveSharedOld").css({display: 'none'});
+
+
     $("#reportTopSave").css({display: 'none'});
     $(".reportExport").css({display: 'none'});
 
 
-    if (selectedReportType == 'Custom' || selectedReportType == 'Shared') {
+    if (selectedReportType == 'Custom' ) {
         $("#reportBottomSaveNew").css({display: 'inline'});
         $("#reportTopSaveNew").css({display: 'inline'});
         $(".reportTrash").css({display: 'inline'});
         $(".reportInfo").css({display: 'inline'});
-    } else {
+        $("#reportBottomSave").css({display: 'inline'});
+        $("#reportTopSave").css({display: 'inline'});
+    }
+    else if (selectedReportType == 'Shared'){
+        $("#reportTopSaveSharedNew").css({display: 'inline'});
+        $("#reportTopSaveSharedOld").css({display: 'inline'});
+
+        $(".reportTrash").css({display: 'inline'});
+        $(".reportInfo").css({display: 'inline'});
+
+    }
+
+
+    else {
         $("#reportTopSaveShared").css({display: 'inline'});
         $("#reportBottomSaveShared").css({display: 'inline'});
+        $("#reportBottomSave").css({display: 'inline'});
+        $("#reportTopSave").css({display: 'inline'});
     }
 
     $(".reportExport").css({display: 'inline'});
 
-    $("#reportBottomSave").css({display: 'inline'});
-    $("#reportTopSave").css({display: 'inline'});
+
     $('#clearSelectedFieldsLink').css({display: 'block'});
     $("#sortGroup").css({display: 'block'});
     $("#filterGroup").css({display: 'block'});
@@ -1328,20 +1382,39 @@ function saveReport(event, isNewReport,isShared) {
         }
     }
 
-    if (!isNewReport && selectedReportType == 'Custom') {
+    if ((!isNewReport && selectedReportType == 'Custom') || (!isNewReport && selectedReportType == 'Shared')) {
         selectedTcfIds();
         allSelectedDropDownValues('sort_list_', 3);
         selectedSortFilterOrderIds();
 
-        var jsonData = JSON.stringify({
-            reportName: selectedReportName,
-            selectedTemplateCategoryFieldIds: selectedFields,
-            filterSelectedIds: filterSelectedIds,
-            sortSelectedIds: sortSelectedIds,
-            tcfIdToStringSortList: sortSelectedListMap,
-            tcfIdToStringFilterList: filterSelectedListMap
-        });
+        var jsonData;
 
+
+        if(selectedReportType == 'Custom'){
+            jsonData = JSON.stringify({
+                reportName: selectedReportName,
+                selectedTemplateCategoryFieldIds: selectedFields,
+                filterSelectedIds: filterSelectedIds,
+                sortSelectedIds: sortSelectedIds,
+                tcfIdToStringSortList: sortSelectedListMap,
+                tcfIdToStringFilterList: filterSelectedListMap
+            });
+
+
+        }
+
+        if(selectedReportType == 'Shared') {
+
+            jsonData = JSON.stringify({
+                reportName: selectedReportName,
+                selectedTemplateCategoryFieldIds: selectedFields,
+                filterSelectedIds: filterSelectedIds,
+                sortSelectedIds: sortSelectedIds,
+                tcfIdToStringSortList: sortSelectedListMap,
+                tcfIdToStringFilterList: filterSelectedListMap,
+                shared : isShared
+            });
+        }
         var reportUrl = "rest/reports/templates/" + parseInt(selectedUserReportId) + "/update-users-report";
 
         $.post(reportUrl, {data: jsonData}, function (data) {
@@ -1376,7 +1449,7 @@ function saveReport(event, isNewReport,isShared) {
             open: function () {
                 $('body').css('overflow', 'hidden');
                 var reportName = $("#selectedReportName").text();
-                if (isNewReport && selectedReportType == 'Custom') {
+                if ((isNewReport && selectedReportType == 'Custom') || (isNewReport && selectedReportType == 'Shared')) {
                     $("#savedReportName").val(reportName + "_Copy");
                 }
                 else {
@@ -1415,20 +1488,36 @@ function saveReport(event, isNewReport,isShared) {
                     allSelectedDropDownValues('sort_list_', 3);
                     selectedSortFilterOrderIds();
 
-                    var jsonData = JSON.stringify({
-                        reportName: reportNameInput,
-                        selectedTemplateCategoryFieldIds: selectedFields,
-                        filterSelectedIds: filterSelectedIds,
-                        sortSelectedIds: sortSelectedIds,
-                        tcfIdToStringSortList: sortSelectedListMap,
-                        tcfIdToStringFilterList: filterSelectedListMap,
-                        shared: isShared
-                    });
+                    var jsonData;
 
-                    var reportUrl = "rest/reports/templates/" + parseInt(selectedUserReportId) + "/update-users-report";
-                    if (!isNewReport || (isNewReport && selectedReportType == 'Custom')) {
-                        reportUrl = "rest/reports/templates/" + parseInt(selectedReportId) + "/create-users-report";
+                    if(selectedReportType == 'Shared' || isShared) {
+                        jsonData = JSON.stringify({
+                            reportName: reportNameInput,
+                            selectedTemplateCategoryFieldIds: selectedFields,
+                            filterSelectedIds: filterSelectedIds,
+                            sortSelectedIds: sortSelectedIds,
+                            tcfIdToStringSortList: sortSelectedListMap,
+                            tcfIdToStringFilterList: filterSelectedListMap,
+                            shared: isShared
+                        });
                     }
+
+                    else {
+                        jsonData = JSON.stringify({
+                            reportName: reportNameInput,
+                            selectedTemplateCategoryFieldIds: selectedFields,
+                            filterSelectedIds: filterSelectedIds,
+                            sortSelectedIds: sortSelectedIds,
+                            tcfIdToStringSortList: sortSelectedListMap,
+                            tcfIdToStringFilterList: filterSelectedListMap,
+
+                        });
+                    }
+                    reportUrl = "rest/reports/templates/" + parseInt(selectedReportId) + "/create-users-report";
+                    //var reportUrl = "rest/reports/templates/" + parseInt(selectedUserReportId) + "/update-users-report";
+                   // if (!isNewReport || (isNewReport && selectedReportType == 'Custom')) {
+                     //   reportUrl = "rest/reports/templates/" + parseInt(selectedReportId) + "/create-users-report";
+                   // }
 
                     $.post(reportUrl, {data: jsonData}, function (data) {
                         if (data != "") {
@@ -1443,20 +1532,40 @@ function saveReport(event, isNewReport,isShared) {
                             document.getElementById("reportTopInfo").title = reportInfoVal;
                             document.getElementById("reportBottomInfo").title = reportInfoVal;
                             loadAllReportTemplates();
-                            var radioId = parsedData.id + 'Custom';
-                            previousSelectedCustomReport = "";
-                            trackChangesMade = false;
 
-                            setTimeout(function () {
-                                document.getElementById(radioId).checked = true;
-                                loadCategories(document.getElementById(radioId),
-                                    parsedData.reportTemplateId,
-                                    parsedData.id,
-                                    latestUpdateTime,
-                                    parsedData.reportTemplateName,
-                                    'Custom',
-                                    parsedData.reportTemplateBase);
-                            }, 100);
+                            if(!isShared) {
+                                var radioId = parsedData.id + 'Custom';
+                                previousSelectedCustomReport = "";
+                                trackChangesMade = false;
+
+                                setTimeout(function () {
+                                    document.getElementById(radioId).checked = true;
+                                    loadCategories(document.getElementById(radioId),
+                                        parsedData.reportTemplateId,
+                                        parsedData.id,
+                                        latestUpdateTime,
+                                        parsedData.reportTemplateName,
+                                        'Custom',
+                                        parsedData.reportTemplateBase);
+                                }, 100);
+                            }
+
+                            else{
+                                var radioId = parsedData.id + 'Shared';
+
+                                setTimeout(function () {
+                                    document.getElementById(radioId).checked = true;
+                                    loadCategories(document.getElementById(radioId),
+                                        parsedData.reportTemplateId,
+                                        parsedData.id,
+                                        latestUpdateTime,
+                                        parsedData.reportTemplateName,
+                                        'Shared',
+                                        parsedData.reportTemplateBase);
+                                }, 100);
+
+                            }
+
                             $("#validationMsg").css({display: 'none'});
                             $("#validationMsg2").css({display: 'none'});
                             $("#validationEmptyMsg").css({display: 'none'});
@@ -1658,7 +1767,7 @@ function confirmNavigateDialog(reportId, reportType, userReportId, reportName, o
         }
     })
 }
-
+//for both save and shared
 function sortSavedReportList(id) {
     $.ajax({
         url: 'rest/reports/sortSavedTemplates/' + id,
@@ -1667,6 +1776,7 @@ function sortSavedReportList(id) {
         data: '',
         success: function (data) {
             var customDisplayOutput = '';
+            var sharedDisplayOutput = ''
             $.each(data, function (key, val) {
                 var displayOutput = '';
                 var viewReportName = val.reportTemplateName;
@@ -1677,19 +1787,45 @@ function sortSavedReportList(id) {
                 var viewReportBase = val.reportTemplateBase;
                 var title = "Display default field selections";
                 if (viewReportUpdateTime != undefined) {
-                    viewReportType = 'Custom';
+                    if(val.shared){
+                        viewReportType = 'Shared';
+                    }
+                    else {
+                        viewReportType = 'Custom';
+                    }
                     title = "";
+
                 }
                 displayOutput += createEachReportTemplateElement(title, viewUserReportId, viewReportType, viewReportId, viewReportUpdateTime, viewReportName, viewReportBase);
-                customDisplayOutput += displayOutput;
+
+                if (viewReportType == 'Custom') {
+                    customDisplayOutput += displayOutput;
+                }
+
+                else if (viewReportType == 'Shared'){
+                    sharedDisplayOutput += displayOutput;
+                }
             });
 
             $('#CustomList').html(customDisplayOutput);
             $('#CustomList').attr("class", '');
+
+            $('#SharedList').html(sharedDisplayOutput);
+            $('#SharedList').attr("class", '');
+
+
             var numItems = $("#CustomList li").length;
+            $('#CustomList').attr("class", '');
             if (numItems >= 5) {
                 $('#CustomList').attr("class", 'borderList');
             }
+
+            var numSharedItems = $("#SharedList li").length;
+            $('#SharedList').attr("class", '');
+            if (numSharedItems >= 5) {
+                $('#SharedList').attr("class", 'borderList');
+            }
+
         },
         error: function (xhr, status, error) {
             alert("There was a problem with the report. Please select different parameters for the report.");
