@@ -41,6 +41,8 @@ public class ReportTemplateUsersDTO extends ReportTemplateDTO {
     List<Integer> filterDTOList;
     List<String> filterExpressionDTOList;
 
+
+
     public ReportTemplateUsersDTO(Integer id,
                                   String type,
                                   String displayName,

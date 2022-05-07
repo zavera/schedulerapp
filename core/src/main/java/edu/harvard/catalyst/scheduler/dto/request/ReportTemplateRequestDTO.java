@@ -49,6 +49,33 @@ public class ReportTemplateRequestDTO {
     private Date endDate;
     private Graph.QueryScalarsTcfs cachedQsTcfs;
 
+
+
+    public ReportTemplateRequestDTO(List<Integer> selectedTemplateCategoryFieldIds, List<Integer> filterSelectedIds, List<Integer> sortSelectedIds, Date startDate, Date endDate) {
+        this.selectedTemplateCategoryFieldIds = selectedTemplateCategoryFieldIds;
+        this.filterSelectedIds = filterSelectedIds;
+        this.sortSelectedIds = sortSelectedIds;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+
+
+    public ReportTemplateRequestDTO(List<Integer> selectedTemplateCategoryFieldIds, List<Integer> filterSelectedIds,Map<Integer, String> tcfIdToStringFilterList,Map<Integer, String> tcfIdToStringSortList, List<Integer> sortSelectedIds, Date startDate, Date endDate) {
+        this.selectedTemplateCategoryFieldIds = selectedTemplateCategoryFieldIds;
+        this.filterSelectedIds = filterSelectedIds;
+        this.tcfIdToStringFilterList = tcfIdToStringFilterList;
+        this.tcfIdToStringSortList = tcfIdToStringSortList;
+        this.sortSelectedIds = sortSelectedIds;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+
+    public ReportTemplateRequestDTO() {
+    }
+
+
     public List<Integer> getSelectedTemplateCategoryFieldIds() {
         return selectedTemplateCategoryFieldIds;
     }

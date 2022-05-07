@@ -27,24 +27,20 @@
  */
 
 
-var reportPage = (function () {
+var renderSharedReportPage = (function () {
     var initFn = function () {
-        $.get("rest/app/getStaticDataForStandardReportPage", function (data) {
-            var parsedData = $.parseJSON(data);
-            var studyStatusFilterValues = parsedData.studyStatusFilterValues;
-            // populate the study status menu options based on data received from the server
-            // These menu options are used in the Study Data report
-            studyStatusFilterOptions = buildSelectOptions(studyStatusFilterValues, 'label');
+
             commonInit();
-        });
+
     };
+
 
     function commonInit() {
         loadMetaHeaders();
-        renderReportData();
+
         initFooter();
         eraseLicense();
-        app_runIdleTimer();
+        renderSharedReportData();
     }
 
     return {
@@ -58,6 +54,150 @@ function sharedReportData() {
     renderBreadcrumbs('shared_report_screen');
     report_renderSharedReportGrid();
 }
+
+
+
+
+function createSharedReportTemplateDatePickers() {
+    WidgetUtil.createDatepicker("#reportStartDate", {
+        onSelect: function (selectedDate) {
+            $("#reportEndDate").datepicker("option", "minDate", selectedDate);
+        },
+        onClose: function (dateText, inst) {
+            try {
+                var selectedDate = $.datepicker.parseDate('mm/dd/yy', dateText);
+                $("#reportEndDate").datepicker("option", "minDate", selectedDate);
+            } catch (e) {
+                alert("Incorrect Date format. It should be MM/DD/YYYY.");
+                $("#reportStartDate").val('');
+                return;
+            }
+        }
+    });
+
+    WidgetUtil.createDatepicker("#reportEndDate", {
+        onClose: function (dateText, inst) {
+            try {
+                $.datepicker.parseDate('mm/dd/yy', dateText);
+            } catch (e) {
+                alert("Incorrect Date format. It should be MM/DD/YYYY.");
+                $("#reportEndDate").val('');
+            }
+        }
+    });
+    var startDate = new Date();
+    startDate.setDate(1);
+    startDate.setMonth(startDate.getMonth() - 1);
+    var endDate = new Date(); // current date
+    endDate.setDate(1); // going to 1st of the month
+    endDate.setHours(-1);
+    $("#reportStartDate").datepicker('setDate', startDate);
+    $("#reportEndDate").datepicker('setDate', endDate);
+    $("#reportEndDate").datepicker("option", "minDate", startDate);
+    $('#ui-datepicker-div').hide();
+}
+
+
+function renderSharedReportData(){
+    commonData();
+    var reportJson = sessionStorage.getItem("sharedReportTemplate");
+    sharedReport_selectedReport = JSON.parse(reportJson);
+    renderSharedReportBreadcrumbs(sharedReport_selectedReport.name);
+    $('#sharedReport_reportTitle').html(sharedReport_selectedReport.name);
+    if( sharedReport_selectedReport.dateBounded == true){
+
+        $('#dateRangeContainer').css({display: "block"});
+        createSharedReportTemplateDatePickers();
+        }
+    else{
+        $('#dateBoundMsgCell').css({display: "block"});
+    }
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+var form = document.createElement("form");
+var hiddenField = document.createElement("input");
+
+function exportTemplateToExcel() {
+    setTimeout(function () {
+
+        selectedStartDate = '';
+        selectedEndDate = '';
+
+
+        if ( sharedReport_selectedReport.dateBounded == true) {
+            selectedStartDate = $('#reportStartDate').datepicker('getDate');
+            selectedEndDate = $('#reportEndDate').datepicker('getDate');
+
+            if ($('#reportStartDate').datepicker('getDate') == null || $('#reportEndDate').datepicker('getDate') == null) {
+                alert("Please select a valid date range!");
+                return;
+            }
+            else {
+                if (selectedStartDate > selectedEndDate) {
+                    $("#reportEndDate").datepicker("option", "minDate", selectedStartDate);
+                    alert("Please select a valid date range!");
+                    return;
+                }
+            }
+            selectedEndDate.setHours(23, 59, 59, 59);
+        }
+
+
+
+            let selectedReportId = sharedReport_selectedReport.reportId;
+            startDate = selectedStartDate != '' ? selectedStartDate.valueOf() : null;
+            endDate =  selectedEndDate != '' ? selectedEndDate.valueOf() : null;
+            selectedUserReportId  = sessionStorage.getItem("sharedReportTemplateId");
+
+        var actionUrl = 'rest/reports/sharedTemplates/' +startDate + '/' + endDate + '/' + selectedReportId + '/Shared/' + selectedUserReportId + '/results';
+
+
+        document.body.appendChild(form);
+        form.appendChild(hiddenField);
+
+        form.setAttribute("method", "post");
+        form.setAttribute("action", actionUrl);
+
+        hiddenField.style.display = "none";
+        hiddenField.setAttribute("name", "data");
+        hiddenField.setAttribute("value", '');
+
+        form.submit();
+
+       // $.post(actionUrl, {data: jsonData}, function (data) {console.log(data)})
+
+
+    }, 100);
+}
+
+
+
+
+
+function getSharedReportSelectedRowId(id) {
+    $.getJSON("rest/reports/sharedTemplates/" + id, function (data) {
+        sessionStorage.setItem("sharedReportTemplate", JSON.stringify(data));
+        sessionStorage.setItem("sharedReportTemplateId" , id);
+        window.location.href = "shared_report_screen.html";
+
+
+
+    });
+}
+
 
 
 

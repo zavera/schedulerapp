@@ -367,9 +367,9 @@ function loadCategoriesMetadata(reportId, reportType, userReportId, reportName, 
                 displayOutput += '</ul>';
             });
 
-            resetDropDowns(sortList, filterList);
+          resetDropDowns(sortList, filterList);
 
-            if (selectedReportType == 'Custom') {
+            if (selectedReportType == 'Custom' || selectedReportType == 'Shared') {
                 $.each(data.sortDTOList, function (key, val) {
                     var listName = "sort_list_" + (key + 1);
                     selectDropDownElement(listName, val);
@@ -387,6 +387,7 @@ function loadCategoriesMetadata(reportId, reportType, userReportId, reportName, 
                     var filterDirectionVal = data.filterExpressionDTOList[key];
                     createElementsBasedOnFieldType(id, "", filterDirectionVal);
                 });
+
             }
             else {
                 $('#editReportName').css({display: 'none'});
@@ -397,6 +398,9 @@ function loadCategoriesMetadata(reportId, reportType, userReportId, reportName, 
             children.show('fast');
             highlightFields();
             adjustLevel1CategoryHeight();
+
+
+
         }
     });
 }

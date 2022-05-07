@@ -33,6 +33,7 @@ import edu.harvard.catalyst.scheduler.dto.request.ReportTemplateCreateUsersDTO;
 import edu.harvard.catalyst.scheduler.dto.request.ReportTemplateRequestDTO;
 import edu.harvard.catalyst.scheduler.dto.response.ReportTemplateDTO;
 import edu.harvard.catalyst.scheduler.dto.response.ReportTemplateMetadataDTO;
+import edu.harvard.catalyst.scheduler.dto.response.ReportTemplateUsersDTO;
 import edu.harvard.catalyst.scheduler.entity.reporttemplate.Field;
 import edu.harvard.catalyst.scheduler.security.AuthorizedRoles;
 import edu.harvard.catalyst.scheduler.service.ReportTemplateService;
@@ -50,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static edu.harvard.catalyst.scheduler.entity.InstitutionRoleType.ROLE_RESOURCE_MANAGER;
 import static edu.harvard.catalyst.scheduler.entity.InstitutionRoleType.ROLE_SUPER_ADMIN;
 
 /**
@@ -127,6 +129,38 @@ public class ReportTemplateResource extends SecuredResource {
         return response;
     }
 
+
+
+
+    @POST
+    @Path("/sharedTemplates/{startDate}/{endDate}/{id}/{type}/{templateUserId}/results")
+    @AuthorizedRoles({ROLE_SUPER_ADMIN,ROLE_RESOURCE_MANAGER})
+    public Response runSharedReportTemplate(
+            @PathParam("startDate") final String startDate,
+            @PathParam("endDate") final String endDate,
+            @PathParam("id") final Integer id,
+            @PathParam("type") final String type,
+            @PathParam("templateUserId") final Integer templateUserId) {
+
+       final ReportTemplateRequestDTO reportTemplateRequestDTO = reportTemplateService.getReportTemplateRequestDTO(startDate,endDate,templateUserId);
+
+        final StreamingOutput streamingOutput = output -> reportTemplateService.runReportTemplate(getUser(), getRemoteHost(), id, reportTemplateRequestDTO, output, null);
+
+        String reportName = reportTemplateService.getTemplateName(id, type, templateUserId).replaceAll("\\s", "_").toLowerCase();
+        final String fileName = reportName + ".csv";
+
+        final Response response = Response.ok(streamingOutput).header("Content-Disposition", "attachment; filename=" + fileName).build();
+        final String headerFilename = ((String) response.getMetadata().get("Content-Disposition").get(0)).replaceAll("attachment;", "");
+
+        LOGGER.info("\n--> csv download filename is <" + headerFilename + ">");
+
+        return response;
+
+    }
+
+
+
+
     @POST
     @Path("/templates/{id}/create-users-report")
     @AuthorizedRoles({ROLE_SUPER_ADMIN})
@@ -162,7 +196,7 @@ public class ReportTemplateResource extends SecuredResource {
 
     @GET
     @Path("/sharedTemplates")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN,ROLE_RESOURCE_MANAGER})
     public String getSharedReportTemplateList() {
         final List<ReportTemplateMetadataDTO> reportMetadataDTOs = reportTemplateService.getSharedReportTemplateList();
         return gson.toJson(reportMetadataDTOs);
@@ -184,6 +218,24 @@ public class ReportTemplateResource extends SecuredResource {
         final ReportTemplateDTO reportTemplateDTO = reportTemplateService.getUsersReport(id);
         return gson.toJson(reportTemplateDTO);
     }
+
+
+    @GET
+    @Path("/sharedTemplates/{id}")
+    @AuthorizedRoles({ROLE_SUPER_ADMIN,ROLE_RESOURCE_MANAGER})
+    public String getSharedReport(@PathParam("id") final Integer id) {
+        final ReportTemplateDTO reportTemplateDTO = reportTemplateService.getUsersReport(id);
+        final Map<String, Object> map = new HashMap();
+        map.put("name" ,reportTemplateDTO.getDisplayName());
+        map.put("dateBounded",  reportTemplateDTO.getDateBounded());
+        map.put("reportId", reportTemplateDTO.getId());
+
+        return gson.toJson(map);
+    }
+
+
+
+
 
     @POST
     @Path("/templates/users/delete/{id}")

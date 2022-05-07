@@ -405,6 +405,12 @@ function commonData() {
                 .css({
                     visibility: "hidden"
                 });
+
+            $('.sharedReportLink')
+                .css({
+                    visibility: "hidden"
+                });
+
         }
     }
 }
@@ -681,6 +687,11 @@ function moduleRoles() {
             .css({
                 display: "inline-block"
             });
+
+        $('.sharedReportLink')
+            .css({
+                display: "inline-block"
+            });
     } else if (user.institutionRole.id == RESOURCE_MANAGER) {
         $('.homelink')
             .css({
@@ -714,6 +725,11 @@ function moduleRoles() {
             .css({
                 display: "none"
             });
+        $('.sharedReportLink')
+            .css({
+                display: "inline-block"
+            });
+
     } else if (user.institutionRole.id == SCHEDULER) {
         $('.homelink')
             .css({
@@ -747,6 +763,12 @@ function moduleRoles() {
             .css({
                 display: "none"
             });
+
+        $('.sharedReportLink')
+            .css({
+                display: "none"
+            });
+
     } else if (user.institutionRole.id == STUDY_STAFF) {
         $('.homelink')
             .css({
@@ -780,6 +802,12 @@ function moduleRoles() {
             .css({
                 display: "none"
             });
+        $('.sharedReportLink')
+            .css({
+                display: "none"
+            });
+
+
     } else if (user.institutionRole.id == FRONT_DESK) {
         $('.homelink')
             .css({
@@ -813,6 +841,13 @@ function moduleRoles() {
             .css({
                 display: "none"
             });
+
+        $('.sharedReportLink')
+            .css({
+                display: "none"
+            });
+
+
     } else if (user.institutionRole.id == GENERAL_VIEW) {
         $('.homelink')
             .css({
@@ -846,6 +881,13 @@ function moduleRoles() {
             .css({
                 display: "none"
             });
+
+        $('.sharedReportLink')
+            .css({
+                display: "none"
+            });
+
+
     }
 }
 

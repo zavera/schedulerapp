@@ -46,6 +46,7 @@ var breadCrumbFunctions = (function () {
     var studyShowSubjectsLink = "<a href='javascript:studyShowSubjectsTab();'> Study Subjects</a>";
     var visitDetailsLink = "<a href='visit_detail.html'>Visit Details</a>";
     var reportModuleLink = "<a href='javascript:reportModule()'>Reports List</a>";
+    var sharedReportModuleLink = "<a href='javascript:sharedReportModule()'>Shared Reports List</a>";
 
     var breadcrumbMap = {
 
@@ -186,6 +187,17 @@ var breadCrumbFunctions = (function () {
         'renderBreadcrumbs': function (screen) {
             $(".breadcrumbs").html(breadcrumbMap[screen]);
         },
+
+
+        'renderSharedReportBreadcrumbs': function (reportTitle) {
+            $(".breadcrumbs").html(
+                homeModuleLink + " <span class='breadcrumbSep'> &gt; </span> " +
+                sharedReportModuleLink + " <span class='breadcrumbSep'> &gt; </span> " + reportTitle
+            );
+        },
+
+
+
         'renderReportBreadcrumbs': function (reportTitle) {
             $(".breadcrumbs").html(
                 homeModuleLink + " <span class='breadcrumbSep'> &gt; </span> " +
@@ -198,6 +210,7 @@ var breadCrumbFunctions = (function () {
 
 var renderBreadcrumbs = breadCrumbFunctions.renderBreadcrumbs;
 var renderReportBreadcrumbs = breadCrumbFunctions.renderReportBreadcrumbs;
+var renderSharedReportBreadcrumbs = breadCrumbFunctions.renderSharedReportBreadcrumbs;
 
 
 

@@ -396,7 +396,7 @@ public class ReportTemplateDAO extends SiteDAO {
         final String query = "select tu.name, u.ecommons_id, " +
                 " tu.last_update_time, tu.id from template_user tu, report_template rt," +
                 " user u where tu.shared = 1 " +
-                "and tu.report_template_id = rt.id and tu.user_id = u.id;";
+                "and tu.report_template_id = rt.id and tu.user_id = u.id order by tu.name asc;";
 
         final NativeQuery nativeQuery = newNativeQuery(query);
 
@@ -464,6 +464,8 @@ public class ReportTemplateDAO extends SiteDAO {
 
         return newQuery(query).list();
     }
+
+
 
     public List<TemplateUserSortSelection> findTemplateUserSortSelectionsByTemplateUserSelection(final List<Integer> templateUserSelectionId) {
         if(templateUserSelectionId.isEmpty()) {

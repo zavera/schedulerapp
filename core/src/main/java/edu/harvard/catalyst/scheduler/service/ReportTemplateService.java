@@ -35,6 +35,7 @@ import edu.harvard.catalyst.scheduler.dto.request.ReportTemplateRequestDTO;
 import edu.harvard.catalyst.scheduler.dto.response.*;
 import edu.harvard.catalyst.scheduler.entity.BaseEntity;
 import edu.harvard.catalyst.scheduler.entity.reporttemplate.*;
+import edu.harvard.catalyst.scheduler.util.DateUtility;
 import org.apache.log4j.Logger;
 import edu.harvard.catalyst.scheduler.core.SchedulerRuntimeException;
 import edu.harvard.catalyst.scheduler.dto.BooleanResultDTO;
@@ -42,6 +43,7 @@ import edu.harvard.catalyst.scheduler.entity.HasReportFiltersNameAndId;
 import edu.harvard.catalyst.scheduler.entity.User;
 import edu.harvard.catalyst.scheduler.entity.reporttemplate.Graph.QueryScalarsTcfs;
 import edu.harvard.catalyst.scheduler.persistence.ReportTemplateDAO;
+import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -238,9 +240,73 @@ public class ReportTemplateService {
 
 
 
+
+
     public List<ReportTemplateMetadataDTO> sortSavedReportTemplateList(final User user, final Integer id) {
         return reportTemplateDAO.findUsersReportListByTypeAndUser(user, id);
     }
+
+
+    public ReportTemplateRequestDTO getReportTemplateRequestDTO(final String startDate, final String endDate, final Integer id ){
+
+
+        final TemplateUser templateUser = reportTemplateDAO.findTemplateUserById(id);
+
+
+        Set<TemplateUserSelection> userSelectionList = templateUser.getUserSelections();
+
+        List<Integer> sortList = Lists.newArrayList();
+
+        Map<Integer, String> sortMap = Maps.newTreeMap();
+        Map<Integer, String> filterMap = Maps.newTreeMap();
+
+        Map<Integer, Integer> tussToTcfId = Maps.newTreeMap();
+
+
+        Map<Integer, Integer> tufsToTcfId = Maps.newTreeMap();
+
+
+        List<Integer> filterList = Lists.newArrayList();
+
+        List<Integer> selectedTcfList = Lists.newArrayList();
+
+
+        for (TemplateUserSelection tus : userSelectionList) {
+            selectedTcfList.add(tus.getTcf().getId());
+            TemplateUserSortSelection tuss = tus.getUserSortSelection();
+            if (tuss != null) {
+                Integer tcfId = tuss.getTemplateUserSelection().getTcf().getId();
+                tussToTcfId.put(tuss.getId(), tcfId);
+
+                sortMap.put(tcfId,tuss.getOrderBy());
+            }
+
+            TemplateUserFilterSelection tufs = tus.getUserFilterSelection();
+            if (tufs != null) {
+                Integer tcfId = tufs.getTemplateUserSelection().getTcf().getId();
+                tufsToTcfId.put(tufs.getId(), tcfId);
+
+                filterMap.put(tcfId,tufs.getExpression());
+            }
+        }
+        for (Integer tussId : tussToTcfId.keySet()) {
+            sortList.add(tussToTcfId.get(tussId));
+
+        }
+
+        for (Integer tufsId : tufsToTcfId.keySet()) {
+            filterList.add(tufsToTcfId.get(tufsId));
+
+        }
+
+        Date start = DateUtility.parseLong(startDate);
+        Date end  = DateUtility.parseLong(endDate);
+
+        return new ReportTemplateRequestDTO(selectedTcfList, filterList, filterMap, sortMap, sortList, start,end);
+
+
+    }
+
 
     CategoryDTO createCategoryDTO(final ReportTemplate reportTemplate,
                                   final Category category,
@@ -300,6 +366,8 @@ public class ReportTemplateService {
 
         return categoryDTOList;
     }
+
+
 
     public ReportTemplateUsersDTO getUsersReport(final Integer id) {
         final TemplateUser templateUser = reportTemplateDAO.findTemplateUserById(id);

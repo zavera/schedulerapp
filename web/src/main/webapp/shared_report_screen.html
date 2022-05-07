@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <link href="/scheduler-resources/local-style.css" rel="stylesheet" type="text/css"/>
+    <link href="css/print.css" rel="stylesheet" type="text/css" media="print"/>
+
+    <link href="css/global.css" rel="stylesheet" type="text/css"/>
+
+    <link href="css/reporting.css" rel="stylesheet" type="text/css"/>
+
+    <link href="css/jquery-ui-1.12.1/jquery-ui.css" rel="stylesheet" type="text/css"/>
+    <link href="css/jquery-ui-misc/jquery-ui-delta.css" rel="stylesheet" type="text/css"/>
+
+
+    <link href="css/last-word.css" rel="stylesheet" type="text/css"/>
+
+
+
+    <script type="text/javascript" src="js/lib/json2.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.min-3.4.0.js"></script>
+    <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-migrate-3.0.1.js"></script> -->
+    <script type="text/javascript" src="js/lib/jquery-ui.min-1.12.1.js"></script>
+    <script type="text/javascript" src="js/lib/maskedInputPlugin.js"></script>
+    <script src="js/lib/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
+
+    <script src="js/lib/date.format.js" type="text/javascript"></script>
+    <script src="js/lib/jquery.blockUI.js" type="text/javascript"></script>
+    <script src="js/util/util.js" type="text/javascript"></script>
+    <script src="js/util/dto.js" type="text/javascript"></script>
+    <script src="js/util/breadcrumbs.js" type="text/javascript"></script>
+
+    <script src="js/lib/FileSaver.js" type="text/javascript"></script>
+    <script src="js/widget/dialogs.js" type="text/javascript"></script>
+    <script src="js/common/feedback_screen.js" type="text/javascript"></script>
+    <script src="js/widget/widget_util.js" type="text/javascript"></script>
+
+
+    <script src="js/util/global2.js" type="text/javascript"></script>
+
+    <script src="js/SharedReports/shared_report_screen.js" type="text/javascript"></script>
+
+
+    <script src="js/util/dates.js" type="text/javascript"></script>
+
+    <script type="text/javascript" src="js/lib/jquery-ui-sliderAccess.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.js"></script>
+
+    <script src="js/util/dates.js" type="text/javascript"></script>
+
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $("#fullHeader").load("header.html", function () {
+
+                $('.sharedReportLink').addClass('active');
+                renderSharedReportPage.init();
+            });
+
+        });
+
+    </script>
+    <!--
+
+        Copyright (c) 2015-2016, President and Fellows of Harvard College
+
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+
+        1. Redistributions of source code must retain the above copyright
+        notice, this list of conditions and the following disclaimer.
+
+        2. Redistributions in binary form must reproduce the above copyright
+        notice, this list of conditions and the following disclaimer in the
+        documentation and/or other materials provided with the distribution.
+
+        3. The name of the author may not be used to endorse or promote products
+        derived from this software without specific prior written permission.
+
+        THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED
+        WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+        MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+        EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+        SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+        TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+        PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+        LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+        NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+        SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+    -->
+
+</head>
+
+<body onMouseMove="app_handleMouseMove()">
+<div class="wrapperSize">
+    <!--     @HEADER     -->
+    <div id="fullHeader"></div>
+    <!--     @HEADER     -->
+
+    <div class="breadcrumbs"></div>
+
+    <!--     @MAIN BODY     -->
+    <div class="mainBody">
+        <div id="shared_report_screen">
+            <form id="exportForm" action="rest/report/exportToExcelReports" method="post">
+                <input name="exportField" type="hidden" id="exportField"/>
+                <input name="exportFileName" type="hidden" id="exportFileName"/>
+
+                <div class="primaryTableHeader"><span id="sharedReport_reportTitle"></span>
+                </div>
+                <div class="solid_border_div noPrint"
+                     style="clear: both; min-height: 60px; padding: 5px 5px 5px 5px;">
+
+                    <table id="sharedReport_basicForm" class="reportFormTable" style="margin-top:10px;">
+                        <tr>
+                            <td id = "dateBoundMsgCell" style="float: left; display: none; margin-left: 20px;"><label>No Date Selection Required</label></td>
+
+                            <td>
+                            <div id="dateRangeContainer" style="float: left; display: none; margin-left: 20px;">
+
+                               <span class="dateContainer"><label style="padding-right: 5px;">Scheduled Start Date</label>
+                  <input type="text" id="reportStartDate" class="ll-skin-latoja"/>
+              </span>
+
+                                <span class="dateContainer"><label style="padding-right: 5px;">Scheduled End Date</label>
+                  <input type="text" id="reportEndDate" class="ll-skin-latoja"/>
+              </span>
+                            </div>
+                            </td>
+
+                            <td>
+                                <input type="button" id="report_submitButton2"
+                                       onclick="javascript:exportTemplateToExcel();"
+                                       name="button" value="Export to Excel"
+                                       class="formButton"/>
+                            </td>
+                            <td>
+                                <a href="javascript:sharedReportModule();"
+                                   style="height:25px;min-width:100px; font-size: 12px;">Back To Shared Reports
+                                    List</a>
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+
+    <!--     @MAIN BODY     -->
+
+    <div class="footer"></div>
+
+
+    <div id="main_dialog_wrapper"></div>
+</div>
+</body>
+</html>
