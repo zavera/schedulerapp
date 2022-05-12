@@ -930,15 +930,21 @@ function displayAllActionBlocks() {
     $(".actionButtons").css({display: 'block'});
     $(".reportTrash").css({display: 'none'});
     $(".reportInfo").css({display: 'none'});
+
     $("#reportBottomSaveNew").css({display: 'none'});
     $("#reportBottomSaveShared").css({display: 'none'});
-    $("#reportTopSaveNew").css({display: 'none'});
+    $("#reportBottomSaveSharedOld").css({display: 'none'});
+    $("#reportBottomSaveSharedNew").css({display: 'none'});
     $("#reportBottomSave").css({display: 'none'});
-    $("#reportTopSaveShared").css({display: 'none'});
 
+
+
+    $("#reportTopSaveNew").css({display: 'none'});
+
+    $("#reportTopSaveShared").css({display: 'none'});
+    $("#reportTopSaveSharedOld").css({display: 'none'});
 
     $("#reportTopSaveSharedNew").css({display: 'none'});
-    $("#reportTopSaveSharedOld").css({display: 'none'});
 
 
     $("#reportTopSave").css({display: 'none'});
@@ -956,6 +962,10 @@ function displayAllActionBlocks() {
     else if (selectedReportType == 'Shared'){
         $("#reportTopSaveSharedNew").css({display: 'inline'});
         $("#reportTopSaveSharedOld").css({display: 'inline'});
+
+        $("#reportBottomSaveSharedNew").css({display: 'inline'});
+        $("#reportBottomSaveSharedOld").css({display: 'inline'});
+
 
         $(".reportTrash").css({display: 'inline'});
         $(".reportInfo").css({display: 'inline'});
@@ -1551,7 +1561,7 @@ function saveReport(event, isNewReport,isShared) {
                                         parsedData.reportTemplateName,
                                         'Custom',
                                         parsedData.reportTemplateBase);
-                                }, 100);
+                                }, 1000);
                             }
 
                             else{
@@ -1566,7 +1576,7 @@ function saveReport(event, isNewReport,isShared) {
                                         parsedData.reportTemplateName,
                                         'Shared',
                                         parsedData.reportTemplateBase);
-                                }, 100);
+                                }, 1000);
 
                             }
 

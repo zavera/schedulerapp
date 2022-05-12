@@ -376,14 +376,24 @@
                onclick="exportToExcel();" class="reportExport"/>
 
 
-          <input type="button" value="Save as Shared" class="saveButtons" onclick="saveReport(event, true,true);"
+          <input type="button" value="Save as Shared" class="saveButtons" onclick="saveReport(event, false,true);"
                  id="reportBottomSaveShared"/>
+
+
+          <input type="button" value="Save as New" class="saveButtons" onclick="saveReport(event, true,true);"
+                 id="reportBottomSaveSharedNew"/>
+          <input type="button" value="Save" onclick="saveReport(event, false,true);"
+                 class="saveButtons activeButton" id="reportBottomSaveSharedOld"/>
+
 
 
           <input type="button" value="Save as New" class="saveButtons" onclick="saveReport(event, true,false);"
                  id="reportBottomSaveNew"/>
-          <input type="button" value="Save" onclick="saveReport(event, false,false);" class="saveButtons activeButton"
-                 id="reportBottomSave"/>
+          <input type="button" value="Save" onclick="saveReport(event, false,false);"
+                 class="saveButtons activeButton" id="reportBottomSave"/>
+
+
+
         </div>
       </div>
 

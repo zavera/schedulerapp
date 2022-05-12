@@ -224,12 +224,11 @@ public class ReportTemplateResource extends SecuredResource {
     @Path("/sharedTemplates/{id}")
     @AuthorizedRoles({ROLE_SUPER_ADMIN,ROLE_RESOURCE_MANAGER})
     public String getSharedReport(@PathParam("id") final Integer id) {
-        final ReportTemplateDTO reportTemplateDTO = reportTemplateService.getUsersReport(id);
+        final ReportTemplateUsersDTO reportTemplateUsersDTO = reportTemplateService.getUsersReport(id);
         final Map<String, Object> map = new HashMap();
-        map.put("name" ,reportTemplateDTO.getDisplayName());
-        map.put("dateBounded",  reportTemplateDTO.getDateBounded());
-        map.put("reportId", reportTemplateDTO.getId());
-
+        map.put("name" ,reportTemplateUsersDTO.getName());
+        map.put("dateBounded",  reportTemplateUsersDTO.getDateBounded());
+        map.put("reportId", reportTemplateUsersDTO.getId());
         return gson.toJson(map);
     }
 

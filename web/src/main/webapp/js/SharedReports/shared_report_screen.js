@@ -59,29 +59,29 @@ function sharedReportData() {
 
 
 function createSharedReportTemplateDatePickers() {
-    WidgetUtil.createDatepicker("#reportStartDate", {
+    WidgetUtil.createDatepicker("#report_start_date", {
         onSelect: function (selectedDate) {
-            $("#reportEndDate").datepicker("option", "minDate", selectedDate);
+            $("#report_end_date").datepicker("option", "minDate", selectedDate);
         },
         onClose: function (dateText, inst) {
             try {
                 var selectedDate = $.datepicker.parseDate('mm/dd/yy', dateText);
-                $("#reportEndDate").datepicker("option", "minDate", selectedDate);
+                $("#report_end_date").datepicker("option", "minDate", selectedDate);
             } catch (e) {
                 alert("Incorrect Date format. It should be MM/DD/YYYY.");
-                $("#reportStartDate").val('');
+                $("#report_start_date").val('');
                 return;
             }
         }
     });
 
-    WidgetUtil.createDatepicker("#reportEndDate", {
+    WidgetUtil.createDatepicker("#report_end_date", {
         onClose: function (dateText, inst) {
             try {
                 $.datepicker.parseDate('mm/dd/yy', dateText);
             } catch (e) {
                 alert("Incorrect Date format. It should be MM/DD/YYYY.");
-                $("#reportEndDate").val('');
+                $("#report_end_date").val('');
             }
         }
     });
@@ -91,9 +91,9 @@ function createSharedReportTemplateDatePickers() {
     var endDate = new Date(); // current date
     endDate.setDate(1); // going to 1st of the month
     endDate.setHours(-1);
-    $("#reportStartDate").datepicker('setDate', startDate);
-    $("#reportEndDate").datepicker('setDate', endDate);
-    $("#reportEndDate").datepicker("option", "minDate", startDate);
+    $("#report_start_date").datepicker('setDate', startDate);
+    $("#report_end_date").datepicker('setDate', endDate);
+    $("#report_end_date").datepicker("option", "minDate", startDate);
     $('#ui-datepicker-div').hide();
 }
 
@@ -106,7 +106,7 @@ function renderSharedReportData(){
     $('#sharedReport_reportTitle').html(sharedReport_selectedReport.name);
     if( sharedReport_selectedReport.dateBounded == true){
 
-        $('#dateRangeContainer').css({display: "block"});
+        $('#reportDateRangeContainer').css({display: "block"});
         createSharedReportTemplateDatePickers();
         }
     else{
@@ -138,8 +138,8 @@ function exportTemplateToExcel() {
 
 
         if ( sharedReport_selectedReport.dateBounded == true) {
-            selectedStartDate = $('#reportStartDate').datepicker('getDate');
-            selectedEndDate = $('#reportEndDate').datepicker('getDate');
+            selectedStartDate = $('#report_start_date').datepicker('getDate');
+            selectedEndDate = $('#report_end_date').datepicker('getDate');
 
             if ($('#reportStartDate').datepicker('getDate') == null || $('#reportEndDate').datepicker('getDate') == null) {
                 alert("Please select a valid date range!");
@@ -206,7 +206,6 @@ function report_renderSharedReportGrid() {
     commonData();
     $.getJSON("rest/reports/sharedTemplates", function (data) {
         var iteration = 0;
-
         var out =
             " <table id='sharedReports' class='hoverable'>" +
             "  <tr>" +
@@ -215,6 +214,10 @@ function report_renderSharedReportGrid() {
 
             "   <td><strong>Last Update</strong></td>" +
             "  </tr> ";
+
+        if(data.length == 0){
+            out += "<tr><td><label> No Shared Reports </label> </td></tr>"
+        }
 
         $.each(data, function () {
             out += "<tr onclick='getSharedReportSelectedRowId(" + this.id + ")'>"

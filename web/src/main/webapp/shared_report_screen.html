@@ -107,9 +107,8 @@
     <!--     @MAIN BODY     -->
     <div class="mainBody">
         <div id="shared_report_screen">
-            <form id="exportForm" action="rest/report/exportToExcelReports" method="post">
-                <input name="exportField" type="hidden" id="exportField"/>
-                <input name="exportFileName" type="hidden" id="exportFileName"/>
+            <form id="sharedExportForm" action="rest/report/exportToExcelReports" method="post">
+
 
                 <div class="primaryTableHeader"><span id="sharedReport_reportTitle"></span>
                 </div>
@@ -121,14 +120,14 @@
                             <td id = "dateBoundMsgCell" style="float: left; display: none; margin-left: 20px;"><label>No Date Selection Required</label></td>
 
                             <td>
-                            <div id="dateRangeContainer" style="float: left; display: none; margin-left: 20px;">
+                            <div id="reportDateRangeContainer" style="float: left; display: none; margin-left: 20px;">
 
                                <span class="dateContainer"><label style="padding-right: 5px;">Scheduled Start Date</label>
-                  <input type="text" id="reportStartDate" class="ll-skin-latoja"/>
+                  <input type="text" id="report_start_date" class="ll-skin-latoja"/>
               </span>
 
                                 <span class="dateContainer"><label style="padding-right: 5px;">Scheduled End Date</label>
-                  <input type="text" id="reportEndDate" class="ll-skin-latoja"/>
+                  <input type="text" id="report_end_date" class="ll-skin-latoja"/>
               </span>
                             </div>
                             </td>
