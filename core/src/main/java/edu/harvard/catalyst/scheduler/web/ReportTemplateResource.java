@@ -133,14 +133,14 @@ public class ReportTemplateResource extends SecuredResource {
 
 
     @POST
-    @Path("/sharedTemplates/{startDate}/{endDate}/{id}/{type}/{templateUserId}/results")
+    @Path("/sharedTemplates")
     @AuthorizedRoles({ROLE_SUPER_ADMIN,ROLE_RESOURCE_MANAGER})
     public Response runSharedReportTemplate(
-            @PathParam("startDate") final String startDate,
-            @PathParam("endDate") final String endDate,
-            @PathParam("id") final Integer id,
-            @PathParam("type") final String type,
-            @PathParam("templateUserId") final Integer templateUserId) {
+            @QueryParam("startDate") final String startDate,
+            @QueryParam("endDate") final String endDate,
+            @QueryParam("id") final Integer id,
+            @QueryParam("type") final String type,
+            @QueryParam("templateUserId") final Integer templateUserId) {
 
        final ReportTemplateRequestDTO reportTemplateRequestDTO = reportTemplateService.getReportTemplateRequestDTO(startDate,endDate,templateUserId);
 

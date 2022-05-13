@@ -132,6 +132,7 @@ function createEachReportTemplateElement(title, viewUserReportId, viewReportType
         'for="' + viewUserReportId + "" + viewReportType + '">' + viewReportName + '</label></span></li>';
 }
 
+//need to wrap this in a Promise so that time delay can be removed in saveReport()
 function loadAllReportTemplates() {
     $.ajax({
         url: 'rest/reports/templates',

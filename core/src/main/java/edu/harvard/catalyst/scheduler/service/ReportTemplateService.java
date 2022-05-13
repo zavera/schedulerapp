@@ -247,7 +247,7 @@ public class ReportTemplateService {
     }
 
 
-    public ReportTemplateRequestDTO getReportTemplateRequestDTO(final String startDate, final String endDate, final Integer id ){
+    public ReportTemplateRequestDTO getReportTemplateRequestDTO(final String startDate,final String endDate, final Integer id ){
 
 
         final TemplateUser templateUser = reportTemplateDAO.findTemplateUserById(id);
@@ -299,11 +299,15 @@ public class ReportTemplateService {
 
         }
 
-        Date start = DateUtility.parseLong(startDate);
-        Date end  = DateUtility.parseLong(endDate);
+        if(startDate != null && endDate != null) {
+            Date start = DateUtility.parseLong(startDate);
+            Date end = DateUtility.parseLong(endDate);
+            return new ReportTemplateRequestDTO(selectedTcfList, filterList, filterMap, sortMap, sortList,start,end);
+        }
+        else {
 
-        return new ReportTemplateRequestDTO(selectedTcfList, filterList, filterMap, sortMap, sortList, start,end);
-
+            return new ReportTemplateRequestDTO(selectedTcfList, filterList, filterMap, sortMap, sortList,null,null);
+        }
 
     }
 

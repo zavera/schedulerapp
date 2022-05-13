@@ -162,9 +162,14 @@ function exportTemplateToExcel() {
             endDate =  selectedEndDate != '' ? selectedEndDate.valueOf() : null;
             selectedUserReportId  = sessionStorage.getItem("sharedReportTemplateId");
 
-        var actionUrl = 'rest/reports/sharedTemplates/' +startDate + '/' + endDate + '/' + selectedReportId + '/Shared/' + selectedUserReportId + '/results';
+            var actionUrl = '';
+            if(startDate == null && endDate == null){
+                 actionUrl = 'rest/reports/sharedTemplates?id=' + selectedReportId + '&type=Shared&templateUserId=' + selectedUserReportId;
+            }
+            else {
+                 actionUrl = 'rest/reports/sharedTemplates?startDate=' + startDate + '&endDate=' + endDate + '&id='+ selectedReportId + '&type=Shared&templateUserId=' + selectedUserReportId;
 
-
+            }
         document.body.appendChild(form);
         form.appendChild(hiddenField);
 
