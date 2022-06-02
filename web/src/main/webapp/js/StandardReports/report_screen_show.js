@@ -1360,80 +1360,174 @@ function report_showDailyResourceResults() {
 function report_showDailyAdmResults() {
     var out = "";
     report_handleDataResponse(report_dailyAdmResult.length);
-    var currentSubjectId = -1;
-    var previousSubjectId = -1;
+
     var iteration = 0;
     var tableRow = 0;
 
+    var resourcePerVisit = {};
+    var commentPerSubject = {};
+    var visitIdentifiers = {};
+
     for (var i = 0; i < report_dailyAdmResult.length; i++) {
-        var r = report_dailyAdmResult[i];
-        currentSubjectId = r.subjectId;
-        if (iteration != 0 && currentSubjectId != previousSubjectId) {
-            out += " </table>" +
-                "    <!-- table generator --></div>" +
-                "    <!-- report row --></div>" +
-                "  <hr class='report' />";
+        var record = report_dailyAdmResult[i];
+
+        if (!(record.subjectId in visitIdentifiers)) {
+            visitIdentifiers[record.subjectId] = {
+                'DOB': '',
+                'MRN': '',
+                'firstname': '',
+                'middlename': '',
+                'lastname': '',
+                'Gender': '',
+                'localID': '',
+                'irb': '',
+                'Visit': '',
+                'status': '',
+                'checkin': ''
+            };
+            visitIdentifiers[record.subjectId].DOB = record.birthdate;
+            visitIdentifiers[record.subjectId].MRN = record.mrn;
+            visitIdentifiers[record.subjectId].firstname = record.subjectFirstName;
+            visitIdentifiers[record.subjectId].middlename = record.subjectMiddleName;
+            visitIdentifiers[record.subjectId].lastname = record.subjectLastName;
+            visitIdentifiers[record.subjectId].Gender = record.genderName;
+            visitIdentifiers[record.subjectId].localId = record.localId;
+            visitIdentifiers[record.subjectId].irb = record.irb;
+            visitIdentifiers[record.subjectId].Visit = record.visitName;
+            visitIdentifiers[record.subjectId].status = record.visitStatus;
+            visitIdentifiers[record.subjectId].checkin = record.checkInTime;
         }
-        if (currentSubjectId != previousSubjectId) {
-            var divVisitStatusClass = null;
-            if (r.visitStatus == 'Scheduled') {
-                divVisitStatusClass = " <div class='statusBlock reportSecondary'>";
+
+
+        if (!(record.subjectId in commentPerSubject)) {
+            commentPerSubject[record.subjectId] = {
+                'Nutrition': '',
+                'EBL': '',
+                'Nursing': '',
+                'Cardiovascular Imaging': '',
+                'Lab': '',
+                'Pharmacy': '',
+                'Other': '',
+                'None': ''
+            };
+        };
+            var svc = record.scheduledVisitComment;
+            commentPerSubject[record.subjectId][svc] += commentPerSubject[record.subjectId][svc] + record.comment + ' ';
+
+
+        var resourceIdentifier = record.subjectId + ';' + record.resourceName + ';' + record.scheduledStartTime + ';' + record.scheduledEndTime;
+        if(!(record.subjectId in resourcePerVisit)) {
+            resourcePerVisit[record.subjectId] = [resourceIdentifier];
+        }
+        else {
+            var resources = resourcePerVisit[record.subjectId];
+            if (resources.indexOf(resourceIdentifier) == -1) {
+                resources.push(resourceIdentifier);
+                resourcePerVisit[record.subjectId] = resources;
             }
-            else if (r.visitStatus == 'Checked-In') {
-                divVisitStatusClass = " <div class='statusBlock reportCheckedInSecondary'>";
-            }
-            tableRow = 0;
-            out +=
-                "    <div class='reportRow'>" +
-                "      <div class='secondaryNameBlock'>" +
-                "       <div class='mainName'>" + util_buildFullName(r.subjectFirstName, r.subjectMiddleName, r.subjectLastName) + "</div>" +
-                "      </div>" +
-                "      <div class='statusBlockContainer'>" +
-                divVisitStatusClass +
-                "          <div class='label'>DOB</div>" +
-                "          <div class='value'>" + r.birthdate + "</div>" +
-                "          <div class='label'>MRN</div>" +
-                "          <div class='value'>" + r.mrn + "</div>" +
-                "          <div class='label'>Gender</div>" +
-                "          <div class='value'>" + r.genderName + "</div>" +
-                "          <div class='label'>Local ID</div>" +
-                "          <div class='value'>" + r.localId + "</div>" +
-                "          <div class='label'>IRB #</div>" +
-                "          <div class='value'>" + r.irb + "</div>" +
-                "          <div class='label'>Visit Name</div>" +
-                "          <div class='value'>" + r.visitName + "</div>" +
-                "          <div class='label'>Visit Status</div>" +
-                "          <div class='value'>" + r.visitStatus + "</div>" +
-                "          <div class='label'>Check In Time</div>" +
-                "          <div class='value'>" + showDateTime(r.checkInTime) + "</div>" +
-                "        </div>" +
-                "      </div>" +
-                "      <div style='clear: both;'></div>" +
-                "      <div class='CSSTableGenerator'><table  width='100%' border='0' cellspacing='0' cellpadding='5' style='font-size: 90%;'>" +
-                "        <tr style='font-weight:bold'>" +
-                "          <th>Resource Name</th>" +
-                "          <th>Resource Start Time</th>" +
-                "          <th>Resource End Time</th>" +
-                "          <th>Comment</th>" +
-                "        </tr>";
         }
-
-        previousSubjectId = currentSubjectId;
-
-        if (currentSubjectId == previousSubjectId) {
-            out += ((tableRow % 2 == 1) ? "<tr class='altRow'>" : "<tr>");
-            out += "   <td>" + r.resourceName + "</td>" +
-                "          <td>" + showDateTime(r.scheduledStartTime) + "</td>" +
-                "          <td>" + showDateTime(r.scheduledEndTime) + "</td>" +
-                "          <td>" + r.comment + "</td>" +
-                "        </tr>";
-        }
-
-        iteration++;
-        tableRow++;
     }
 
-    $('#report_results').html(out);
+    for (var key in visitIdentifiers) {
+        var r = visitIdentifiers[key];
+
+        out += " </table>" +
+            "    <!-- table generator --></div>" +
+            "    <!-- report row --></div>" +
+            "  <hr class='report' />";
+
+        var divVisitStatusClass = null;
+        if (r.status == 'Scheduled') {
+            divVisitStatusClass = " <div class='statusBlock reportSecondary'>";
+        } else if (r.status == 'Checked-In') {
+            divVisitStatusClass = " <div class='statusBlock reportCheckedInSecondary'>";
+        }
+        //tableRow = 0;
+
+        var resourceTable =
+            "   <div style='clear: both;'></div>" +
+            "      <div class='CSSTableGenerator'><table  width='100%' border='0' cellspacing='0' cellpadding='5' style='font-size: 90%;'>" +
+            "        <tr style='font-weight:bold'>" +
+            "          <th>Resource Name</th>" +
+            "          <th>Resource Start Time</th>" +
+            "          <th>Resource End Time</th>" +
+            "        </tr>";
+
+
+        var resources = resourcePerVisit[key];
+        for (var k = 0; k<resources.length; k++){
+            var identifiers = resources[k].split(";");
+            resourceTable += "<tr> <td>" + identifiers[1]+ "</td>" +
+                "          <td>" + identifiers[2]+ "</td>" +
+                "          <td>" + identifiers[3]+ "</td>" +
+                "        </tr>";
+
+        }
+
+
+
+        var commentTable =
+            "      <div class='CSSTableGenerator'><table  width='100%' border='0' cellspacing='0' cellpadding='5' style='font-size: 90%;'>" +
+            "        <tr style='font-weight:bold'>" +
+            "          <th>Nutrition</th>" +
+            "          <th>EBL</th>" +
+            "          <th>Nursing</th>" +
+            "          <th>CardioVascular Imaging</th>" +
+            "          <th>Lab</th>" +
+            "          <th>Pharmacy</th>" +
+            "          <th>Other</th>" +
+            "          <th>None</th>" +
+            "        </tr>";
+
+
+
+
+
+        commentTable += "<tr> <td>" + commentPerSubject[key].Nutrition + "</td>" +
+            "<td>" + commentPerSubject[key].EBL + "</td>" +
+            "<td>" + commentPerSubject[key].Nursing + "</td>" +
+            "<td>" + commentPerSubject[key]["Cardiovascular Imaging"] + "</td>" +
+            "<td>" + commentPerSubject[key].Lab + "</td>" +
+            "<td>" + commentPerSubject[key].Pharmacy + "</td>" +
+            "<td>" + commentPerSubject[key].Other + "</td>" +
+            "<td>" + commentPerSubject[key].None + "</td>" +
+
+            " </tr>";
+
+        out +=
+            "    <div class='reportRow'>" +
+            "      <div class='secondaryNameBlock'>" +
+            "       <div class='mainName'>" + util_buildFullName(r.firstname, r.middlename, r.lastname) + "</div>" +
+            "      </div>" +
+            "      <div class='statusBlockContainer'>" +
+            divVisitStatusClass +
+            "          <div class='label'>DOB</div>" +
+            "          <div class='value'>" + r.DOB + "</div>" +
+            "          <div class='label'>MRN</div>" +
+            "          <div class='value'>" + r.MRN + "</div>" +
+            "          <div class='label'>Gender</div>" +
+            "          <div class='value'>" + r.Gender + "</div>" +
+            "          <div class='label'>Local ID</div>" +
+            "          <div class='value'>" + r.localID + "</div>" +
+            "          <div class='label'>IRB #</div>" +
+            "          <div class='value'>" + r.irb + "</div>" +
+            "          <div class='label'>Visit Name</div>" +
+            "          <div class='value'>" + r.Visit + "</div>" +
+            "          <div class='label'>Visit Status</div>" +
+            "          <div class='value'>" + r.status + "</div>" +
+            "          <div class='label'>Check In Time</div>" +
+            "          <div class='value'>" + showDateTime(r.checkin) + "</div>" +
+            "        </div>" +
+            "      </div>" + resourceTable + "</div>" + commentTable;
+
+
+
+        // iteration++;
+       // tableRow++;
+
+
+        $('#report_results').html(out);
+    }
 }
 
 function report_showMetaKitchenResults() {
