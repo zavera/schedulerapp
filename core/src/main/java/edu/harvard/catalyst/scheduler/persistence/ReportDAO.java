@@ -69,7 +69,7 @@ import static edu.harvard.catalyst.scheduler.persistence.SortStrategy.DESCENDING
 import static edu.harvard.catalyst.scheduler.util.DateUtility.*;
 import static edu.harvard.catalyst.scheduler.util.MiscUtil.isNonNullNonEmpty;
 
-@SuppressWarnings("ALL")
+
 @Repository
 @Transactional
 public class ReportDAO extends SiteDAO {
@@ -136,7 +136,7 @@ public class ReportDAO extends SiteDAO {
 		final CriteriaQueryHelper criteriaHelper = new CriteriaQueryHelper(session(), Report.class);
 		criteriaHelper.orderAsc("title");
 
-		@SuppressWarnings("unchecked")
+
 		final List<Report> result = criteriaHelper.getQuery().list();
 		
 		logCriteriaQuery(result, criteriaHelper, "order by 'title', ascending");
@@ -152,7 +152,7 @@ public class ReportDAO extends SiteDAO {
 		final CriteriaQueryHelper criteriaHelper = new CriteriaQueryHelper(session(), Sublocation.class);
 		criteriaHelper.orderAsc("name");
 		
-		@SuppressWarnings("unchecked")
+
         final List<Sublocation> sublocations = criteriaHelper.getQuery().list();
 		
 		final Predicate<Sublocation> isNonCrcOrOffInstitution = sl -> {
