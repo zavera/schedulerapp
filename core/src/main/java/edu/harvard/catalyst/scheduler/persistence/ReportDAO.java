@@ -69,6 +69,7 @@ import static edu.harvard.catalyst.scheduler.persistence.SortStrategy.DESCENDING
 import static edu.harvard.catalyst.scheduler.util.DateUtility.*;
 import static edu.harvard.catalyst.scheduler.util.MiscUtil.isNonNullNonEmpty;
 
+@SuppressWarnings("ALL")
 @Repository
 @Transactional
 public class ReportDAO extends SiteDAO {
@@ -1643,8 +1644,8 @@ public class ReportDAO extends SiteDAO {
 		}
 
 		String hql = "select bv.id, s.firstName, s.middleName, s.lastName, s.birthdate, sm.mrn, s.gender, st.localId, st.irb, v, " +
-                "r.name, br.scheduledStartTime, br.scheduledEndTime, bv.comment, bv.checkInDate, bv.appointmentStatus " +
-                "from Subject s, Study st, VisitTemplate v, Resource r, BookedResource br, BookedVisit bv, SubjectMrn sm " +
+                "r.name, br.scheduledStartTime, br.scheduledEndTime, bv.checkInDate, bv.appointmentStatus, c " +
+                "from Subject s, Study st, VisitTemplate v, Resource r, BookedResource br, BookedVisit bv LEFT JOIN Comments c on c.bookedVisit = bv.id, SubjectMrn sm " +
                 "where bv.subjectMrn = sm.id and sm.subject = s.id and br.bookedVisit = bv.id " +
 				" and br.resource = r.id and bv.study = st.id and bv.visitTemplate = v.id " +
 				" and s.archivalStatus IS NULL and " +
@@ -1704,10 +1705,23 @@ public class ReportDAO extends SiteDAO {
 			newObj.setResourceName((String) row[10]);
 			newObj.setScheduledStartTime((Date) row[11]);
 			newObj.setScheduledEndTime((Date) row[12]);
-			newObj.setComment((String) row[13]);
-			newObj.setCheckInTime((Date) row[14]);
-			newObj.setVisitStatus(((AppointmentStatus) row[15]).getName());
 
+			newObj.setCheckInTime((Date) row[13]);
+			newObj.setVisitStatus(((AppointmentStatus) row[14]).getName());
+			final Comments comment = (Comments) row[15];
+			if(comment  == null ){
+				newObj.setComment(" ");
+				newObj.setScheduledVisitComment(" ");
+			}
+			else {
+				newObj.setComment((String) comment.getComment());
+				final ScheduledVisitComment svc = (ScheduledVisitComment) comment.getScheduledVisitComment();
+				if (svc == null) {
+					newObj.setScheduledVisitComment("None");
+				} else {
+					newObj.setScheduledVisitComment((String) svc.getName());
+				}
+			}
 			if (visit.getVisitType().isOutpatient()) {
 				outpatientList.add(newObj);
 			} else {
