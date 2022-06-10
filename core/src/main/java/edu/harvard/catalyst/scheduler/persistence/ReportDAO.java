@@ -733,8 +733,9 @@ public class ReportDAO extends SiteDAO {
 		}
 
     	final String scheduledCheckedInOrHoldApptStatus = "(1,2,5)";
-		final String baseHql = "select bv, br "
-				+ "from BookedResource br,  BookedVisit bv LEFT JOIN bv.subjectMrn sm LEFT JOIN sm.subject s WITH s.archivalStatus IS NULL"
+		final String baseHql = "select bv, br, c "
+				+ "from BookedResource br,  BookedVisit bv LEFT JOIN bv.subjectMrn sm LEFT JOIN sm.subject s WITH s.archivalStatus IS NULL" +
+				" LEFT JOIN Comments c on c.bookedVisit = bv.id"
 				+ " where bv.appointmentStatus.isOpen = TRUE and br.bookedVisit = bv.id "
 				+ " and ((:startTime between br.scheduledStartTime and br.scheduledEndTime) "
 				+ " or (:endTime between br.scheduledStartTime and br.scheduledEndTime) "
@@ -1534,8 +1535,11 @@ public class ReportDAO extends SiteDAO {
             newObj.setVisitName((String) row[6]);
             newObj.setScheduledStartTime((Date) row[7]);
             newObj.setScheduledEndTime((Date) row[8]);
-            newObj.setComment((String) row[9]);
-            newObj.setVisitId((Integer) row[10]);
+            newObj.setComment((String) row[10]);
+
+
+
+            newObj.setVisitId((Integer) row[9]);
 
             return newObj;
 		};
@@ -1580,12 +1584,16 @@ public class ReportDAO extends SiteDAO {
 
       String result =
           "select r.id, r.resourceType, r.name, bv, st.localId, st.irb, v.name, " +
-				  "br.scheduledStartTime, br.scheduledEndTime, bv.comment, bv.id " +
+				  "br.scheduledStartTime, br.scheduledEndTime,  bv.id, c " +
           "from Study st, VisitTemplate v, BookedResource br, " +
           " Resource r, " +
           " BookedVisit bv left join bv.subjectMrn sm left join sm.subject s with s.archivalStatus IS NULL " +
+				  "LEFT JOIN Comments c on c.bookedVisit = bv.id " +
+
           "where bv.study = st.id and bv.visitTemplate = v.id " +
           " and br.bookedVisit = bv.id and br.resource = r.id " +
+				  " and c.bookedVisit = bv.id " +
+
           desiredStatus +
           " and " +
           "    ((:startTime between br.scheduledStartTime and br.scheduledEndTime) " +
@@ -1644,7 +1652,7 @@ public class ReportDAO extends SiteDAO {
 		}
 
 		String hql = "select bv.id, s.firstName, s.middleName, s.lastName, s.birthdate, sm.mrn, s.gender, st.localId, st.irb, v, " +
-                "r.name, br.scheduledStartTime, br.scheduledEndTime, bv.checkInDate, bv.appointmentStatus, c " +
+                "r.name, br.scheduledStartTime, br.scheduledEndTime, bv.checkInDate, bv.appointmentStatus, bv.schedulingFlavor, c " +
                 "from Subject s, Study st, VisitTemplate v, Resource r, BookedResource br, BookedVisit bv LEFT JOIN Comments c on c.bookedVisit = bv.id, SubjectMrn sm " +
                 "where bv.subjectMrn = sm.id and sm.subject = s.id and br.bookedVisit = bv.id " +
 				" and br.resource = r.id and bv.study = st.id and bv.visitTemplate = v.id " +
@@ -1708,7 +1716,9 @@ public class ReportDAO extends SiteDAO {
 
 			newObj.setCheckInTime((Date) row[13]);
 			newObj.setVisitStatus(((AppointmentStatus) row[14]).getName());
-			final Comments comment = (Comments) row[15];
+			newObj.setSchedulingFlavor((String) row[15]);
+			final Comments comment = (Comments) row[16];
+
 			if(comment  == null ){
 				newObj.setComment(" ");
 				newObj.setScheduledVisitComment(" ");
@@ -1727,6 +1737,8 @@ public class ReportDAO extends SiteDAO {
 			} else {
 				inpatientList.add(newObj);
 			}
+
+
 		}
 
 		final SortStrategy sortStrategy = SortStrategy.fromIdString(sortid).orElse(ASCENDING);

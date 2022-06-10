@@ -1357,49 +1357,66 @@ function report_showDailyResourceResults() {
 }
 
 
-function report_showDailyAdmResults() {
-    var out = "";
-    report_handleDataResponse(report_dailyAdmResult.length);
+function parse_dailyAdmResults(toCsv){
 
-    var iteration = 0;
-    var tableRow = 0;
-
+    var resultSet;
+    if(toCsv) {
+        resultSet = export_dailyAdmResult;
+    }
+    else{
+        resultSet = report_dailyAdmResult;
+    }
     var resourcePerVisit = {};
     var commentPerSubject = {};
     var visitIdentifiers = {};
 
-    for (var i = 0; i < report_dailyAdmResult.length; i++) {
-        var record = report_dailyAdmResult[i];
+    for (var i = 0; i < resultSet.length; i++) {
+        var record = resultSet[i];
 
         if (!(record.subjectId in visitIdentifiers)) {
             visitIdentifiers[record.subjectId] = {
                 'DOB': '',
                 'MRN': '',
                 'firstname': '',
-                'middlename': '',
+                'middlename': ' ',
                 'lastname': '',
                 'Gender': '',
                 'localID': '',
                 'irb': '',
                 'Visit': '',
                 'status': '',
-                'checkin': ''
+                'checkin': '',
+                'fullname': ''
             };
             visitIdentifiers[record.subjectId].DOB = record.birthdate;
             visitIdentifiers[record.subjectId].MRN = record.mrn;
             visitIdentifiers[record.subjectId].firstname = record.subjectFirstName;
-            visitIdentifiers[record.subjectId].middlename = record.subjectMiddleName;
+
+            if( record.subjectMiddleName != null ) {
+                visitIdentifiers[record.subjectId].middlename  = record.subjectMiddleName;
+            }
             visitIdentifiers[record.subjectId].lastname = record.subjectLastName;
+            //visitIdentifiers[record.subjectId].fullname = record.subjectFirstName+' '+record.subjectMiddleName+' '+record.subjectLastName;
             visitIdentifiers[record.subjectId].Gender = record.genderName;
             visitIdentifiers[record.subjectId].localId = record.localId;
             visitIdentifiers[record.subjectId].irb = record.irb;
             visitIdentifiers[record.subjectId].Visit = record.visitName;
             visitIdentifiers[record.subjectId].status = record.visitStatus;
             visitIdentifiers[record.subjectId].checkin = record.checkInTime;
+            visitIdentifiers[record.subjectId].schedulingFlavor = record.schedulingFlavor;
         }
 
 
-        if (!(record.subjectId in commentPerSubject)) {
+
+        var svc = record.scheduledVisitComment;
+        var resourceIdentifier = record.subjectId + ';' + record.resourceName + ';' + record.scheduledStartTime + ';' + record.scheduledEndTime;
+
+        if(!(record.subjectId in resourcePerVisit)) {
+            resourcePerVisit[record.subjectId] = [resourceIdentifier];
+
+
+//make this dynamic db pull
+
             commentPerSubject[record.subjectId] = {
                 'Nutrition': '',
                 'EBL': '',
@@ -1410,14 +1427,9 @@ function report_showDailyAdmResults() {
                 'Other': '',
                 'None': ''
             };
-        };
-            var svc = record.scheduledVisitComment;
-            commentPerSubject[record.subjectId][svc] += commentPerSubject[record.subjectId][svc] + record.comment + ' ';
+//initialize comment object with first key-value pair
+            commentPerSubject[record.subjectId][svc] = record.comment+' ';
 
-
-        var resourceIdentifier = record.subjectId + ';' + record.resourceName + ';' + record.scheduledStartTime + ';' + record.scheduledEndTime;
-        if(!(record.subjectId in resourcePerVisit)) {
-            resourcePerVisit[record.subjectId] = [resourceIdentifier];
         }
         else {
             var resources = resourcePerVisit[record.subjectId];
@@ -1425,8 +1437,76 @@ function report_showDailyAdmResults() {
                 resources.push(resourceIdentifier);
                 resourcePerVisit[record.subjectId] = resources;
             }
+
+            //work on comment set assigned to one type of resource (existing).
+            else if(resources.indexOf(resourceIdentifier) == 0) {
+                if(record.schedulingFlavor == 'Overbooked'){
+                    commentPerSubject[record.subjectId][svc] +=  record.comment + ' ';}
+                else {
+                    if (svc == 'None') {
+                        commentPerSubject[record.subjectId][svc] +=  record.comment + ' ';
+                    }
+                    else{
+                        commentPerSubject[record.subjectId][svc] = record.comment;
+                    }
+                }
+            }
         }
+
     }
+
+   if(!toCsv){
+       newObject = {};
+       newObject.resourcePerVisit = resourcePerVisit;
+       newObject.commentPerSubject = commentPerSubject;
+       newObject.visitIdentifiers = visitIdentifiers;
+       return newObject;
+   }
+
+
+    var out = 'Subject Name, DOB, MRN, Gender, Local ID, IRB#, Visit Name, Visit Status, Check In Time, Resource Name,'+
+        'Resource Start Time, Resource End Time, Nutrition, EBL, Nursing, Cardiovascular Imaging, Lab, Pharmacy,'+
+        'Other, None\n';
+
+    for (id in visitIdentifiers) {
+
+        var visitRow = '"'+(visitIdentifiers[id].firstname+visitIdentifiers[id].middlename +visitIdentifiers[id].lastname) +
+            '","'
+        + visitIdentifiers[id].DOB + '","'+visitIdentifiers[id].MRN + '","'
+        + visitIdentifiers[id].Gender + '","' + visitIdentifiers[id].localId +'","' + visitIdentifiers[id].irb + '","'
+        + visitIdentifiers[id].Visit + '","'+ visitIdentifiers[id].status +'","' + visitIdentifiers[id].checkin
+
+        var resources = resourcePerVisit[id];
+        resources.forEach(function(resource) {
+            var resourceRow = resource.split(";");
+            var commentRow = commentPerSubject[id].Nutrition + '","' + commentPerSubject[id].EBL + '","' +
+                commentPerSubject[id].Nursing + '","' + commentPerSubject[id]['Cardiovascular Imaging'] + '","' +
+                commentPerSubject[id].Lab + '","' + commentPerSubject[id].Pharmacy + '","' + commentPerSubject[id].Other +
+                '","' + commentPerSubject[id]["None"] + '"\n';
+            out += visitRow + '","' + resourceRow[1] + '","' + resourceRow[2] + '","' + resourceRow[3] + '","' + commentRow;
+
+        })
+    }
+
+    return out;
+
+
+}
+
+
+function report_showDailyAdmResults() {
+    var out = "";
+    report_handleDataResponse(report_dailyAdmResult.length);
+
+    var iteration = 0;
+    var tableRow = 0;
+
+    var resultObject = parse_dailyAdmResults(false);
+
+    var resourcePerVisit = resultObject.resourcePerVisit;
+    var commentPerSubject = resultObject.commentPerSubject;
+    var visitIdentifiers = resultObject.visitIdentifiers;
+
 
     for (var key in visitIdentifiers) {
         var r = visitIdentifiers[key];

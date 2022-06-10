@@ -58,7 +58,8 @@ public class DailyAdmReportDTO implements CsvAbleDTO {
   private Date scheduledEndTime;
   private String comment;
   private String scheduledVisitComment;
-  
+
+  private String schedulingFlavor;
 
   public DailyAdmReportDTO() {
   }
@@ -174,6 +175,11 @@ public void setComment(String comment) {
     this.scheduledVisitComment = scheduledVisitComment;
   }
 
+  public String getSchedulingFlavor(){ return schedulingFlavor;}
+
+  public void setSchedulingFlavor(String schedulingFlavor) {
+    this.schedulingFlavor = schedulingFlavor;
+  }
 
 public void setScheduledEndTime(Date scheduledEndTime) {
     this.scheduledEndTime = scheduledEndTime;
