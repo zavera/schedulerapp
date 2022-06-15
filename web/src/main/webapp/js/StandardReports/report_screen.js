@@ -923,16 +923,46 @@ function customExport(url,jsonObj,csvName){
         })
 }
 
+
+
+
+function customResourceUsageExport(url,jsonObj,csvName){
+    clearMiscMessages();
+    $('#report_loadMessage').css({display: "block"});
+    $.post(url, {data: jsonObj}, function(data) {
+        var parsedData = JSON.parse(data);
+        window["export_resourceUsage"] = parsedData['dailyAdmReport'];
+        var csvData =  parse_dailyResource(true);
+
+        var fileName = csvName + ".csv";
+
+        var blob = new Blob([csvData], {type: "application/octet-binary"});
+
+        var size = csvData.length;
+        console.log('Downloaded file: ' + fileName + ', size: ' + size);
+        if (size > 500 * 1000 * 1000) {
+            throw size + ' is too many bytes to download';
+        }
+
+        saveAs(blob, fileName);
+
+        $('#report_loadMessage').css({display: "none"});
+        return
+
+    })
+}
+
 function submitActionAndDataForCsv(actionUrl, jsonData, csvOutput, csvName) {
 
     if (actionUrl === undefined || jsonData == undefined) {
         return;
     }
 
-    if(csvName = 'dailyAdmnReport'){
+    if(csvName == 'dailyAdmnReport'){
         customExport(actionUrl,jsonData,csvName);
 
     }
+
 
     else {
         var separator = (actionUrl.indexOf('?') === -1) ? '?' : '&';

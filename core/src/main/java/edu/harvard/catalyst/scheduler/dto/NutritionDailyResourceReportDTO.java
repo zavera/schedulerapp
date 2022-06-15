@@ -30,6 +30,8 @@ package edu.harvard.catalyst.scheduler.dto;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 
 import static edu.harvard.catalyst.scheduler.util.MiscUtil.*;
@@ -52,13 +54,14 @@ public class NutritionDailyResourceReportDTO extends DailyResourceReportDTO {
     mrn = uncle.mrn;
     comment = uncle.comment;
     visitId = uncle.visitId;
+    scheduledVisitComment = uncle.scheduledVisitComment;
   }
   
   @Override
   public String toCsvHeaders() {
     return "Resource Name,Subject Name,MRN,Visit ID,Visit Name," +
             "Resource Start Time,Resource End Time,Resource Usage Duration," +
-            "Comment 1, Comment 2, Comment 3, Comment 4";
+            "Nutrition, EBL, Nursing, Cardiovascular Imaging, Lab, Pharmacy, Other, None";
   }
 
   @Override
@@ -84,8 +87,35 @@ public class NutritionDailyResourceReportDTO extends DailyResourceReportDTO {
           columns.add(q(showDateTime(d.scheduledEndTime)));
           columns.add(q(formatEndMinusStart(
                   d.scheduledStartTime, d.scheduledEndTime)));
-          columns.add(q(d.comment));
+          String[] comments = new String[8];
+          comments = new String[]{"", "", "", "", "", "", "", ""};
+          if(d.scheduledVisitComment.equals("None")){
+              comments[7] = '"'+d.comment+'"';
+          }
+          else if(d.scheduledVisitComment.equals("Nutrition")){
+              comments[0] = '"'+d.comment+'"';
+          }
+          else if(d.scheduledVisitComment.equals("EBL")){
+              comments[1] = '"'+d.comment+'"';
+          }
+          else if(d.scheduledVisitComment.equals("Nursing")){
+              comments[2] = '"'+d.comment+'"';
+          }
+          else if(d.scheduledVisitComment.equals("Cardiovascular Imaging")){
+              comments[3] = '"'+d.comment+'"';
+          }
 
+          else if(d.scheduledVisitComment.equals("Lab")){
+              comments[4] = '"'+d.comment+'"';
+          }
+          else if(d.scheduledVisitComment.equals("Pharmacy")){
+              comments[5] = '"'+d.comment+'"';
+          }
+          else if(d.scheduledVisitComment.equals("Other")){
+              comments[6] = '"'+d.comment+'"';
+          }
+
+          columns.addAll(Arrays.asList(comments));
           String rows = Joiner.on(",").join(columns);
           result.add(rows + "\n");
       }

@@ -796,6 +796,22 @@ public class ReportDAO extends SiteDAO {
 
 			newObj.setComment(visit.getComment());
 
+			final Comments comment = (Comments) row[2];
+
+			if(comment  == null ){
+				newObj.setComment(" ");
+				newObj.setScheduledVisitComment(" ");
+			}
+			else {
+				newObj.setComment((String) comment.getComment());
+				final ScheduledVisitComment svc = (ScheduledVisitComment) comment.getScheduledVisitComment();
+				if (svc == null) {
+					newObj.setScheduledVisitComment("None");
+				} else {
+					newObj.setScheduledVisitComment((String) svc.getName());
+				}
+			}
+
 			newObj.setSublocationName(visit.getVisitTemplate().getSublocation().getName());
 
 			newObj.setVisitStatus(visit.getAppointmentStatus().getName());
@@ -1535,11 +1551,23 @@ public class ReportDAO extends SiteDAO {
             newObj.setVisitName((String) row[6]);
             newObj.setScheduledStartTime((Date) row[7]);
             newObj.setScheduledEndTime((Date) row[8]);
-            newObj.setComment((String) row[10]);
+			newObj.setVisitId((Integer) row[9]);
+			final Comments comment = (Comments) row[10];
 
+			 if(comment  == null ){
+				 newObj.setComment(" ");
+				 newObj.setScheduledVisitComment(" ");
+			 }
+			 else {
+				 newObj.setComment((String) comment.getComment());
+				 final ScheduledVisitComment svc = (ScheduledVisitComment) comment.getScheduledVisitComment();
+				 if (svc == null) {
+					 newObj.setScheduledVisitComment("None");
+				 } else {
+					 newObj.setScheduledVisitComment((String) svc.getName());
+				 }
+			 }
 
-
-            newObj.setVisitId((Integer) row[9]);
 
             return newObj;
 		};
@@ -1592,7 +1620,7 @@ public class ReportDAO extends SiteDAO {
 
           "where bv.study = st.id and bv.visitTemplate = v.id " +
           " and br.bookedVisit = bv.id and br.resource = r.id " +
-				  " and c.bookedVisit = bv.id " +
+
 
           desiredStatus +
           " and " +
