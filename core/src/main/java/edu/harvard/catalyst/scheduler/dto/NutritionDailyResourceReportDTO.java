@@ -29,10 +29,13 @@ package edu.harvard.catalyst.scheduler.dto;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import scala.Int;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static edu.harvard.catalyst.scheduler.util.MiscUtil.*;
 
@@ -55,8 +58,53 @@ public class NutritionDailyResourceReportDTO extends DailyResourceReportDTO {
     comment = uncle.comment;
     visitId = uncle.visitId;
     scheduledVisitComment = uncle.scheduledVisitComment;
+    schedulingFlavor = uncle.schedulingFlavor;
   }
-  
+
+
+  public String[] getCommentedRow(String[] row, String comment, String scheduledVisitComment,String schedulingFlavor){
+      if(scheduledVisitComment.equals("None")){
+          row[15] += q(comment+" ");
+      }
+      if(schedulingFlavor.equals("Overbooked")) {
+          if (scheduledVisitComment.equals("Nutrition")) {
+              row[8] += q(comment+" ");
+          } else if (scheduledVisitComment.equals("EBL")) {
+              row[9] += q(comment+" ");
+          } else if (scheduledVisitComment.equals("Nursing")) {
+              row[10] +=  q(comment+" ");
+          } else if (scheduledVisitComment.equals("Cardiovascular Imaging")) {
+              row[11] +=  q(comment+" ");
+          } else if (scheduledVisitComment.equals("Lab")) {
+              row[12] +=  q(comment+" ");
+          } else if (scheduledVisitComment.equals("Pharmacy")) {
+              row[13] +=  q(comment+" ");
+          } else if (scheduledVisitComment.equals("Other")) {
+              row[14] +=  q(comment+" ");
+          }
+      }
+      if(schedulingFlavor.equals("Scheduled")){
+          if (scheduledVisitComment.equals("Nutrition")) {
+              row[8] =  q(comment);
+          } else if (scheduledVisitComment.equals("EBL")) {
+              row[9] =  q(comment);
+          } else if (scheduledVisitComment.equals("Nursing")) {
+              row[10] =  q(comment);
+          } else if (scheduledVisitComment.equals("Cardiovascular Imaging")) {
+              row[11] =  q(comment);
+          } else if (scheduledVisitComment.equals("Lab")) {
+              row[12] =  q(comment);
+          } else if (scheduledVisitComment.equals("Pharmacy")) {
+              row[13] =  q(comment);
+          } else if (scheduledVisitComment.equals("Other")) {
+              row[14] =  q(comment);
+          }
+
+      }
+      return row;
+
+  }
+
   @Override
   public String toCsvHeaders() {
     return "Resource Name,Subject Name,MRN,Visit ID,Visit Name," +
@@ -70,55 +118,39 @@ public class NutritionDailyResourceReportDTO extends DailyResourceReportDTO {
       List<String> result = Lists.newArrayList();
       result.add(toCsvHeaders() + "\n");
 
-      for (Object object: dtoList) {
+      Map<Integer, String[]> rowMap = new HashMap<>();
+      for (Object object : dtoList) {
           NutritionDailyResourceReportDTO d = (NutritionDailyResourceReportDTO) object;
 
-          List<String> columns = Lists.newArrayList();
+          if (rowMap.containsKey(d.visitId)) {
 
-          columns.add(q(d.resourceName));
-          columns.add(q(fullName(
-                  d.subjectFirstName,
-                  d.subjectMiddleName,
-                  d.subjectLastName)));
-          columns.add(q(d.mrn));
-          columns.add(q(d.visitId));
-          columns.add(q(d.visitName));
-          columns.add(q(showDateTime(d.scheduledStartTime)));
-          columns.add(q(showDateTime(d.scheduledEndTime)));
-          columns.add(q(formatEndMinusStart(
-                  d.scheduledStartTime, d.scheduledEndTime)));
-          String[] comments = new String[8];
-          comments = new String[]{"", "", "", "", "", "", "", ""};
-          if(d.scheduledVisitComment.equals("None")){
-              comments[7] = '"'+d.comment+'"';
+              String[] newRow = getCommentedRow(rowMap.get(d.visitId), d.comment, d.scheduledVisitComment,d.schedulingFlavor);
+              rowMap.put(d.visitId, newRow);
+          } else {
+              String[] row = new String[16];
+              row = new String[]{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
+              row[0] = q(d.resourceName);
+              row[1] = q(fullName(
+                      d.subjectFirstName,
+                      d.subjectMiddleName,
+                      d.subjectLastName));
+              row[2] = q(d.mrn);
+              row[3] = q(d.visitId);
+              row[4] = q(d.visitName);
+              row[5] = q(showDateTime(d.scheduledStartTime));
+              row[6] = q(showDateTime(d.scheduledEndTime));
+              row[7] = q(formatEndMinusStart(
+                      d.scheduledStartTime, d.scheduledEndTime));
+              String[] newRow = getCommentedRow(row, d.comment, d.scheduledVisitComment,d.schedulingFlavor);
+              rowMap.put(d.visitId, newRow);
           }
-          else if(d.scheduledVisitComment.equals("Nutrition")){
-              comments[0] = '"'+d.comment+'"';
-          }
-          else if(d.scheduledVisitComment.equals("EBL")){
-              comments[1] = '"'+d.comment+'"';
-          }
-          else if(d.scheduledVisitComment.equals("Nursing")){
-              comments[2] = '"'+d.comment+'"';
-          }
-          else if(d.scheduledVisitComment.equals("Cardiovascular Imaging")){
-              comments[3] = '"'+d.comment+'"';
-          }
+      }
 
-          else if(d.scheduledVisitComment.equals("Lab")){
-              comments[4] = '"'+d.comment+'"';
-          }
-          else if(d.scheduledVisitComment.equals("Pharmacy")){
-              comments[5] = '"'+d.comment+'"';
-          }
-          else if(d.scheduledVisitComment.equals("Other")){
-              comments[6] = '"'+d.comment+'"';
-          }
-
-          columns.addAll(Arrays.asList(comments));
-          String rows = Joiner.on(",").join(columns);
+      for (Map.Entry<Integer,String[]> entry : rowMap.entrySet()) {
+          String rows = Joiner.on(",").join(entry.getValue());
           result.add(rows + "\n");
       }
+
       return result;
   }
 }

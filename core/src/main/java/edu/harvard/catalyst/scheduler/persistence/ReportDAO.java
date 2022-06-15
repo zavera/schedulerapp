@@ -1552,7 +1552,8 @@ public class ReportDAO extends SiteDAO {
             newObj.setScheduledStartTime((Date) row[7]);
             newObj.setScheduledEndTime((Date) row[8]);
 			newObj.setVisitId((Integer) row[9]);
-			final Comments comment = (Comments) row[10];
+			newObj.setSchedulingFlavor((String) row[10]);
+			final Comments comment = (Comments) row[11];
 
 			 if(comment  == null ){
 				 newObj.setComment(" ");
@@ -1612,7 +1613,7 @@ public class ReportDAO extends SiteDAO {
 
       String result =
           "select r.id, r.resourceType, r.name, bv, st.localId, st.irb, v.name, " +
-				  "br.scheduledStartTime, br.scheduledEndTime,  bv.id, c " +
+				  "br.scheduledStartTime, br.scheduledEndTime,  bv.id, bv.schedulingFlavor, c " +
           "from Study st, VisitTemplate v, BookedResource br, " +
           " Resource r, " +
           " BookedVisit bv left join bv.subjectMrn sm left join sm.subject s with s.archivalStatus IS NULL " +
