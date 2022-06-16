@@ -733,9 +733,8 @@ public class ReportDAO extends SiteDAO {
 		}
 
     	final String scheduledCheckedInOrHoldApptStatus = "(1,2,5)";
-		final String baseHql = "select bv, br, c "
-				+ "from BookedResource br,  BookedVisit bv LEFT JOIN bv.subjectMrn sm LEFT JOIN sm.subject s WITH s.archivalStatus IS NULL" +
-				" LEFT JOIN Comments c on c.bookedVisit = bv.id"
+		final String baseHql = "select bv, br "
+				+ "from BookedResource br,  BookedVisit bv LEFT JOIN bv.subjectMrn sm LEFT JOIN sm.subject s WITH s.archivalStatus IS NULL"
 				+ " where bv.appointmentStatus.isOpen = TRUE and br.bookedVisit = bv.id "
 				+ " and ((:startTime between br.scheduledStartTime and br.scheduledEndTime) "
 				+ " or (:endTime between br.scheduledStartTime and br.scheduledEndTime) "
@@ -795,22 +794,6 @@ public class ReportDAO extends SiteDAO {
 			}
 
 			newObj.setComment(visit.getComment());
-
-			final Comments comment = (Comments) row[2];
-
-			if(comment  == null ){
-				newObj.setComment(" ");
-				newObj.setScheduledVisitComment(" ");
-			}
-			else {
-				newObj.setComment((String) comment.getComment());
-				final ScheduledVisitComment svc = (ScheduledVisitComment) comment.getScheduledVisitComment();
-				if (svc == null) {
-					newObj.setScheduledVisitComment("None");
-				} else {
-					newObj.setScheduledVisitComment((String) svc.getName());
-				}
-			}
 
 			newObj.setSublocationName(visit.getVisitTemplate().getSublocation().getName());
 
@@ -1679,6 +1662,8 @@ public class ReportDAO extends SiteDAO {
 		} else {
 			filterString = dto.getFilterString();
 		}
+
+		//need left join on subjectMRN. id match with bv.subjectMrn means bv without subjects are not selected.
 
 		String hql = "select bv.id, s.firstName, s.middleName, s.lastName, s.birthdate, sm.mrn, s.gender, st.localId, st.irb, v, " +
                 "r.name, br.scheduledStartTime, br.scheduledEndTime, bv.checkInDate, bv.appointmentStatus, bv.schedulingFlavor, c " +
