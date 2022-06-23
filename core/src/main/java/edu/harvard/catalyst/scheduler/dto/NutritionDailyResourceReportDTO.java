@@ -118,14 +118,15 @@ public class NutritionDailyResourceReportDTO extends DailyResourceReportDTO {
       List<String> result = Lists.newArrayList();
       result.add(toCsvHeaders() + "\n");
 
-      Map<Integer, String[]> rowMap = new HashMap<>();
+      Map<String, String[]> rowMap = new HashMap<>();
       for (Object object : dtoList) {
           NutritionDailyResourceReportDTO d = (NutritionDailyResourceReportDTO) object;
+          String rowMapKey = d.visitId + d.resourceName + d.resourceTypeId;
 
-          if (rowMap.containsKey(d.visitId)) {
+          if (rowMap.containsKey(rowMapKey)) {
 
-              String[] newRow = getCommentedRow(rowMap.get(d.visitId), d.comment, d.scheduledVisitComment,d.schedulingFlavor);
-              rowMap.put(d.visitId, newRow);
+              String[] newRow = getCommentedRow(rowMap.get(rowMapKey), d.comment, d.scheduledVisitComment,d.schedulingFlavor);
+              rowMap.put(rowMapKey, newRow);
           } else {
               String[] row = new String[16];
               row = new String[]{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""};
@@ -142,11 +143,11 @@ public class NutritionDailyResourceReportDTO extends DailyResourceReportDTO {
               row[7] = q(formatEndMinusStart(
                       d.scheduledStartTime, d.scheduledEndTime));
               String[] newRow = getCommentedRow(row, d.comment, d.scheduledVisitComment,d.schedulingFlavor);
-              rowMap.put(d.visitId, newRow);
+              rowMap.put(rowMapKey, newRow);
           }
       }
 
-      for (Map.Entry<Integer,String[]> entry : rowMap.entrySet()) {
+      for (Map.Entry<String,String[]> entry : rowMap.entrySet()) {
           String rows = Joiner.on(",").join(entry.getValue());
           result.add(rows + "\n");
       }
