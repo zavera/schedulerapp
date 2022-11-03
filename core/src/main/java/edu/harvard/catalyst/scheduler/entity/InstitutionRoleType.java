@@ -46,7 +46,9 @@ public enum InstitutionRoleType implements ConfigAttribute, GrantedAuthority, Ha
     ROLE_SCHEDULER("Schedulers"),
     ROLE_STUDY_STAFF("Study Staff"),
     ROLE_FRONT_DESK("Front Desk"),
-    ROLE_GENERAL_VIEW("General View");
+    ROLE_GENERAL_VIEW("General View"),
+
+    ROLE_EXERCISE_SUPERVISOR("Exercise Supervisor") ;
 
     private String reportFiltersName;
     
@@ -95,6 +97,7 @@ public enum InstitutionRoleType implements ConfigAttribute, GrantedAuthority, Ha
         result.put("study staff",      ROLE_STUDY_STAFF);
         result.put("front desk",       ROLE_FRONT_DESK);
         result.put("general view",     ROLE_GENERAL_VIEW);
+        result.put("exercise supervisor", ROLE_EXERCISE_SUPERVISOR);
         
         return result;
     }

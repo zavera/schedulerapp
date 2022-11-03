@@ -56,6 +56,7 @@ public class RolePair {
             rolePairMap.put(new RolePair(RoleType.ROLE_NUTRITION_MANAGER      , InstitutionRoleType.ROLE_RESOURCE_MANAGER), true);
             rolePairMap.put(new RolePair(RoleType.ROLE_NURSE_MANAGER_DIRECTOR , InstitutionRoleType.ROLE_RESOURCE_MANAGER), true);
             rolePairMap.put(new RolePair(RoleType.ROLE_SCHEDULER              , InstitutionRoleType.ROLE_SCHEDULER)       , true);
+
         }
     }
 

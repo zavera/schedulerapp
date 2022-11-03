@@ -69,13 +69,13 @@
 
 		<!-- HOME MODULE -->
 		<sec:intercept-url pattern="/home.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW','ROLE_EXERCISE_SUPERVISOR')" />
 
 		<!-- SUBJECT MODULE -->
 		<sec:intercept-url pattern="/subject_search.html"
-						   access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF')" />
+						   access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF','ROLE_EXERCISE_SUPERVISOR')" />
 		<sec:intercept-url pattern="/subject_details.html"
-						   access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF')" />
+						   access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF','ROLE_EXERCISE_SUPERVISOR')" />
 
 		<!-- MGMT MODULE -->
 		<sec:intercept-url pattern="/mgmt_screen.html"
@@ -85,53 +85,53 @@
 		<sec:intercept-url pattern="/mgmt_detail.html"
 			access="hasRole('ROLE_SUPER_ADMIN')" />
 		<sec:intercept-url pattern="/password_reset.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN','ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN','ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW','ROLE_EXERCISE_SUPERVISOR')" />
 
 
 		<!-- RESOURCE MODULE -->
 		<sec:intercept-url pattern="/add_sublocation_closure.html"
 			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER')" />
 		<sec:intercept-url pattern="/nursing_gantt.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN','ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN','ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW','ROLE_EXERCISE_SUPERVISOR')" />
 		<sec:intercept-url pattern="/nutrition_gantt.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN','ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN','ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW','ROLE_EXERCISE_SUPERVISOR')" />
 		<sec:intercept-url pattern="/sublocation_closure_screen.html"
 			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER')" />
 
 		<sec:intercept-url pattern="/resource_form.html"
-						   access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW')" />
+						   access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW','ROLE_EXERCISE_SUPERVISOR')" />
 		<sec:intercept-url pattern="/resource_screen.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW','ROLE_EXERCISE_SUPERVISOR')" />
 
 		<!-- APPOINTMENT MODULE -->
 		<sec:intercept-url pattern="/appt_timeline.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW','ROLE_EXERCISE_SUPERVISOR')" />
 		<sec:intercept-url pattern="/appt_list.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW','ROLE_EXERCISE_SUPERVISOR')" />
 		<sec:intercept-url pattern="/appt_batch.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF', 'ROLE_GENERAL_VIEW','ROLE_EXERCISE_SUPERVISOR')" />
 
 		<!-- STUDY MODULE -->
 		<sec:intercept-url pattern="/create_study.html"
 			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER')" />
 		<sec:intercept-url pattern="/create_visit.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK','ROLE_EXERCISE_SUPERVISOR')" />
 		<sec:intercept-url pattern="/study_detail.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF','ROLE_EXERCISE_SUPERVISOR')" />
 		<sec:intercept-url pattern="/study_member.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK','ROLE_EXERCISE_SUPERVISOR')" />
 		<sec:intercept-url pattern="/study_screen.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF','ROLE_EXERCISE_SUPERVISOR')" />
 		<sec:intercept-url pattern="/visit_approval.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK','ROLE_EXERCISE_SUPERVISOR')" />
 		<sec:intercept-url pattern="/visit_detail.html"
 			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF')" />
 
 		<!-- REPORT MODULE -->
 		<sec:intercept-url pattern="/report_screen.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN','ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_GENERAL_VIEW')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN','ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_GENERAL_VIEW','ROLE_EXERCISE_SUPERVISOR')" />
 		<sec:intercept-url pattern="/report.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN','ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_GENERAL_VIEW')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN','ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_GENERAL_VIEW','ROLE_EXERCISE_SUPERVISOR')" />
 
         <!-- NEW REPORTING MODULE -->
         <sec:intercept-url pattern="/report_builder.html"

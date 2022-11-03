@@ -86,7 +86,7 @@ public class SubjectResource extends SecuredResource {
 
 	@POST
 	@Path("/createSubject")
-	@AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+	@AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
 	public String createSubject(@FormParam("data") final String data, @HeaderParam("User-Agent") final String header) {
 		SubjectsDTO subjectsDTO = gson.fromJson(data, SubjectsDTO.class);
         subjectsDTO.nullifyBlanks();
@@ -100,7 +100,7 @@ public class SubjectResource extends SecuredResource {
 
 	@POST
 	@Path("/updateSubject")
-	@AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+	@AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
 	public String updateSubject(@FormParam("data") final String data, @HeaderParam("User-Agent") final String header) {
 		SubjectsDTO subjectsDTO = gson.fromJson(data, SubjectsDTO.class);
         subjectsDTO.nullifyBlanks();
@@ -123,7 +123,7 @@ public class SubjectResource extends SecuredResource {
      */
 	@POST
 	@Path("/ssot/getSearchSubjects")
-	@AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+	@AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
 	public String getSearchSubjects(@FormParam("data") final String data) {
 
 		SubjectsDTO subjectsDTO = gson.fromJson(data, SubjectsDTO.class);
@@ -144,7 +144,7 @@ public class SubjectResource extends SecuredResource {
 
 	@GET
 	@Path("/getSubjectData")
-	@AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+	@AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
 	public String getSubjectData(@QueryParam("isPuid") final Boolean isPuid,
                                  @QueryParam("data") final String data) {
 		SubjectsDTO subjectsDTO = gson.fromJson(data, SubjectsDTO.class);
@@ -155,7 +155,7 @@ public class SubjectResource extends SecuredResource {
 
 	@POST
 	@Path("/getExternalSubjectDataUsingMrn")
-	@AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+	@AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
 	public String getExternalSubjectDataUsingMrnInfo(@FormParam("data") final String data) {
 		SubjectMrnDTO subjectMrnDTO = gson.fromJson(data, SubjectMrnDTO.class);
 
@@ -165,7 +165,7 @@ public class SubjectResource extends SecuredResource {
 
 	@GET
 	@Path("/findInternalSubjectByMrn")
-	@AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+	@AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
 	public String findInternalSubjectByMrn(@QueryParam("mrnInfo") final String mrnInfoStr)
 	{
 		SubjectMrnDTO subjectsDTO = gson.fromJson(mrnInfoStr, SubjectMrnDTO.class);

@@ -66,7 +66,7 @@ public class AuthResource extends SecuredResource {
 
     @GET
     @Path("/getUserData")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getUserData()  {
         User user = getUser();
         user.setBookedVisits(null);
@@ -75,7 +75,7 @@ public class AuthResource extends SecuredResource {
 
     @POST
     @Path("/pingSession")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String pingSession()  {
         long time = request.getSession().getLastAccessedTime();
         Date lastTime = new Date(time);

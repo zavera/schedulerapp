@@ -89,7 +89,7 @@ public class ReportResource extends SecuredResource {
 
     @GET
     @Path("/getReports")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getReports()  {
         reportService.logViewReports(getUser(), getRemoteHost(), "Reports Screen View");
         ReportDTO reportDTO = new ReportDTO();
@@ -100,7 +100,7 @@ public class ReportResource extends SecuredResource {
     
     @GET
     @Path("/getReportData")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getReportData(@QueryParam("id") int id)  {
         Report report = reportService.getReportData(getUser(), getRemoteHost(), id);
         return gson.toJson(report);
@@ -110,7 +110,7 @@ public class ReportResource extends SecuredResource {
     @Path("/getReport")
     @Consumes({MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     @Produces({MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public Response getReport(@FormParam("data") String data,
                               @QueryParam("name") String name,
                               @QueryParam("filterString") String filterString,
@@ -215,7 +215,8 @@ public class ReportResource extends SecuredResource {
 
     @POST
     @Path("/logViewReport")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
+
     public void logViewReport(@FormParam("data") String data)  {
         ReportDTO dto = gson.fromJson(data, ReportDTO.class);
         reportService.logViewReports(getUser(), getRemoteHost(), "Report Clicked - " + dto.getName());
@@ -223,7 +224,7 @@ public class ReportResource extends SecuredResource {
 
     @POST
     @Path("/loadResourceTypes")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String loadResourceTypes(@FormParam("data") String data)  {
         List<ResourceType> resourceTypes = reportService.getResourceTypes();
         ReportDTO dto = new ReportDTO();
@@ -233,7 +234,7 @@ public class ReportResource extends SecuredResource {
     
     @POST
     @Path("/loadSublocations")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_STUDY_STAFF, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_STUDY_STAFF, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String loadSublocations(@FormParam("data") String data)  {
         List<Sublocation> sublocations = reportService.getSublocations();
         ReportDTO dto = new ReportDTO();
@@ -246,7 +247,7 @@ public class ReportResource extends SecuredResource {
     ///////////////////////////////////////////////////
     @POST
     @Path("/studyDataReport")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public Response studyDataReport (
             @QueryParam("localId") String localId,
             @QueryParam("name") String name,
@@ -297,7 +298,7 @@ public class ReportResource extends SecuredResource {
     }
     @POST
     @Path("/cancellationsReport")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public Response cancellationsReport(
             @QueryParam("startTime") String startTimeLongString,
             @QueryParam("endTime") String endTimeLongString,
@@ -351,7 +352,7 @@ public class ReportResource extends SecuredResource {
 
     @POST
     @Path("/resourceLevelOfServiceReport")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public Response resourceLevelOfServiceReport (
             @QueryParam("filterString") String filterString,
             @QueryParam("filterId") String filterId,

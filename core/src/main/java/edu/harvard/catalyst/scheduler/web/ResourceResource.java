@@ -74,7 +74,7 @@ public class ResourceResource extends SecuredResource {
 
     @GET
     @Path("/getResourceAnnotations")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getResourceAnnotations(@QueryParam("resourceId") int resourceId) {
         List<LineLevelAnnotations> resourcesAnnotations = getResourceLineLevelAnnotationses(resourceId);
         GetResourcesDTO getResourcesDTO = new GetResourcesDTO();
@@ -84,7 +84,7 @@ public class ResourceResource extends SecuredResource {
 
     @GET
     @Path("/getSelectedAnnotations")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getSelectedAnnotations(@QueryParam("selectedAnnotations") String annotations, @QueryParam("mode") String mode, @QueryParam("resourceId") int resourceId) {
         List<LineLevelAnnotations> selectedResourcesAnnotations = getSelectedResourceLineLevelAnnotationses(annotations, mode, resourceId);
         GetResourcesDTO getResourcesDTO = new GetResourcesDTO();
@@ -98,7 +98,7 @@ public class ResourceResource extends SecuredResource {
 
     @GET
     @Path("/getBookedResourceAnnotations")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getBookedResourceAnnotations(@QueryParam("resourceId") int templateResourceId) {
         List<LineLevelAnnotations> selectedResourcesAnnotations = resourceService.getBookedResourceAnnotations(templateResourceId);
         GetResourcesDTO getResourcesDTO = new GetResourcesDTO();
@@ -135,7 +135,7 @@ public class ResourceResource extends SecuredResource {
 
     @GET
     @Path("/getRoomResources")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getRoomResources(@QueryParam("sublocation") String sublocations) {
         List<Resource> resources = resourceService.getRoomResources(sublocations);
         return gson.toJson(resources);
@@ -143,7 +143,7 @@ public class ResourceResource extends SecuredResource {
 
     @GET
     @Path("/getNursingResources")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getNursingResources(@QueryParam("sublocation") String sublocations) {
         List<Resource> resources = resourceService.getNursingResources(getRemoteHost(), getUser(), sublocations);
         return gson.toJson(resources);
@@ -151,7 +151,7 @@ public class ResourceResource extends SecuredResource {
 
     @GET
     @Path("/getNutritionResources")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getNutritionResources(@QueryParam("sublocation") String sublocations) {
         List<Resource> resources = resourceService.getNutritionResources(getRemoteHost(), getUser(), sublocations);
         return gson.toJson(resources);
@@ -160,7 +160,7 @@ public class ResourceResource extends SecuredResource {
     ///////////////////////////////////////////////////methods using new DTOs/////////////////////////////////////////////////////////////
     @GET
     @Path("/getResourcesData")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getResourcesData(@QueryParam("sortBy") String sortBy,
                                    @QueryParam("orderBy") String orderBy,
                                    @QueryParam("status") String status,
@@ -186,7 +186,7 @@ public class ResourceResource extends SecuredResource {
 
     @GET
     @Path("/getResourceSchedules")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getResourceSchedules(@QueryParam("resourceId") int resourceId, @QueryParam("sortBy") String sortBy, @QueryParam("orderBy") String orderBy,
             @QueryParam("page") int page, @QueryParam("maxResults") int maxResults) {
         List<ResourceScheduleResponse> resourceSchedules = getResourcesSchedule(resourceId, false, sortBy, orderBy, page, maxResults);
@@ -200,7 +200,7 @@ public class ResourceResource extends SecuredResource {
 
     @GET
     @Path("/getDefaultSchedule")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getDefaultSchedule(@QueryParam("id") int id) {
         ResourceScheduleResponse resourceSchedules = getDefaultScheduleById(id);
         return gson.toJson(resourceSchedules);
@@ -212,7 +212,7 @@ public class ResourceResource extends SecuredResource {
 
     @GET
     @Path("/getResourceDetail")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getResourceDetail(@QueryParam("resourceId") int resourceId) {
         ResourcesResponse resource = loadResourceDetail(resourceId, getUser(), getRemoteHost());
         return gson.toJson(resource);
@@ -225,7 +225,7 @@ public class ResourceResource extends SecuredResource {
     // Returns the list of resources which are *CURRENTLY* used as alternatives for the resource with the specified ID
     @GET
     @Path("/getResourceAlternates")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getResourceAlternates(@QueryParam("resourceId") int resourceId,
                                         @QueryParam("sortBy") String sortBy,
                                         @QueryParam("orderBy") String orderBy,
@@ -252,7 +252,7 @@ public class ResourceResource extends SecuredResource {
     // Returns the list of all resources which may be set to Alternative Resources for the resource with the specified ID
     @GET
     @Path("/getAlternateResources")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getAlternateResources(@QueryParam("resourceId") int resourceId,
                                         @QueryParam("sortBy") String sortBy,
                                         @QueryParam("orderBy") String orderBy,
@@ -268,7 +268,7 @@ public class ResourceResource extends SecuredResource {
 
     @GET
     @Path("/getTemporaryAdjustments")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getTemporaryAdjustments(@QueryParam("resourceId") int resourceId, @QueryParam("sortBy") String sortBy, @QueryParam("orderBy") String orderBy,
             @QueryParam("page") int page, @QueryParam("maxResults") int maxResults) {
         List<ResourceScheduleResponse> resourceSchedules = getResourcesSchedule(resourceId, true, sortBy, orderBy, page, maxResults);
@@ -277,7 +277,7 @@ public class ResourceResource extends SecuredResource {
 
     @GET
     @Path("/getTemporaryAdjustment")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getTemporaryAdjustment(@QueryParam("id") int id) {
         ResourceScheduleResponse resourceSchedules = resourceService.getResourceDefaultSchedule(id);
         return gson.toJson(resourceSchedules);
@@ -316,7 +316,7 @@ public class ResourceResource extends SecuredResource {
 
     @GET
     @Path("/getResourceAnnotationsNames")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getResourceAnnotationsNames(@QueryParam("resourceId") int resourceId) {
         List<LineLevelAnnotations> resourcesAnnotations = getResourceLineLevelAnnotationses(resourceId);
         AnnotationsNamesResponseDTO resultDTO = AnnotationsNamesResponseDTO.fromAnnotationsList(resourcesAnnotations);
@@ -329,7 +329,7 @@ public class ResourceResource extends SecuredResource {
 
     @GET
     @Path("/getSelectedAnnotationsNQC")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getSelectedAnnotationsNQC(@QueryParam("selectedAnnotations") String annotations, @QueryParam("mode") String mode, @QueryParam("resourceId") int resourceId) {
         List<LineLevelAnnotations> selectedResourcesAnnotations = getSelectedResourceLineLevelAnnotationses(annotations, mode, resourceId);
         AnnotationsNamesQuantityCommentResponseDTO resultDTO = AnnotationsNamesQuantityCommentResponseDTO.fromAnnotationsList(selectedResourcesAnnotations);
@@ -417,7 +417,7 @@ public class ResourceResource extends SecuredResource {
 
     @GET
     @Path("/getResourcesAvailableForGenderBlockRestriction")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getResourcesAvailableForGenderBlockRestriction(@QueryParam("resourceId") int resourceId) {
         List<Resource> resources = resourceService.getResourcesAvailableForGenderBlockRestriction(resourceId);
         SimpleResourceListResponse resultDTO = SimpleResourceListResponse.fromResourcesList(resources);

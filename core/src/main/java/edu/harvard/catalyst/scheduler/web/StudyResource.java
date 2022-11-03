@@ -72,7 +72,7 @@ public class StudyResource extends SecuredResource {
 
     @GET
     @Path("/getNonClosedStudiesList")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getNonClosedStudiesList()  {
         int userId = getUser().getId();
         GetStudiesResponse studies = getSubjectStudiesList(userId);
@@ -99,7 +99,7 @@ public class StudyResource extends SecuredResource {
 
     @GET
     @Path("/getVisitApprovals")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getVisitApprovals(@QueryParam("sortBy") String sortBy, @QueryParam("orderBy") String orderBy, 
                                     @QueryParam("page") int page, @QueryParam("maxResults") int maxResults, @QueryParam("visit") int visitId)  {
         List<VisitApprovalModelResponseDTO.VisitApproval> templateApprovers = getVisitApprovalsList(sortBy, orderBy, page, maxResults, visitId);
@@ -112,7 +112,7 @@ public class StudyResource extends SecuredResource {
 
     @GET
     @Path("/getStudyMembersList")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getStudyMembersList(@QueryParam("studyId") int studyId)  {
         List<StudyUser> studyMembers = service.getStudyMembers(studyId);
         return gson.toJson(studyMembers);
@@ -120,7 +120,7 @@ public class StudyResource extends SecuredResource {
 
     @POST
     @Path("/addStudyMember")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String addStudyMember(@FormParam("data") String data, @Context ServletContext context)  {
         AddStudyMembersDTO assignStudyMembersDTO = gson.fromJson(data, AddStudyMembersDTO.class);
         BooleanResultDTO result = service.assignStudyMembers(assignStudyMembersDTO, getUser(), getRemoteHost(), context.getRealPath("/WEB-INF"));
@@ -147,7 +147,7 @@ public class StudyResource extends SecuredResource {
 
     @POST
     @Path("/commentVisitTemplate")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String commentVisitTemplate(@FormParam("data") String data)  {
         TemplateApprovalHistoryDTO v = gson.fromJson(data, TemplateApprovalHistoryDTO.class);
         TemplateApprovalHistory visit = service.commentVisitTemplate(v, getUser(), getRemoteHost());
@@ -156,7 +156,7 @@ public class StudyResource extends SecuredResource {
 
     @POST
     @Path("/approveVisitTemplate")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String approveVisitTemplate(@FormParam("data") String data, @Context ServletContext context)  {
         TemplateApprovalHistoryDTO v = gson.fromJson(data, TemplateApprovalHistoryDTO.class);
         TemplateApprovalHistory visit = service.approveVisitTemplate(v, getUser(), getRemoteHost(), context.getRealPath("/WEB-INF"));
@@ -165,7 +165,7 @@ public class StudyResource extends SecuredResource {
 
     @GET
     @Path("/getVisitTemplateData")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getVisitTemplateData(@QueryParam("visit") int visitId)  {
         VisitTemplateDetailResponse visit = loadVisitData(visitId, getUser(), getRemoteHost());
         return gson.toJson(visit);
@@ -178,7 +178,7 @@ public class StudyResource extends SecuredResource {
     
     @GET
     @Path("/getStudyData")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getStudyData(@QueryParam("study") int studyId)  {
         StudyDetailResponse study = loadStudyData(studyId, getUser(), getRemoteHost());
         return gson.toJson(study);
@@ -199,7 +199,7 @@ public class StudyResource extends SecuredResource {
     
     @POST
     @Path("/createVisit")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String createVisit(@FormParam("data") String data)  {
         VisitDTO visitData = gson.fromJson(data, VisitDTO.class);
         VisitTemplate visit = service.createVisit(visitData, getUser(), getRemoteHost());
@@ -208,7 +208,7 @@ public class StudyResource extends SecuredResource {
 
     @POST
     @Path("/editVisit")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String editVisit(@FormParam("data") String data)  {
         VisitDTO visitData = gson.fromJson(data, VisitDTO.class);
         VisitTemplate visit = service.updateVisit(visitData, getUser(), getRemoteHost());
@@ -228,7 +228,7 @@ public class StudyResource extends SecuredResource {
 
     @GET
     @Path("/getOpenStudies")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getOpenStudies(@QueryParam("filterString") String filterString,
                                  @QueryParam("sortBy") String sortBy,
                                  @QueryParam("orderBy") String orderBy,
@@ -246,7 +246,7 @@ public class StudyResource extends SecuredResource {
 
     @GET
     @Path("/getStudyList")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getStudyList(@QueryParam("sortBy") String sortBy,
                                @QueryParam("orderBy") String orderBy,
                                @QueryParam("page") int page,
@@ -263,7 +263,7 @@ public class StudyResource extends SecuredResource {
 
     @GET
     @Path("/getStudySubjects")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getStudySubjects(@QueryParam("filterString") String filterString,
                                    @QueryParam("page") int page,
                                    @QueryParam("maxResults") int maxResults,
@@ -293,7 +293,7 @@ public class StudyResource extends SecuredResource {
 
     @GET
     @Path("/changeStudySubjectStatus")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String changeStudySubjectStatus(@QueryParam("studySubjectId") int studySubjectId)  {
         BooleanRequest result = service.changeStudySubjectStatus(studySubjectId, getUser(), getRemoteHost());
         return gson.toJson(result);
@@ -301,7 +301,7 @@ public class StudyResource extends SecuredResource {
     
     @GET
     @Path("/getStudyMembers")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getStudyMembers(@QueryParam("sortBy") String sortBy, @QueryParam("orderBy") String orderBy, 
                                   @QueryParam("page") int page, @QueryParam("maxResults") int maxResults, 
                                   @QueryParam("study") int studyId, @QueryParam("search") String searchJson)  {
@@ -314,7 +314,7 @@ public class StudyResource extends SecuredResource {
     
     @GET
     @Path("/changeStudyMemberStatus")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String changeStudyMemberStatus(@QueryParam("studyMemberId") int studyMemberId)  {
         BooleanRequest result = service.changeStudyMemberStatus(studyMemberId, getUser(), getRemoteHost());
         return gson.toJson(result);
@@ -330,7 +330,7 @@ public class StudyResource extends SecuredResource {
     
     @GET
     @Path("/getVisitComments")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getVisitComments(@QueryParam("id") int visitId)  {
         List<Comments> visitTemplateComments = service.getVisitTemplateComments(visitId);
         List<VisitCommentsResponse.VisitComment> comments = VisitCommentsResponse.fromTemplateApprovalHistoryList(visitTemplateComments);

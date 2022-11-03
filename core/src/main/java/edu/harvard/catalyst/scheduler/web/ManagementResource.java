@@ -104,7 +104,7 @@ public class ManagementResource extends SecuredResource {
 
     @POST
     @Path("/updatePassword")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String updatePassword(@FormParam("data") final String data)  {
         final Gson gson = new GsonBuilder().registerTypeAdapter(UserDTO.class, new UserDTO()).create();
         UserDTO dto = gson.fromJson(data, UserDTO.class);
@@ -166,7 +166,7 @@ public class ManagementResource extends SecuredResource {
     // used by study_member.html page for listing users to add to a study
     @GET
     @Path("/getStudyMembersStudyScreen")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getStudyMembersStudyScreen(@QueryParam("filterString") final String filterString, @QueryParam("sortBy") final String sortBy, @QueryParam("orderBy") final String orderBy)  {
         final List<UserDataResponse> users = service.getStudyMembers(filterString, sortBy, orderBy);
         return gson.toJson(users);

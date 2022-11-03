@@ -108,6 +108,7 @@ var SCHEDULER = 3;
 var STUDY_STAFF = 4;
 var FRONT_DESK = 5;
 var GENERAL_VIEW = 6;
+var EXERCISE_SUPERVISOR = 7;
 var nAgt = navigator.userAgent;
 var fullVersion = '' + parseFloat(navigator.appVersion);
 var majorVersion = parseInt(navigator.appVersion, 10);
@@ -185,11 +186,6 @@ var expandOrCollapseImgTitle = {
     COLLAPSE: 'Collapse',
     EXPAND: 'Expand'
 };
-
-
-
-
-
 
 
 // LDAP Extension: default active directory domain
@@ -568,10 +564,19 @@ function studyModuleRoles() {
             .css({
                 visibility: "hidden"
             });
+    } else if (user.institutionRole.id == EXERCISE_SUPERVISOR) {
+        $('.study_newStudy')
+            .css({
+                visibility: "hidden"
+            });
+        $('.study_editStudy')
+            .css({
+                visibility: "hidden"
+            });
     }
 }
 
-var UserRoleUtil = function () {};
+    var UserRoleUtil = function () {};
 
 UserRoleUtil.isGeneralFrontOrStaff = function(user) {
     var roleId = user.institutionRole.id;
@@ -610,6 +615,14 @@ UserRoleUtil.isFrontDesk = function(user) {
         roleId == FRONT_DESK
     );
 };
+
+
+    UserRoleUtil.isExerciseSupervisor = function(user) {
+        var roleId = user.institutionRole.id;
+        return (
+            roleId == EXERCISE_SUPERVISOR
+        );
+    };
 
 UserRoleUtil.isResourceManagerOrSuperAdmin = function(user){
     var roleId = user.institutionRole.id;
@@ -889,6 +902,49 @@ function moduleRoles() {
 
 
     }
+
+    else if (user.institutionRole.id == EXERCISE_SUPERVISOR) {
+        $('.homelink')
+            .css({
+                display: "inline-block"
+            });
+        $('.resourcelink')
+            .css({
+                display: "inline-block"
+            });
+        $('.studieslink')
+            .css({
+                display: "inline-block"
+            });
+        $('.subjectslink')
+            .css({
+                display: "inline-block"
+            });
+        $('.appointmentslink')
+            .css({
+                display: "inline-block"
+            });
+        $('.managementlink')
+            .css({
+                display: "inline-block"
+            });
+        $('.reportlink')
+            .css({
+                display: "inline-block"
+            });
+        $('.reportslink')
+            .css({
+                display: "none"
+            });
+
+        $('.sharedReportLink')
+            .css({
+                display: "none"
+            });
+
+    }
+
+
 }
 
 function getBrowserVersion() {

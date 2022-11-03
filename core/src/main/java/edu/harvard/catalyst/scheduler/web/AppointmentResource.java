@@ -93,7 +93,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getStudyVisits")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_EXERCISE_SUPERVISOR})
     public String getStudyVisits(@QueryParam("filterString") final String filterString,
             @QueryParam("sortBy") final String sortBy,
             @QueryParam("orderBy") final String orderBy,
@@ -119,7 +119,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getVisitsByStudy")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getVisitsByStudy(
             @QueryParam("study") final int studyId,
             @QueryParam("active") final boolean active,
@@ -149,7 +149,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getSearchVisitResource")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getSearchVisitResource(
             @QueryParam("sortBy") final String sortBy,
             @QueryParam("orderBy") final String orderBy,
@@ -173,7 +173,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getAppointmentCommentTypes")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getAppointmentCommentTypes() {
 
 
@@ -185,7 +185,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getAppointmentComments")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getAppointmentComments(@QueryParam("id") final int visitId) {
         final Map<String, Object> map = mapAppointmentSizeAndComments(visitId);
         return gson.toJson(map);
@@ -205,7 +205,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getOnlyTodaysBookedVisitsList")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getOnlyTodaysBookedVisitsList(@QueryParam("sortBy") final String sortBy, @QueryParam("orderBy") final String orderBy,
             @QueryParam("page") final int page, @QueryParam("maxResults") final int maxResults) {
         final Date startDate = startOfDay(Calendar.getInstance());
@@ -240,7 +240,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getEventResources")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getEventResources(@QueryParam("eventId") final String eventId, @QueryParam("sortBy") final String sortBy,
             @QueryParam("orderBy") final String orderBy, @QueryParam("page") final int page, @QueryParam("maxResults") final int maxResults)  {
         final List<BookedResourcesResponse> bookedResources = getListOfEventResources(eventId, getUser());
@@ -253,7 +253,7 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/getResourcesList")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getResourcesList(final String data) {
         final Map<String, List<Resource>> map = getResourcesList();
         return gson.toJson(map);
@@ -265,7 +265,7 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/saveComment")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String saveComment(@FormParam("data") final String data) {
         final VisitSpecsDTO visitSpecsDTO = gson.fromJson(data, VisitSpecsDTO.class);
         final Comments comment = service.saveComment(visitSpecsDTO, getUser(), getRemoteHost());
@@ -295,7 +295,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getGanttInfo/combo")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getTemplateResourcesForGanttCombo(
             @QueryParam("visit") final Integer visitId,
             @QueryParam("dayOffset") final int dayOffset,
@@ -309,7 +309,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getGanttInfo/candidateFloatables")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getGanttInfoCandidateFloatables(
             @QueryParam("visit") final Integer visitId,
             @QueryParam("templateResource") final Integer templateResourceId) {
@@ -321,7 +321,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getGanttInfo/candidateFlexibles")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getGanttInfoCandidateFlexibles(
             @QueryParam("visit") final Integer visitId,
             @QueryParam("templateResourceId") final Integer templateResourceId) {
@@ -334,7 +334,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getRoomResources")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getRoomResources(@QueryParam("id") final int visitId, @HeaderParam("User-Agent") final String header)  {
         service.logViewVisits(getUser(), getRemoteHost(), "Appointment Visit Selected");
         final Map<String, String> map = getRoomData(visitId);
@@ -378,7 +378,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getBookedVisitsList")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getBookedVisitsList(
             @QueryParam("sortBy") final String sortBy,
             @QueryParam("orderBy") final String orderBy,
@@ -410,7 +410,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getBookedVisitData")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getBookedVisitData(@QueryParam("bookedVisit") final int bookedVisitId)  {
         final BookedVisitDetailResponse getBookedVisitsDTO = service.getBookedVisitData(bookedVisitId);
         return gson.toJson(getBookedVisitsDTO);
@@ -418,7 +418,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getOverbookedResourceDataByResourceType")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getOverbookedResourceDataByResourceType(
             @QueryParam("startDate") final Long startDate,
             @QueryParam("endDate") final Long endDate,
@@ -443,7 +443,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getBookedVisitResources")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getBookedVisitResources(@QueryParam("eventid") final int bookedVisitId, @QueryParam("sortBy") final String sortBy,
             @QueryParam("orderBy") final String orderBy, @QueryParam("page") final int page, @QueryParam("maxResults") final int maxResults) {
         final List<BookedResourcesResponse> bookedResources = getBookedResourcesList(bookedVisitId, sortBy, orderBy, page, maxResults);
@@ -534,7 +534,7 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/batchEntry")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String batchEntry(@FormParam("data") final String data) {
         final VisitSpecsDTO visitSpecsDTO = gson.fromJson(data, VisitSpecsDTO.class);
         final String errorMsg = service.batchEntryUpdate(visitSpecsDTO, getUser(), getRemoteHost(), getContextRealPath());
@@ -549,7 +549,7 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/logAppointmentSearch")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String logAppointmentSearch(@FormParam("data") final String data) {
         final BookedVisitDTO dto = new BookedVisitDTO();
         service.logViewVisits(getUser(), getRemoteHost(), "Searching for a new Appointment");
@@ -558,7 +558,7 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/logViewBookedVisit")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String logViewBookedVisit(@FormParam("data") final String data) {
         BookedVisitDTO dto = gson.fromJson(data, BookedVisitDTO.class);
         dto = service.logViewBookedVisit(dto, getUser(), getRemoteHost());
@@ -683,7 +683,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getGanttResourceInfo")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getGanttResourceInfo(
             @QueryParam("visitId") final Integer visitId,
             @QueryParam("templateResourceId") final Integer templateResourceId,
@@ -695,14 +695,14 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getSchedulingRestriction")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getSchedulingRestriction() {
         return gson.toJson(SchedulingRestriction.getInstance().getSchedulingRestriction());
     }
 
     @GET
     @Path("/getMidnightRestriction")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getMidnightRestriction() {
         return gson.toJson(SchedulingRestriction.getInstance().getMidnightRestriction());
     }
@@ -710,14 +710,14 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getLastMinuteRestriction")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getLastMinuteRestriction() {
         return gson.toJson(SchedulingRestriction.getInstance().getLastMinuteIndicator());
     }
 
     @GET
     @Path("/getCalendarBookedVisits")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getCalendarBookedVisits(@HeaderParam("User-Agent") final String header,
                                           @QueryParam("start") final int start,
                                           @QueryParam("starting") final Long starting,
@@ -771,7 +771,7 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/isSubjectAvailable")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String isSubjectAvailable(@QueryParam("subjectMrnId") final Integer subjectMrnId,
                                      @QueryParam("startDate") final Long startDate,
                                      @QueryParam("endDate") final Long endDate) {
@@ -782,7 +782,7 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/confirmAppointment")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String confirmAppointment(@FormParam("data") final String data,
                                      @HeaderParam("User-Agent") final String header,
                                      @QueryParam("isInpatient") final boolean isInpatient,
@@ -819,7 +819,7 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/getSearchedVisit")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getSearchedVisit(@QueryParam("subjectMrnId") final String subjectMrnId,
                                    @QueryParam("visit") final String visit,
                                    @QueryParam("startDate") final String startDate,
@@ -875,7 +875,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getSearchedSlotResources")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getSearchedSlotResources(@QueryParam("subjectMrnId") final String subjectMrnId, @QueryParam("visit") final String visit,
                                            @QueryParam("startDate") final Long startDate, @QueryParam("endDate") final Long endDate,
                                            @QueryParam("isInpatient") final boolean isInpatientType) {
@@ -953,7 +953,7 @@ public class AppointmentResource extends SecuredResource {
     @Path("/rescheduleAppointment")
     @Consumes({MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
     @Produces({MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER,ROLE_EXERCISE_SUPERVISOR})
     public String rescheduleAppointment(
             @FormParam("data") final String data,
             @QueryParam("eventid") final String bookedvisit,
@@ -993,7 +993,7 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/checkinVisit")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public void checkinVisit(@FormParam("data") final String data) {
         final VisitSpecsDTO visitSpecsDTO = gson.fromJson(data, VisitSpecsDTO.class);
         service.checkInVisit(visitSpecsDTO, getUser(), getRemoteHost());
@@ -1001,7 +1001,7 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/checkoutVisit")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String checkoutVisit(@FormParam("data") final String data, @QueryParam("todaysVisits") final boolean todaysVisits) {
         final VisitSpecsDTO visitSpecsDTO = gson.fromJson(data, VisitSpecsDTO.class);
         final BookedVisit visit = service.checkOutVisit(visitSpecsDTO, getUser(), getRemoteHost());
@@ -1015,7 +1015,7 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/cancelVisit")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String cancelVisit(@FormParam("data") final String data, @QueryParam("todaysVisits") final boolean todaysVisits)  {
         final VisitSpecsDTO visitSpecsDTO = gson.fromJson(data, VisitSpecsDTO.class);
         if (getUser().isStudyStaff() && !service.isStudyMember(getUser(), visitSpecsDTO.getId())) {
@@ -1033,14 +1033,14 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("getBookedVisitScheduledDate")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getBookedVisitScheduledDate(@QueryParam("id") final int id) {
         return service.getVisitDetails(id, getUser(), getRemoteHost()).getScheduledata();
     }
 
     @GET
     @Path("/getScheduledVisitDetails")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getScheduledVisitDetails(@QueryParam("id") final int id) {
         final Map<String, Object> map = new HashMap<String, Object>();
 
@@ -1125,7 +1125,7 @@ public class AppointmentResource extends SecuredResource {
      */
     @GET
     @Path("/switchVisitSubject")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String switchVisitSubject(
             @QueryParam("confirm") boolean confirm,
             @QueryParam("newSubjectMrnId") Integer newSubjectMrnId,
@@ -1150,7 +1150,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getRoomString")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_STUDY_STAFF, ROLE_FRONT_DESK, ROLE_GENERAL_VIEW,ROLE_EXERCISE_SUPERVISOR})
     public String getRoomString(@HeaderParam("User-Agent") final String header,
                                           @QueryParam("visitId") final Integer visitId) {
         String roomString = service.getRoomString(visitId);
