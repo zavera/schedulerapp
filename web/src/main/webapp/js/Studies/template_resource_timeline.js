@@ -1612,6 +1612,13 @@ function getResourceStaticList() {
     $.get("rest/app/getStaticLists", {}, function (data) {
         var parsedData = JSON.parse(data);
         resources = parsedData.resources;
+
+//added filter for UCH Outpatient specific in house request.
+        resources = resources.filter(function(item) {
+            return !(/UCH Outpatient CTRC$/.test(item.name))
+        })
+
+
         resourcesSelectOptions = buildSelectOptions(resources, 'name', 'choose');
         $("#wizard_templateResources").html(resourcesSelectOptions);
     });

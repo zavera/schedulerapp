@@ -104,6 +104,12 @@ function getSchedulingOptionsStaticList(callbackFunc) {
         releaseHoldReasonId = getAttributeValueByOtherAttributeValue(cancellationReasons, 'id', 'name', releaseHoldReasonText);
         Overbook.overrideRooms = parsedData.rooms;
         resources = parsedData.resources;
+
+//added filter for UCH Outpatient specific in house request.
+        resources = resources.filter(function(item) {
+            return !(/UCH Outpatient CTRC$/.test(item.name))
+        })
+
         sublocations = parsedData.sublocations;
 
         sublocationSelectOptions = buildSelectOptions(sublocations, 'name', 'choose');
