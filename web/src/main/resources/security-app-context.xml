@@ -125,7 +125,7 @@
 		<sec:intercept-url pattern="/visit_approval.html"
 			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK','ROLE_EXERCISE_SUPERVISOR')" />
 		<sec:intercept-url pattern="/visit_detail.html"
-			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF')" />
+			access="hasAnyRole('ROLE_SUPER_ADMIN', 'ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_STUDY_STAFF','ROLE_EXERCISE_SUPERVISOR')" />
 
 		<!-- REPORT MODULE -->
 		<sec:intercept-url pattern="/report_screen.html"

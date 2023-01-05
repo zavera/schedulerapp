@@ -111,7 +111,7 @@ function homeInit(){
 
 function homeMain(){
     if(window.location.hash !== "#homeList") {
-        if (UserRoleUtil.isCrcStaff(user)) {
+        if (UserRoleUtil.isCrcStaff(user) || UserRoleUtil.isExerciseSupervisor(user)) {
             AppointmentSearchForm.init();
         }
 

@@ -665,6 +665,13 @@ UserRoleUtil.userIsFrontDesk = function() {
     return (roleId === FRONT_DESK);
 };
 
+
+UserRoleUtil.userIsExerciseSupervisor = function() {
+    var roleId = UserRoleUtil.getUser().institutionRole.id;
+
+    return (roleId === EXERCISE_SUPERVISOR);
+};
+
 function moduleRoles() {
     user = JSON.parse(sessionStorage.getItem("userData"));
     if (user.institutionRole.id == SUPER_ADMIN) {

@@ -248,6 +248,8 @@ AppointmentSearchForm.init = function () {
         $("#apptSearchTypeOverbookMain").hide();
         $("#apptSearchHoldMain").hide();
         $("#apptSearchTypeScheduleMain").hide();
+
+    if(!UserRoleUtil.userIsExerciseSupervisor()){
         $.ajax({
             type: "GET",
             url: "rest/appointment/getSchedulingRestriction",
@@ -263,7 +265,7 @@ AppointmentSearchForm.init = function () {
                     }
                 }
             }
-        });
+        });};
     }
     AppointmentSearchForm.disable();
 
@@ -575,7 +577,7 @@ AppointmentSearchForm.Schedule.validate = function (schedulingRestriction,midnig
         var startDateDiff = startDateTime.getTime() < endInterval;
 
         //var startDateDiff = startDateTime.getTime() < new Date().addDays(schedulingRestriction+1).setHours(0,0,0,0);
-        if (!UserRoleUtil.userIsCrcStaff() && startDateDiff) {
+        if (!(UserRoleUtil.userIsCrcStaff() || UserRoleUtil.userIsExerciseSupervisor()) && startDateDiff) {
             errorMsg = 'There is a scheduling restriction. Please see above.';
             $("#schedulingRestrictionWarning").addClass("redBorder");
             isValid = false;
