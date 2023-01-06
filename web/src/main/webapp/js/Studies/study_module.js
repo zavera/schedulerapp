@@ -199,6 +199,11 @@ var studyPage = (function () {
             $(this).text() === txt ? $(this).css('background-color', '#0A507D') : "";
         });
         $.unblockUI();
+
+        //remove tab for exercise supervisor
+        if(UserRoleUtil.isExerciseSupervisor(user)) {
+            $('#ui-id-3').remove();
+        }
     };
 
 
@@ -1420,7 +1425,7 @@ function study_visit_setFormMode(mode) {
         renderBreadcrumbs('study_visit_view_form');
         $('#study_visit_form_title').text('Additional Details');
         displayStudyVisitTemplateData();
-        if (user.institutionRole.id == STUDY_STAFF) {
+        if (user.institutionRole.id == STUDY_STAFF || user.institutionRole.id == EXERCISE_SUPERVISOR) {
             $('#editStudyVisitLink').css({visibility: "hidden"});
         }
         else {

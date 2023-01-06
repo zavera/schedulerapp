@@ -147,7 +147,7 @@ public class StudyResource extends SecuredResource {
 
     @POST
     @Path("/commentVisitTemplate")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK})
     public String commentVisitTemplate(@FormParam("data") String data)  {
         TemplateApprovalHistoryDTO v = gson.fromJson(data, TemplateApprovalHistoryDTO.class);
         TemplateApprovalHistory visit = service.commentVisitTemplate(v, getUser(), getRemoteHost());
@@ -156,7 +156,7 @@ public class StudyResource extends SecuredResource {
 
     @POST
     @Path("/approveVisitTemplate")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK})
     public String approveVisitTemplate(@FormParam("data") String data, @Context ServletContext context)  {
         TemplateApprovalHistoryDTO v = gson.fromJson(data, TemplateApprovalHistoryDTO.class);
         TemplateApprovalHistory visit = service.approveVisitTemplate(v, getUser(), getRemoteHost(), context.getRealPath("/WEB-INF"));
