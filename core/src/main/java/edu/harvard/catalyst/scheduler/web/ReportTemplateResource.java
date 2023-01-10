@@ -53,6 +53,7 @@ import java.util.Map;
 
 import static edu.harvard.catalyst.scheduler.entity.InstitutionRoleType.ROLE_RESOURCE_MANAGER;
 import static edu.harvard.catalyst.scheduler.entity.InstitutionRoleType.ROLE_SUPER_ADMIN;
+import static edu.harvard.catalyst.scheduler.entity.InstitutionRoleType.ROLE_EXERCISE_SUPERVISOR;
 
 /**
  * @author Bill Simons
@@ -134,7 +135,7 @@ public class ReportTemplateResource extends SecuredResource {
 
     @POST
     @Path("/sharedTemplates")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN,ROLE_RESOURCE_MANAGER})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN,ROLE_RESOURCE_MANAGER,ROLE_EXERCISE_SUPERVISOR})
     public Response runSharedReportTemplate(
             @QueryParam("startDate") final String startDate,
             @QueryParam("endDate") final String endDate,
@@ -196,7 +197,7 @@ public class ReportTemplateResource extends SecuredResource {
 
     @GET
     @Path("/sharedTemplates")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN,ROLE_RESOURCE_MANAGER})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN,ROLE_RESOURCE_MANAGER,ROLE_EXERCISE_SUPERVISOR})
     public String getSharedReportTemplateList() {
         final List<ReportTemplateMetadataDTO> reportMetadataDTOs = reportTemplateService.getSharedReportTemplateList();
         return gson.toJson(reportMetadataDTOs);
@@ -222,7 +223,7 @@ public class ReportTemplateResource extends SecuredResource {
 
     @GET
     @Path("/sharedTemplates/{id}")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN,ROLE_RESOURCE_MANAGER})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN,ROLE_RESOURCE_MANAGER,ROLE_EXERCISE_SUPERVISOR})
     public String getSharedReport(@PathParam("id") final Integer id) {
         final ReportTemplateUsersDTO reportTemplateUsersDTO = reportTemplateService.getUsersReport(id);
         final Map<String, Object> map = new HashMap();

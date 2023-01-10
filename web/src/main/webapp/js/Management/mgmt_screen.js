@@ -258,7 +258,7 @@ function passwordResetClick() {
     $('#mgmt_passwordChangeLoading').css({visibility: "visible"});
     var jsonData = JSON.stringify({id: user.id, password: $.trim($("#mgmt_passwordChange").val())});
 
-    $.post("rest/managementExtension/updatePassword", {data: jsonData}, function (data) {
+    $.post("rest/management/updatePassword", {data: jsonData}, function (data) {
         var parsedData = JSON.parse(data);
         $('#mgmt_responseLoading').css({visibility: "hidden"});
         var confirmationMessage = "";

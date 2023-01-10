@@ -152,7 +152,7 @@ VisitTables.pushEditColumns = function (user, columns) {
         }
     });
 
-    if (UserRoleUtil.isGeneralFrontOrStaff(user)) {
+    if (UserRoleUtil.isGeneralFrontOrStaff(user) || UserRoleUtil.isExerciseSupervisor(user)) {
         columns.push(viewLinkColumn);
     }
     else if (UserRoleUtil.isAdminUser(user)) {
@@ -198,7 +198,7 @@ function loadVisitTemplatesDataIntoTablesWidget(activeView) {
 
     $('.DeactivateliveLink').css({display: "none"});
     $('.ActivateliveLink').css({display: "none"});
-    if (UserRoleUtil.isStaff(user)) {
+    if (UserRoleUtil.isStaff(user) || UserRoleUtil.isExerciseSupervisor(user)) {
         $('#study_newStudyVisitButton').css({display: "none"});
     }
 

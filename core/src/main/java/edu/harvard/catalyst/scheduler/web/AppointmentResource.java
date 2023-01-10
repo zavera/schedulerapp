@@ -222,7 +222,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getOverbookedVisitsData")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_EXERCISE_SUPERVISOR})
     public String getOverbookedVisitsData(@QueryParam("id") final int id,
                                           @DefaultValue("resourceName") @QueryParam("sortOn") final String sortOn,
                                           @DefaultValue("ASC") @QueryParam("sortBy") final String sortBy) {
@@ -457,7 +457,7 @@ public class AppointmentResource extends SecuredResource {
 
     @GET
     @Path("/getBookedResourceData")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_FRONT_DESK,ROLE_EXERCISE_SUPERVISOR})
     public String getBookedResourceData(@QueryParam("id") final int id) {
         final BookedResource bookedResource = service.getBookedResourceData(id, getRemoteHost(), getUser());
         return subjectMrnSkippingGson.toJson(bookedResource);
@@ -507,7 +507,7 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/addBookedResourceOverride")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER, ROLE_EXERCISE_SUPERVISOR})
     public String addBookedResourceOverride(@FormParam("data") final String data) {
         final VisitSpecsDTO visitSpecsDTO = gson.fromJson(data, VisitSpecsDTO.class);
         final BooleanResultDTO booleanResultDTO = service.addBookedResourceOverride(visitSpecsDTO, getUser(), getRemoteHost());
@@ -516,7 +516,7 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/deleteBookedResourceOverride")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER,ROLE_EXERCISE_SUPERVISOR})
     public String deleteBookedResourceOverride(@FormParam("data") final String data) {
         final VisitSpecsDTO visitSpecsDTO = gson.fromJson(data, VisitSpecsDTO.class);
         final BooleanResultDTO booleanResultDTO = service.deleteBookedResourceOverride(visitSpecsDTO, getUser(), getRemoteHost());
@@ -525,7 +525,7 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/editBookedResourceOverride")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER,ROLE_EXERCISE_SUPERVISOR})
     public String editBookedResourceOverride(@FormParam("data") final String data) {
         final VisitSpecsDTO visitSpecsDTO = gson.fromJson(data, VisitSpecsDTO.class);
         final BooleanResultDTO booleanResultDTO = service.editBookedResourceOverride(visitSpecsDTO, getUser(), getRemoteHost());
@@ -567,21 +567,21 @@ public class AppointmentResource extends SecuredResource {
 
     @POST
     @Path("/logAddResourceOverride")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER,ROLE_EXERCISE_SUPERVISOR})
     public String logAddResourceOverride(@FormParam("data") final String data) {
         return logOverrideActions(data, "Add");
     }
 
     @POST
     @Path("/logEditResourceOverride")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER,ROLE_EXERCISE_SUPERVISOR})
     public String logEditResourceOverride(@FormParam("data") final String data) {
         return logOverrideActions(data, "Edit");
     }
 
     @POST
     @Path("/logDeleteResourceOverride")
-    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER})
+    @AuthorizedRoles({ROLE_SUPER_ADMIN, ROLE_RESOURCE_MANAGER, ROLE_SCHEDULER,ROLE_EXERCISE_SUPERVISOR})
     public String logDeleteResourceOverride(@FormParam("data") final String data) {
         return logOverrideActions(data, "Delete");
     }

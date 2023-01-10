@@ -946,7 +946,7 @@ function moduleRoles() {
 
         $('.sharedReportLink')
             .css({
-                display: "none"
+                display: "inline-block"
             });
 
     }

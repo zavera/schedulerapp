@@ -133,7 +133,15 @@
 		<sec:intercept-url pattern="/report.html"
 			access="hasAnyRole('ROLE_SUPER_ADMIN','ROLE_RESOURCE_MANAGER', 'ROLE_SCHEDULER', 'ROLE_FRONT_DESK', 'ROLE_GENERAL_VIEW','ROLE_EXERCISE_SUPERVISOR')" />
 
-        <!-- NEW REPORTING MODULE -->
+		<!-- SHARED REPORT MODULE -->
+		<sec:intercept-url pattern="/shared_report.html"
+						   access="hasAnyRole('ROLE_SUPER_ADMIN','ROLE_RESOURCE_MANAGER','ROLE_EXERCISE_SUPERVISOR')" />
+		<sec:intercept-url pattern="/shared_report_screen.html"
+						   access="hasAnyRole('ROLE_SUPER_ADMIN','ROLE_RESOURCE_MANAGER', 'ROLE_EXERCISE_SUPERVISOR')" />
+
+
+
+		<!-- NEW REPORTING MODULE -->
         <sec:intercept-url pattern="/report_builder.html"
                            access="hasAnyRole('ROLE_SUPER_ADMIN')" />
 
