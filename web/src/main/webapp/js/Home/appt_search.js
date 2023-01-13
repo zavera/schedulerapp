@@ -246,12 +246,7 @@ AppointmentSearchForm.init = function () {
         AppointmentSearchForm.Overbook.initOverbookForm();
     } else {
         $("#apptSearchTypeOverbookMain").hide();
-
-        if(!UserRoleUtil.userIsExerciseSupervisor()) {
-            $("#apptSearchHoldMain").hide();
-        }
-
-
+        $("#apptSearchHoldMain").hide();
         $("#apptSearchTypeScheduleMain").hide();
 
     if(!UserRoleUtil.userIsExerciseSupervisor()){
