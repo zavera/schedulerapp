@@ -190,6 +190,7 @@ var expandOrCollapseImgTitle = {
 
 // LDAP Extension: default active directory domain
 var DEFAULT_DOMAIN = 'university';
+var CHCO_DOMAIN = 'thechildrenshospital.org';
 
 //get static list of comment types
 function getCommentTypes() {
@@ -1965,12 +1966,14 @@ function getRegistrationStaticLists() {
         divisionSelectOptions = buildSelectOptions(divisions, 'name', '');
         facultyRankSelectOptions = buildSelectOptions(facultyRanks, 'name', '');
 
+
         $("#registration_role").html(roleSelectOptions);
         $("#registration_institution").html(institutionSelectOptions);
         $("#registration_credential").html(credentialSelectOptions);
         $("#registration_division").html(divisionSelectOptions);
         $("#registration_department").html(departmentSelectOptions);
         $("#registration_facultyRank").html(facultyRankSelectOptions);
+
 
         WidgetUtil.createComboBox(".formSelectInput");
     });

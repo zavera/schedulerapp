@@ -169,5 +169,7 @@
 		<constructor-arg ref="authExtensionService" />
 		<constructor-arg value="${ldapServerUrl}" />
 		<constructor-arg value="${ldapDefaultDomain}" />
+		<constructor-arg value="${chcoLdapServerUrl}" />
+		<constructor-arg value="${chcoLdapDefaultDomain}" />
 	</bean>
 </beans>
