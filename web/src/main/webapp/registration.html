@@ -138,11 +138,11 @@
                 </td>
                 <td>
                   <input type="checkbox" id="registration_activeDirectory" tabindex="1" checked
-                         onclick="javascript:updateActiveDirectory();"/>
+                         onclick="javascript:updateDomain();"/>
 
-                  <select id="options_activeDirectory" class="formSelectInput" tabindex="-1">
-                    <option id="activeDirFilter" value="0" selected="true">UC Denver</option>
-                    <option id="activeDirFilter1" value="1">CHCO</option>
+                  <select id="options_activeDirectory" onchange="javascript:updateDomain();" tabindex="-1">
+                    <option  value="0" >UC Denver</option>
+                    <option  value="1">CHCO</option>
 
 
                   </select>

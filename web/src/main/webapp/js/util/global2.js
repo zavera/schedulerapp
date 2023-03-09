@@ -190,7 +190,7 @@ var expandOrCollapseImgTitle = {
 
 // LDAP Extension: default active directory domain
 var DEFAULT_DOMAIN = 'university';
-var CHCO_DOMAIN = 'thechildrenshospital.org';
+var CHCO_DOMAIN = 'childrens';
 
 //get static list of comment types
 function getCommentTypes() {

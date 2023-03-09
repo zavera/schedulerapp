@@ -30,11 +30,17 @@ public class SchedulerHybridAuthenticationProvider extends AbstractUserDetailsAu
     private final String ldapServerUrl;
     private final String ldapDefaultDomain;
 
+    private final String chcoLdapServerUrl;
+    private final String chcoLdapDefaultDomain;
+
+
     @Autowired
     public SchedulerHybridAuthenticationProvider(AuthExtensionService authExtensionService, String ldapServerUrl, String ldapDefaultDomain,String chcoLdapServerUrl, String chcoLdapDefaultDomain) {
         this.authExtensionService = authExtensionService;
         this.ldapServerUrl = ldapServerUrl;
         this.ldapDefaultDomain = ldapDefaultDomain;
+        this.chcoLdapServerUrl = chcoLdapServerUrl;
+        this.chcoLdapDefaultDomain = chcoLdapDefaultDomain;
         LOGGER.debug(String.format("ldapServerUrl = %1$s", ldapServerUrl));
         LOGGER.debug(String.format("ldapDefaultDomain = %1$s", ldapDefaultDomain));
         LOGGER.debug(String.format("chcoLdapServerUrl = %1$s", chcoLdapServerUrl));
@@ -47,7 +53,15 @@ public class SchedulerHybridAuthenticationProvider extends AbstractUserDetailsAu
             LOGGER.debug(String.format("Verifying user %1$s's password against ldap", userDetails.getUsername()));
             this.authenticateWithActiveDirectory(userDetails.getUsername(), usernamePasswordAuthenticationToken.getCredentials().toString());
             LOGGER.debug(String.format("Verified user %1$s's password against ldap", userDetails.getUsername()));
-        } else {
+        }
+
+        if (isCHCOActiveDirectoryUsername(userDetails.getUsername())) {
+            LOGGER.debug(String.format("Verifying user %1$s's password against ldap", userDetails.getUsername()));
+            this.authenticateWithActiveDirectory(userDetails.getUsername(), usernamePasswordAuthenticationToken.getCredentials().toString());
+            LOGGER.debug(String.format("Verified user %1$s's password against ldap", userDetails.getUsername()));
+        }
+
+        else {
             LOGGER.debug(String.format("Verifying user %1$s's password against database", userDetails.getUsername()));
             String encodedPassword = encodePassword(usernamePasswordAuthenticationToken, user);
             if (!userDetails.getPassword().equals(encodedPassword)) {
@@ -65,6 +79,12 @@ public class SchedulerHybridAuthenticationProvider extends AbstractUserDetailsAu
         User user = this.authExtensionService.findUserByEcommonsId(username);
         if (user == null && !isActiveDirectoryUsername(username)) {
             username = String.format("%1$s\\%2$s", this.ldapDefaultDomain, username);
+            LOGGER.debug(String.format("Attempting to find user %1$s in database (second attempt)", username));
+            user = this.authExtensionService.findUserByEcommonsId(username);
+        }
+
+        if (user == null && !isCHCOActiveDirectoryUsername(username)) {
+            username = String.format("%1$s\\%2$s", this.chcoLdapDefaultDomain, username);
             LOGGER.debug(String.format("Attempting to find user %1$s in database (second attempt)", username));
             user = this.authExtensionService.findUserByEcommonsId(username);
         }
@@ -110,6 +130,41 @@ public class SchedulerHybridAuthenticationProvider extends AbstractUserDetailsAu
     private static boolean isCHCOActiveDirectoryUsername(String username) {
         return Pattern.matches("^\\w+\\\\\\d+$", username);
     }
+
+
+
+    private void authenticateWithCHCOActiveDirectory(String username, String password) throws AuthenticationException {
+        if (username != null && username.length() != 0 && password != null && password.length() != 0) {
+            Hashtable props = new Hashtable();
+            props.put("java.naming.factory.initial", "com.sun.jndi.ldap.LdapCtxFactory");
+            props.put("java.naming.provider.url", this.chcoLdapServerUrl);
+            props.put("java.naming.security.authentication", "simple");
+            props.put("java.naming.security.principal", username);
+            props.put("java.naming.security.credentials", password);
+            DirContext context = null;
+
+            try {
+                context = new InitialDirContext(props);
+            } catch (javax.naming.AuthenticationException var14) {
+                throw new BadCredentialsException("Unable to authenticate user.");
+            } catch (NamingException var15) {
+                throw new AuthenticationServiceException(var15.getMessage());
+            } finally {
+                if (context != null) {
+                    try {
+                        context.close();
+                    } catch (NamingException var13) {
+                    }
+                }
+
+            }
+
+        } else {
+            throw new BadCredentialsException("Unable to authenticate user.");
+        }
+    }
+
+
 
     private void authenticateWithActiveDirectory(String username, String password) throws AuthenticationException {
         if (username != null && username.length() != 0 && password != null && password.length() != 0) {

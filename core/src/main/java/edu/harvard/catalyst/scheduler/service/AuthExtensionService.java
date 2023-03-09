@@ -85,7 +85,7 @@ public class AuthExtensionService implements ServiceHelpers {
 
     public UserDTO doRegisterUser(UserDTO dto, String contextPath, String remoteHost, String serverName, int serverPort) {
         User user = new User();
-        if (isActiveDirectoryUsername(dto.getEcommonsId())) {
+        if (isActiveDirectoryUsername(dto.getEcommonsId()) || isCHCOActiveDirectoryUsername(dto.getEcommonsId()) ) {
             dto.setPassword("");
         } else if (!this.authService.testPassword(dto.getPassword())) {
             dto.setResult(false);
@@ -101,10 +101,10 @@ public class AuthExtensionService implements ServiceHelpers {
             List<User> superAdmins = this.authDAO.findSuperAdminByInstitutionRole();
             String superAdminsubject = "New User Registered: " + user.getFirstName() + " " + user.getLastName();
             String subject = this.authService.makeEmailUserSubject(user);
-            Stream var10000 = superAdmins.stream().map(this.toMessage(superAdminsubject, this.authService.makeNewUserAdminMessage(user, url)));
+            Stream<SimpleMailMessage> var10000 = superAdmins.stream().map( this.toMessage(superAdminsubject, this.authService.makeNewUserAdminMessage(user, url)));
             MailHandler var10001 = this.mailHandler;
             Objects.requireNonNull(var10001);
-           // var10000.forEach(var10001::sendMandatoryEmails);
+            var10000.forEach(var10001::sendMandatoryEmails);
             SimpleMailMessage message = (SimpleMailMessage)this.toMessage(subject, this.authService.makeNewUserMessage(subject, user, url, true)).apply(user);
             this.mailHandler.sendMandatoryEmails(message);
             this.auditService.logUserActivity(remoteHost, user, user, "CREATE USER", (String)null, (String)null);
@@ -210,5 +210,9 @@ public class AuthExtensionService implements ServiceHelpers {
 
     private static boolean isActiveDirectoryUsername(String username) {
         return Pattern.matches("^\\w+\\\\\\w+$", username);
+    }
+
+    private static boolean isCHCOActiveDirectoryUsername(String username) {
+        return Pattern.matches("^\\w+\\\\\\d+$", username);
     }
 }
