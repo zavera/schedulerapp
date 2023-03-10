@@ -49,16 +49,17 @@ public class SchedulerHybridAuthenticationProvider extends AbstractUserDetailsAu
 
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
         SchedulerUserDetails user = (SchedulerUserDetails)userDetails;
-        if (isActiveDirectoryUsername(userDetails.getUsername())) {
+        if (isActiveDirectoryUsername(userDetails.getUsername()) ) {
             LOGGER.debug(String.format("Verifying user %1$s's password against ldap", userDetails.getUsername()));
             this.authenticateWithActiveDirectory(userDetails.getUsername(), usernamePasswordAuthenticationToken.getCredentials().toString());
             LOGGER.debug(String.format("Verified user %1$s's password against ldap", userDetails.getUsername()));
         }
+        else if (isCHCOActiveDirectoryUsername(userDetails.getUsername()) ) {
 
-        if (isCHCOActiveDirectoryUsername(userDetails.getUsername())) {
             LOGGER.debug(String.format("Verifying user %1$s's password against ldap", userDetails.getUsername()));
-            this.authenticateWithActiveDirectory(userDetails.getUsername(), usernamePasswordAuthenticationToken.getCredentials().toString());
+            this.authenticateWithCHCOActiveDirectory(userDetails.getUsername(), usernamePasswordAuthenticationToken.getCredentials().toString());
             LOGGER.debug(String.format("Verified user %1$s's password against ldap", userDetails.getUsername()));
+
         }
 
         else {
@@ -77,17 +78,19 @@ public class SchedulerHybridAuthenticationProvider extends AbstractUserDetailsAu
         WebAuthenticationDetails authenticationDetails = (WebAuthenticationDetails)usernamePasswordAuthenticationToken.getDetails();
         LOGGER.debug(String.format("Attempting to find user %1$s in database (first attempt)", username));
         User user = this.authExtensionService.findUserByEcommonsId(username);
-        if (user == null && !isActiveDirectoryUsername(username)) {
-            username = String.format("%1$s\\%2$s", this.ldapDefaultDomain, username);
-            LOGGER.debug(String.format("Attempting to find user %1$s in database (second attempt)", username));
-            user = this.authExtensionService.findUserByEcommonsId(username);
+
+
+        if (user == null && (!isActiveDirectoryUsername(username) || !isCHCOActiveDirectoryUsername(username))) {
+            String usernameCU = String.format("%1$s\\%2$s", this.ldapDefaultDomain, username);
+            LOGGER.debug(String.format("Attempting to find user %1$s in database (second attempt)", usernameCU));
+            user = this.authExtensionService.findUserByEcommonsId(usernameCU);
+            if(user == null){
+                String usernameCHCO = String.format("%1$s\\%2$s", this.chcoLdapDefaultDomain, username);
+                LOGGER.debug(String.format("Attempting to find user %1$s in database (second attempt)", usernameCHCO));
+                user = this.authExtensionService.findUserByEcommonsId(usernameCHCO);
+            }
         }
 
-        if (user == null && !isCHCOActiveDirectoryUsername(username)) {
-            username = String.format("%1$s\\%2$s", this.chcoLdapDefaultDomain, username);
-            LOGGER.debug(String.format("Attempting to find user %1$s in database (second attempt)", username));
-            user = this.authExtensionService.findUserByEcommonsId(username);
-        }
 
         if (user == null) {
             throw new BadCredentialsException("Invalid Username or Password");
@@ -95,16 +98,16 @@ public class SchedulerHybridAuthenticationProvider extends AbstractUserDetailsAu
             LOGGER.debug(String.format("Found user %1$s in database", user.getEcommonsId()));
             LOGGER.debug(String.format("isActiveDirectoryUser(%1$s) = %2$b", user.getEcommonsId(), isActiveDirectoryUsername(user.getEcommonsId())));
             String password;
-            if (isActiveDirectoryUsername(user.getEcommonsId())) {
+            if (isActiveDirectoryUsername(user.getEcommonsId()) || isCHCOActiveDirectoryUsername(user.getEcommonsId())) {
                 password = "";
             } else {
                 password = toPassword(usernamePasswordAuthenticationToken);
             }
 
-            LOGGER.debug(String.format("Attempting to authenticate user %1$s in database", username));
-            SchedulerUserDetails userDetails = this.authExtensionService.authenticateUser(username, password, authenticationDetails.getSessionId(), authenticationDetails.getRemoteAddress());
+            LOGGER.debug(String.format("Attempting to authenticate user %1$s in database", user.getEcommonsId()));
+            SchedulerUserDetails userDetails = this.authExtensionService.authenticateUser(user.getEcommonsId(), password, authenticationDetails.getSessionId(), authenticationDetails.getRemoteAddress());
             if (userDetails == null) {
-                LOGGER.debug(String.format("Unable to authenticate user %1$s in database", username));
+                LOGGER.debug(String.format("Unable to authenticate user %1$s in database", user.getEcommonsId()));
                 SchedulerRuntimeException.logAndThrow("Unable to authenticate user");
             }
 
@@ -124,7 +127,7 @@ public class SchedulerHybridAuthenticationProvider extends AbstractUserDetailsAu
     }
 
     private static boolean isActiveDirectoryUsername(String username) {
-        return Pattern.matches("^\\w+\\\\\\w+$", username);
+        return Pattern.matches("^\\w+\\\\[a-zA-Z]+$", username);
     }
 
     private static boolean isCHCOActiveDirectoryUsername(String username) {
