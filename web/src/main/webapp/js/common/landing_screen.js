@@ -131,13 +131,13 @@ function submitRegistration() {
     }
     // LDAP Extension: if active directory user, then validate that username contains domain
     if ($.trim($("#registration_ecommonsId").val()).length > 0) {
-        if (isActiveDirectory() && !/^[a-zA-Z]+\\[a-zA-Z]+$/.test($.trim($("#registration_ecommonsId").val())) &&  $("#options_activeDirectory")[0][0].selected) {
-            showError('#registration_ecommonsIdValidation', 'username must include UC Denver Active Directory domain name and UC Denver username');
+        if (isActiveDirectory() && !$("#registration_ecommonsId").val().trim().toLowerCase().startsWith(DEFAULT_DOMAIN) &&  $("#options_activeDirectory")[0][0].selected) {
+            showError('#registration_ecommonsIdValidation', 'username must include UC Denver Active Directory domain name');
             isValid = false;
         }
 
-        if (isActiveDirectory() && !/^[a-zA-Z]+\\\d+$/.test($.trim($("#registration_ecommonsId").val())) &&  $("#options_activeDirectory")[0][1].selected) {
-            showError('#registration_ecommonsIdValidation', 'username must include CHCO Directory domain name and CHCO username');
+        if (isActiveDirectory() && !$("#registration_ecommonsId").val().trim().toLowerCase().startsWith(CHCO_DOMAIN) &&  $("#options_activeDirectory")[0][1].selected) {
+            showError('#registration_ecommonsIdValidation', 'username must include CHCO Directory domain name ');
             isValid = false;
         }
 
