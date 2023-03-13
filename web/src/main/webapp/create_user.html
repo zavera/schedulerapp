@@ -155,7 +155,14 @@
             </td>
             <td>
               <input type="checkbox" id="mgmt_activeDirectory" tabindex="1"
-                     onclick="javascript:updateActiveDirectory();"/>
+                     onclick="javascript:updateDomain();"/>
+
+              <select id="mgmt_options_activeDirectory" onchange="javascript:updateDomain();" tabindex="-1">
+                <option  value="0" >UC Denver</option>
+                <option  value="1">CHCO</option>
+              </select>
+
+
             </td>
             <td></td>
             <td></td>

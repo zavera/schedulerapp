@@ -91,12 +91,13 @@ public class SchedulerHybridAuthenticationProvider extends AbstractUserDetailsAu
             }
         }
 
-
+        //did not find ecommonsId in database
         if (user == null) {
             throw new BadCredentialsException("Invalid Username or Password");
         } else {
             LOGGER.debug(String.format("Found user %1$s in database", user.getEcommonsId()));
             LOGGER.debug(String.format("isActiveDirectoryUser(%1$s) = %2$b", user.getEcommonsId(), isActiveDirectoryUsername(user.getEcommonsId())));
+            LOGGER.debug(String.format("isActiveDirectoryUser(%1$s) = %2$b", user.getEcommonsId(), isCHCOActiveDirectoryUsername(user.getEcommonsId())));
             String password;
             if (isActiveDirectoryUsername(user.getEcommonsId()) || isCHCOActiveDirectoryUsername(user.getEcommonsId())) {
                 password = "";

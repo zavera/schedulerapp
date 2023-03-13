@@ -32,6 +32,32 @@ function isActiveDirectory() {
     return $("#mgmt_activeDirectory").is(':checked');
 }
 
+
+
+function updateDomain(){
+    if(isActiveDirectory()) {
+        var ecommonsId = $.trim($("#mgmt_ecommonsId").val());
+        ecommonsId = ecommonsId.substring(ecommonsId.indexOf('\\') + 1)
+        if ($("#mgmt_options_activeDirectory")[0][0].selected) {
+            ecommonsId = DEFAULT_DOMAIN + '\\' + ecommonsId;
+        }
+        if ($("#mgmt_options_activeDirectory")[0][1].selected) {
+            ecommonsId = CHCO_DOMAIN + '\\' + ecommonsId;
+        }
+        $("#mgmt_ecommonsId").val(ecommonsId);
+        $("#mgmt_password").val('');
+        $("#mgmt_passwordConfirm").val('');
+        $("#mgmt_password").prop("disabled", true);
+        $("#mgmt_passwordConfirm").prop("disabled", true);
+
+    }
+    else{
+        updateActiveDirectory();
+    }
+}
+
+
+
 // LDAP Extension: handle when active directory checkbox changes
 function updateActiveDirectory() {
     console.log('updateActiveDirectory() ' + isActiveDirectory());
@@ -127,6 +153,7 @@ function mgmt_setFormMode(mode) {
         mgmt_loadEditForm();
         // LDAP Extension: Show active directory checkbox, set it to checked if active directory username, and update it
         $('#mgmt_activeDirectoryRow').show();
+        //regex applies to both CHCO and UC Denver usernames. Also it matches db users which is a problem.
         $('#mgmt_activeDirectory').prop('checked', /^\w+\\\w+$/.test($.trim($("#mgmt_ecommonsId").val())));
         updateActiveDirectory();
     }
@@ -165,6 +192,17 @@ function mgmt_loadEditForm() {
     $('#mgmt_middleName').val(app_selectedUser.middleName);
     $('#mgmt_lastName').val(app_selectedUser.lastName);
     $('#mgmt_ecommonsId').val(app_selectedUser.ecommonsId);
+    var separator = app_selectedUser.ecommonsId.indexOf("\\");
+
+    if(app_selectedUser.ecommonsId.substring(0,separator) == DEFAULT_DOMAIN){
+        $("#mgmt_options_activeDirectory")[0][0].selected = true;
+    }
+
+    if(app_selectedUser.ecommonsId.substring(0,separator) == CHCO_DOMAIN){
+        $("#mgmt_options_activeDirectory")[0][1].selected = true;
+
+    }
+
     $('#mgmt_institutionRole').combobox("setValue", app_selectedUser.institutionRoleType);
     $('#mgmt_department').combobox("setValue", app_selectedUser.departmentId);
     $('#mgmt_division').combobox("setValue", app_selectedUser.divisionId);
@@ -201,10 +239,16 @@ function processUserForm() {
     }
     // LDAP Extension: if active directory user, then validate that username contains domain
     if ($.trim($("#mgmt_ecommonsId").val()).length > 0) {
-        if (isActiveDirectory() && !/^\w+\\\w+$/.test($.trim($("#mgmt_ecommonsId").val()))) {
-            showError('#mgmt_ecommonsIdValidation', 'username must include Active Directory domain name');
+        if (isActiveDirectory() &&  !/^[a-zA-Z]+\\[a-zA-Z]+$/.test($.trim($("#mgmt_ecommonsId").val())) &&  $("#mgmt_options_activeDirectory")[0][0].selected) {
+            showError('#mgmt_ecommonsIdValidation', 'username must include Active Directory domain name and UC Denver username');
             isValid = false;
         }
+
+        if (isActiveDirectory() && !/^[a-zA-Z]+\\\d+$/.test($.trim($("#mgmt_ecommonsId").val())) &&  $("#mgmt_options_activeDirectory")[0][1].selected) {
+            showError('#mgmt_ecommonsIdValidation', 'username must include CHCO Directory domain name and CHCO username');
+            isValid = false;
+        }
+
     } else {
         showError('#mgmt_ecommonsIdValidation');
         isValid = false;
