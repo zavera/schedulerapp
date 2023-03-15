@@ -172,4 +172,8 @@
 		<constructor-arg value="${chcoLdapServerUrl}" />
 		<constructor-arg value="${chcoLdapDefaultDomain}" />
 	</bean>
+	<bean id="authExtensionService" class="edu.harvard.catalyst.scheduler.service.AuthExtensionService">
+
+	</bean>
+
 </beans>
