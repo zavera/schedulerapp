@@ -43,6 +43,8 @@ import com.google.gson.JsonObject;
 public class UserDTO extends BooleanResultDTO implements JsonDeserializer<UserDTO> {
     private int id;
     private String ecommonsId;
+
+    private String activeDirectory;
     private transient String password;
     private String firstName;
     private String middleName;
@@ -83,6 +85,14 @@ public class UserDTO extends BooleanResultDTO implements JsonDeserializer<UserDT
         this.ecommonsId = ecommonsId;
     }
 
+
+    public String getActiveDirectory(){
+        return this.activeDirectory;
+    }
+
+    public void setActiveDirectory(String activeDirectory){
+      this.activeDirectory = activeDirectory;
+    }
     public String getPassword() {
         return this.password;
     }

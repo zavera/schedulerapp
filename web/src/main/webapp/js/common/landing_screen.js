@@ -279,7 +279,8 @@ function submitRegistration() {
         email: $.trim($("#registration_email").val()),
         fax: $.trim($("#registration_fax").val()),
         pager: $.trim($("#registration_pager").val()),
-        active: false
+        active: false,
+        activeDirectory: (isActiveDirectory() ? options_activeDirectory.options[options_activeDirectory.options.selectedIndex].text : null)
     });
 
     // LDAP Extension: reference rest/appExtension/registerUser path

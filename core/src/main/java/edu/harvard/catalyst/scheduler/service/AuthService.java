@@ -557,6 +557,7 @@ public class AuthService implements ServiceHelpers {
 
     void setSomeUserProperties(final UserDTO dto, final User user, final InstitutionRoleType institutionRoleType) {
         user.setEcommonsId(dto.getEcommonsId());
+        user.setActiveDirectory(dto.getActiveDirectory());
         user.setFirstName(dto.getFirstName());
         user.setMiddleName(dto.getMiddleName());
         user.setLastName(dto.getLastName());

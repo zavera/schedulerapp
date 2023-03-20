@@ -69,6 +69,8 @@ public class User extends BaseEntity implements Serializable, HasFirstName, HasL
     private Date lastLoginTime;
     private String previousLoginTime;
 
+    private String activeDirectory;
+
     private List<BookedVisit> bookedVisits;
 
     public User() {
@@ -84,6 +86,19 @@ public class User extends BaseEntity implements Serializable, HasFirstName, HasL
     public void setEcommonsId(String ecommonsId) {
         this.ecommonsId = ecommonsId;
     }
+
+
+    @Column(name = "active_directory")
+    public String getActiveDirectory() {
+        return activeDirectory;
+    }
+
+    public void setActiveDirectory(String activeDirectory) {
+        this.activeDirectory = activeDirectory;
+    }
+
+
+
 
     @Column(name = "password")
     @Basic(optional = false)
