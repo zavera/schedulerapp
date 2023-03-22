@@ -153,8 +153,8 @@ function mgmt_setFormMode(mode) {
         mgmt_loadEditForm();
         // LDAP Extension: Show active directory checkbox, set it to checked if active directory username, and update it
         $('#mgmt_activeDirectoryRow').show();
-        //regex applies to both CHCO and UC Denver usernames. Also it matches db users which is a problem.
-        $('#mgmt_activeDirectory').prop('checked', /^\w+\\\w+$/.test($.trim($("#mgmt_ecommonsId").val())));
+        //regex applies to both CHCO and UC Denver usernames. Note that false is evaluated in case of undefined.
+        $('#mgmt_activeDirectory').prop('checked', app_selectedUser.activeDirectory);
         updateActiveDirectory();
     }
 }
@@ -192,13 +192,13 @@ function mgmt_loadEditForm() {
     $('#mgmt_middleName').val(app_selectedUser.middleName);
     $('#mgmt_lastName').val(app_selectedUser.lastName);
     $('#mgmt_ecommonsId').val(app_selectedUser.ecommonsId);
-    var separator = app_selectedUser.ecommonsId.indexOf("\\");
 
-    if(app_selectedUser.ecommonsId.substring(0,separator) == DEFAULT_DOMAIN){
+
+    if(app_selectedUser.activeDirectory === 'UC DENVER'){
         $("#mgmt_options_activeDirectory")[0][0].selected = true;
     }
 
-    if(app_selectedUser.ecommonsId.substring(0,separator) == CHCO_DOMAIN){
+    if(app_selectedUser.activeDirectory === 'CHCO'){
         $("#mgmt_options_activeDirectory")[0][1].selected = true;
 
     }
@@ -390,7 +390,9 @@ function processUserForm() {
         fax: $.trim($("#mgmt_fax").val()),
         pager: $.trim($("#mgmt_pager").val()),
         active: true,
-        generateNewPassword: generateNewPassword
+        generateNewPassword: generateNewPassword,
+        activeDirectory: (isActiveDirectory() ? mgmt_options_activeDirectory.options[mgmt_options_activeDirectory.options.selectedIndex].text : null)
+
     });
 
     var url = "rest/managementExtension/createUser";

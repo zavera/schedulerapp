@@ -66,6 +66,8 @@ public class UserDetailResponse {
     private String facultyRank;
     private Integer facultyRankId;
 
+    private String activeDirectory;
+
 
     public UserDetailResponse(User user) {
         if (user == null) {
@@ -87,6 +89,11 @@ public class UserDetailResponse {
             this.division = user.getDivision().getName();
             this.divisionId = user.getDivision().getId();
         }
+
+        if(user.getActiveDirectory() != null){
+            this.activeDirectory = user.getActiveDirectory();
+        }
+
         if (user.getDepartment() != null) {
             this.department = user.getDepartment().getName();
             this.departmentId = user.getDepartment().getId();

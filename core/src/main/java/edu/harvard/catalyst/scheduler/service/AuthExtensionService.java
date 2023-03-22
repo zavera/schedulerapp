@@ -77,7 +77,7 @@ public class AuthExtensionService implements ServiceHelpers {
     public boolean doPasswordReset(PasswordResetDTO passwordResetDTO) {
         User user = this.authDAO.findUserByEmail(passwordResetDTO.getEmail());
         if (user != null) {
-            return isActiveDirectoryUsername(user.getEcommonsId()) ? false : this.authService.doPasswordReset(passwordResetDTO);
+            return (isActiveDirectoryUsername(user.getEcommonsId()) && user.getActiveDirectory()!= null) ? false : this.authService.doPasswordReset(passwordResetDTO);
         } else {
             return user != null;
         }
@@ -85,7 +85,7 @@ public class AuthExtensionService implements ServiceHelpers {
 
     public UserDTO doRegisterUser(UserDTO dto, String contextPath, String remoteHost, String serverName, int serverPort) {
         User user = new User();
-        if (dto.getActiveDirectory()!= null)  {
+        if (dto.getActiveDirectory() != null && isActiveDirectoryUsername(dto.getEcommonsId()) ) {
             dto.setPassword("");
         } else if (!this.authService.testPassword(dto.getPassword())) {
             dto.setResult(false);
@@ -114,7 +114,7 @@ public class AuthExtensionService implements ServiceHelpers {
 
     public UserDTO createUser(UserDTO dto, User creatingUser, String contextPath, String remoteHost, String serverName, int serverPort) {
         User user = new User();
-        if (isActiveDirectoryUsername(dto.getEcommonsId())) {
+        if (dto.getActiveDirectory() != null && isActiveDirectoryUsername(user.getEcommonsId())) {
             dto.setPassword("");
         } else if (dto.isGenerateNewPassword()) {
             dto.setPassword(this.authService.generatePassword());
@@ -143,7 +143,7 @@ public class AuthExtensionService implements ServiceHelpers {
         if (!this.authService.isValidUser(user, dto)) {
             return dto;
         } else {
-            if (isActiveDirectoryUsername(dto.getEcommonsId())) {
+            if (dto.getActiveDirectory()!= null && isActiveDirectoryUsername(dto.getEcommonsId())) {
                 String encryptedPassword = OneWayPasswordEncoder.getInstance().encode("", user.getSalt());
                 if (!encryptedPassword.equals(user.getPassword())) {
                     user.setPassword(encryptedPassword);
@@ -162,7 +162,7 @@ public class AuthExtensionService implements ServiceHelpers {
 
     public UserDTO updatePassword(UserDTO dto, User usr) {
         User user = this.authDAO.findUserById(usr.getId());
-        if (isActiveDirectoryUsername(user.getEcommonsId())) {
+        if (user.getActiveDirectory() != null && isActiveDirectoryUsername(user.getEcommonsId())) {
             dto.setErrorMsg("Active directory password cannot be changed in Scheduler");
             dto.setResult(false);
             return dto;
