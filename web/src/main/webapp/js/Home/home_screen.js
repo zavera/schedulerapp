@@ -49,6 +49,7 @@ function authDataCallback(data) {
     user = new User();
     user.id = parsedData.id;
     user.ecommonsId = parsedData.ecommonsId;
+    user.activeDirectory = parsedData.activeDirectory;
     user.firstName = parsedData.firstName;
     user.middleName = parsedData.middleName;
     user.lastName = parsedData.lastName;

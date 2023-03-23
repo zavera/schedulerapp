@@ -114,7 +114,7 @@ public class AuthExtensionService implements ServiceHelpers {
 
     public UserDTO createUser(UserDTO dto, User creatingUser, String contextPath, String remoteHost, String serverName, int serverPort) {
         User user = new User();
-        if (dto.getActiveDirectory() != null && isActiveDirectoryUsername(user.getEcommonsId())) {
+        if (dto.getActiveDirectory() != null && isActiveDirectoryUsername(dto.getEcommonsId())) {
             dto.setPassword("");
         } else if (dto.isGenerateNewPassword()) {
             dto.setPassword(this.authService.generatePassword());

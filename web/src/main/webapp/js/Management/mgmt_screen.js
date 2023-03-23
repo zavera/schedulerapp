@@ -45,7 +45,8 @@ var MgmtPage = (function () {
 // LDAP Extension: hide password change controls if active directory user
 function updatePasswordChangeForm() {
     user = JSON.parse(sessionStorage.getItem("userData"));
-    if (/^\w+\\\w+$/.test(user.ecommonsId)) {
+    //note that activeDirectory is undefined in case of AD users evaluated to false
+    if (/^\w+\\\w+$/.test(user.ecommonsId) && user.activeDirectory) {
         $("#mgmt_passwordChangeDiv").hide();
         $("#mgmt_passwordChangeNotAllowedDiv").show();
     } else {
