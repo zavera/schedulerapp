@@ -244,7 +244,7 @@ function saveComment(element, commentCounter) {
     var numComments = 0;
 
 
-    if(visitBookedStatus == 'Overbooked on: ' && schedulingMode ) {
+    if(schedulingMode ) {
 
         var allComments = {};
         var allComment
@@ -287,7 +287,7 @@ function saveComment(element, commentCounter) {
         parsedData = JSON.parse(data);
         util_showMainMessage("The comment has been saved.");
 
-        if((visitBookedStatus == 'Overbooked on: ') && schedulingMode ){
+        if(schedulingMode ){
 
             commentTypes.forEach(function (element) {
                 let commentDivId = element.id + "_scheduledVisit_comment";
@@ -701,7 +701,6 @@ HomeAppointment.openAppointmentWindowCallback = function (data, className) {
 
     if(viewCommentsButton === 'viewScheduledCommentLink') {
         schedulingMode = true;
-        if (actionName == "Overbooked on: ") {
 
             $(".comment_label_and_input").css({display: "none"});
             commentTypes.forEach(function (element) {
@@ -711,7 +710,6 @@ HomeAppointment.openAppointmentWindowCallback = function (data, className) {
                     WidgetUtil.commentBox(document.getElementById(commentDivId), {width: "100%", height: "50px"});
                 }
             })
-        }
     }
 
     if (user.institutionRole.id !== GENERAL_VIEW && viewCommentsButton !== undefined) {
