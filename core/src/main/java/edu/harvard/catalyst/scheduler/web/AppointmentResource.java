@@ -789,6 +789,7 @@ public class AppointmentResource extends SecuredResource {
                                      @QueryParam("startDate") final Long startDate,
                                      @QueryParam("endDate") final Long endDate) {
         final VisitSpecsDTO visitSpecsDTO = gson.fromJson(data, VisitSpecsDTO.class);
+
         final ConfirmationStatus confirmationStatus;
         final Map<String, String> resultMap = Maps.newHashMap();
 
@@ -798,6 +799,8 @@ public class AppointmentResource extends SecuredResource {
             visitSpecsDTO.setEndDate(endDate);
             confirmationStatus = service.confirmEvent(visitSpecsDTO, getUserSession(), getRemoteHost(),
                     getUser().getInstitution().getLongName(), context.getRealPath("/WEB-INF"), isInpatient);
+
+
             if(visitSpecsDTO.getDoubleRoomMessage() != null) {
                 resultMap.put("doubleSharedRoom", visitSpecsDTO.getDoubleRoomMessage());
                 return gson.toJson(resultMap);

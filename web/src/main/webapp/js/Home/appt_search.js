@@ -36,6 +36,9 @@ AppointmentSearchForm.selectedVisit = {};
 AppointmentSearchForm.selectedSubject = {};
 AppointmentSearchForm.NO_SUBJECT_ASSIGNED = "No Subject Assigned";
 
+
+
+
 AppointmentSearchForm.init = function () {
     $("#apptSearchRestart").hide();
     $("#apptSearchOverbook").hide();
@@ -1317,7 +1320,8 @@ AppointmentSearchForm.scheduleDialog = function () {
                     subjectMrnId: AppointmentSearchForm.selectedSubject.subjectMrnId,
                     visit: AppointmentSearchForm.selectedVisit.id,
                     allComments: allComments,
-                    user: user.id
+                    user: user.id,
+                    emailReminder: $("#checkbox_email_reminder")[0].checked
                 });
                 var isInpatient = MiscUtil.isInpatientVisit(AppointmentSearchForm.selectedVisit.visitTypeId);
 

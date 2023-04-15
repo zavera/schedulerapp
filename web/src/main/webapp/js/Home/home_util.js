@@ -247,7 +247,6 @@ function saveComment(element, commentCounter) {
     if(schedulingMode ) {
 
         var allComments = {};
-        var allComment
 
         commentTypes.forEach(function (element) {
             let commentDivId = element.id + "_scheduledVisit_comment_txtArea";

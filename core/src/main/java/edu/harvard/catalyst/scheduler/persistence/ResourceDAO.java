@@ -70,6 +70,7 @@ public class ResourceDAO extends SiteDAO {
         return ResourceType.findById(id).orElse(null);
     }
 
+
     public SublocationClosureInterval findBySublocationClosureIntervalId(final Integer id) {
         return findById(SublocationClosureInterval.class, id);
     }

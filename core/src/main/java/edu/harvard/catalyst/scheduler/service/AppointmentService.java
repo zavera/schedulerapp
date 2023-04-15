@@ -46,6 +46,7 @@ import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.language.DefaultTemplateLexer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailMessage;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
@@ -158,6 +159,7 @@ public class AppointmentService {
     public List<VisitCommentsResponse.VisitComment> getAppointmentComments(final int bookedVisitId) {
         final BookedVisit bookedVisit = appointmentDAO.findBookedVisitById(bookedVisitId);
         return appointmentDAO.findAppointmentCommentsByVisit(bookedVisit);
+
     }
 
 
@@ -565,6 +567,11 @@ public class AppointmentService {
                 appointmentDAO.createEntity(tra);
             }
         }
+    }
+
+
+    void sendCancelAppointmentMessage(){
+
     }
 
     void sendVisitTemplateResourceUpdatedEmail(final VisitTemplate visit, final String institution, final boolean
@@ -2895,6 +2902,7 @@ public class AppointmentService {
         }
         auditService.logAppointmentActivity(ipAddress, bv, user, BookedVisitActivityLogStatics.CANCELLED);
         result.setResult(true);
+        sendCancelAppointmentMessage();
         return bv;
     }
 
@@ -3970,6 +3978,8 @@ public class AppointmentService {
              * restriction if an automatic restriction could not be implemented.
              */
 
+
+
             //only check if there is a subject; isn't when it is a hold
             SubjectMrn bvSubjectMrn = bookedVisit.getSubjectMrn();
             String genderBlockMessage = null;
@@ -3980,8 +3990,15 @@ public class AppointmentService {
             }
 
             if (genderBlockMessage == null) {
-                appointmentService.checkMealsAndPersistVisit(userSession, ipAddress, institution,
-                                                                templatePath, bookedVisit,visitSpecsDTO.getAllComments());
+                appointmentService.checkMealsAndPersistVisit(userSession, ipAddress, institution, templatePath, bookedVisit,visitSpecsDTO.getAllComments());
+
+                SimpleMailMessage x = new SimpleMailMessage();
+                x.setTo(userSession.getUser().getEmail());
+                x.setSubject("Appointment Reminder");
+                x.setText("this is text");
+
+                if(visitSpecsDTO.sendEmailReminder())  appointmentService.mailHandler.sendMandatoryEmails(x);
+
             } else {
                 visitSpecsDTO.setDoubleRoomMessage(genderBlockMessage);
             }

@@ -38,6 +38,20 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+
+import javax.activation.DataHandler;
+import javax.mail.Message;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Properties;
+import java.util.UUID;
+
 @Component
 public class MailHandler {
 
@@ -46,6 +60,8 @@ public class MailHandler {
 	private final String mailFrom;
 
 	private final JavaMailSender mailSender;
+
+
 
 	@Autowired
 	public MailHandler(@Qualifier("mailEnabled") final Boolean mailEnabled,
@@ -56,6 +72,7 @@ public class MailHandler {
 		this.mailFrom = normalizeFrom(mailFrom);
 		this.mailSender = mailSender;
 	}
+
 
 	private String normalizeFrom(final String from) {
 		return from == null || from.equals("") ? "AnonymousSender@harvard.edu" : from;

@@ -57,6 +57,8 @@ public class VisitSpecsDTO extends BooleanResultDTO implements Serializable {
 
     private String comment;
 
+
+
     private Map<Integer,String> allComments;
 
     private long checkInDate;
@@ -71,6 +73,8 @@ public class VisitSpecsDTO extends BooleanResultDTO implements Serializable {
     private List<Integer> selectedAnnotationsQuantity;  // set via Gson
 
     private boolean ommittedActivities;
+
+    private boolean emailReminder;
     private boolean varyDuration;
     private boolean billable;                           // set via Gson
 
@@ -228,6 +232,8 @@ public class VisitSpecsDTO extends BooleanResultDTO implements Serializable {
     public void setOmmittedActivities(boolean ommittedActivities) {
         this.ommittedActivities = ommittedActivities;
     }
+
+    public boolean sendEmailReminder() {return emailReminder;}
 
     public boolean isVaryDuration() {
         return varyDuration;
