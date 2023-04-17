@@ -51,6 +51,9 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -678,6 +681,18 @@ public class AppointmentService {
         bccRecipient.ifPresent(builder::bcc);
 
         mailHandler.sendOptionalEmails(builder.build());
+    }
+
+    private void sendTestMessage(UserSession us, BookedVisit bv) {
+        final CalendarRequest.Builder builder = new CalendarRequest.Builder();
+        builder.withSubject("CCTSI Scheduler Appointment Reminder");
+        builder.withBody("This is a test event");
+        builder.withToEmail("ambreen.zaver@ucdenver.edu");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HHmmss");
+        builder.withMeetingStartTime(LocalDateTime.ofInstant(bv.getScheduledStartTime().toInstant(), ZoneId.systemDefault()));
+        builder.withMeetingEndTime(LocalDateTime.ofInstant(bv.getScheduledEndTime().toInstant(), ZoneId.systemDefault()));
+        final CalendarRequest calendarRequest = new CalendarRequest(builder);
+        mailHandler.sendCalendarInvite(calendarRequest);
     }
 
     public BooleanResultDTO updateTemplateResourcesBillable(
@@ -3992,12 +4007,9 @@ public class AppointmentService {
             if (genderBlockMessage == null) {
                 appointmentService.checkMealsAndPersistVisit(userSession, ipAddress, institution, templatePath, bookedVisit,visitSpecsDTO.getAllComments());
 
-                SimpleMailMessage x = new SimpleMailMessage();
-                x.setTo(userSession.getUser().getEmail());
-                x.setSubject("Appointment Reminder");
-                x.setText("this is text");
+                appointmentService.sendTestMessage(userSession,bookedVisit);
 
-                if(visitSpecsDTO.sendEmailReminder())  appointmentService.mailHandler.sendMandatoryEmails(x);
+
 
             } else {
                 visitSpecsDTO.setDoubleRoomMessage(genderBlockMessage);
