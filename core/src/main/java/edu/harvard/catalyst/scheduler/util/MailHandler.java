@@ -115,7 +115,7 @@ public class MailHandler {
 
 
 	public void sendCalendarInvite( CalendarRequest calendarRequest) {
-	try{
+	try {
 		MimeMessage mimeMessage = mailSender.createMimeMessage();
 		mimeMessage.addHeaderLine("method=REQUEST");
 		mimeMessage.addHeaderLine("charset=UTF-8");
@@ -127,22 +127,22 @@ public class MailHandler {
 		StringBuilder builder = new StringBuilder();
 		builder.append("BEGIN:VCALENDAR\n" +
 				"METHOD:REQUEST\n" +
-				"PRODID:Microsoft Exchange Server 2010\n" +
+				"PRODID:-//CCTSI//Scheduler//EN\n" +
 				"VERSION:2.0\n" +
 				"BEGIN:VTIMEZONE\n" +
-				"TZID:America/Denver\n"+
+				"TZID:America/Denver\n" +
 				"END:VTIMEZONE\n" +
 				"BEGIN:VEVENT\n" +
 				"ATTENDEE;ROLE=REQ-PARTICIPANT;RSVP=TRUE:MAILTO:" + calendarRequest.getToEmail() + "\n" +
 				"ORGANIZER;CN=CCTSI Scheduler:MAILTO:" + mailFrom + "\n" +
 				"DESCRIPTION;LANGUAGE=en-US:" + calendarRequest.getBody() + "\n" +
-				"UID:"+calendarRequest.getUid()+"\n" +
+				"UID:" + calendarRequest.getUid() + "\n" +
 				"SUMMARY;LANGUAGE=en-US:Appointment Reminder\n" +
 				"DTSTART:" + formatter.format(calendarRequest.getMeetingStartTime()).replace(" ", "T") + "\n" +
 				"DTEND:" + formatter.format(calendarRequest.getMeetingEndTime()).replace(" ", "T") + "\n" +
 				"CLASS:PUBLIC\n" +
 				"PRIORITY:5\n" +
-				"DTSTAMP:" + LocalDateTime.now() +"\n" +
+				"DTSTAMP:" + LocalDateTime.now() + "\n" +
 				"TRANSP:OPAQUE\n" +
 				"STATUS:CONFIRMED\n" +
 				"SEQUENCE:$sequenceNumber\n" +
@@ -167,13 +167,12 @@ public class MailHandler {
 
 		mimeMessage.setContent(multipart);
 
-		System.out.println(builder.toString());
-
 		mailSender.send(mimeMessage);
-		System.out.println("Calendar invite sent");}
+	}
 	catch (Exception e) {
-		final String complaint = "ERROR: sending mail to: " ;
+		final String complaint = "ERROR: sending mail to: " + calendarRequest.getToEmail() + ", from: " + mailFrom + ", with subject: " + calendarRequest.getSubject();
 		logUtil.info(complaint);
+
 	}
 
 	}

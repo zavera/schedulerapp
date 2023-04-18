@@ -683,11 +683,17 @@ public class AppointmentService {
         mailHandler.sendOptionalEmails(builder.build());
     }
 
-    private void sendTestMessage(UserSession us, BookedVisit bv) {
+    private void sendReminderMessage(UserSession us, BookedVisit bv) {
         final CalendarRequest.Builder builder = new CalendarRequest.Builder();
-        builder.withSubject("CCTSI Scheduler Appointment Reminder");
+
+        var subjectLastName = "None";
+        if(bv.getSubjectMrn() != null) {
+            final Subject subject = subjectDAO.findBySubjectId(bv.getSubjectMrn().getId());
+            subjectLastName = subject.getLastName();
+        }
+        builder.withSubject("CCTSI Scheduler Appointment Reminder for "+ subjectLastName);
         builder.withBody("This is a test event");
-        builder.withToEmail("ambreen.zaver@ucdenver.edu");
+        builder.withToEmail(us.getUser().getEmail());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HHmmss");
         builder.withMeetingStartTime(LocalDateTime.ofInstant(bv.getScheduledStartTime().toInstant(), ZoneId.systemDefault()));
         builder.withMeetingEndTime(LocalDateTime.ofInstant(bv.getScheduledEndTime().toInstant(), ZoneId.systemDefault()));
@@ -2881,6 +2887,7 @@ public class AppointmentService {
         final BooleanResultDTO result = new BooleanResultDTO();
         result.setResult(false);
         final BookedVisit bv = appointmentDAO.findBookedVisitById(visitSpecsDTO.getId());
+        appointmentDAO.findBookedResourcesByBookedVisit(bv);
         final Calendar cal = Calendar.getInstance();
         final int cancelTimeHr = 0;
         final int cancelTimeMin = 0;
@@ -4007,13 +4014,34 @@ public class AppointmentService {
             if (genderBlockMessage == null) {
                 appointmentService.checkMealsAndPersistVisit(userSession, ipAddress, institution, templatePath, bookedVisit,visitSpecsDTO.getAllComments());
 
-                appointmentService.sendTestMessage(userSession,bookedVisit);
-
-
 
             } else {
                 visitSpecsDTO.setDoubleRoomMessage(genderBlockMessage);
             }
+
+            if(visitSpecsDTO.sendEmailReminder() && isAcceptedEmailDomain(userSession.getUser().getEmail())) {
+                appointmentService.sendReminderMessage(userSession, bookedVisit);
+            }
+        }
+
+
+        public boolean isAcceptedEmailDomain(final String userEmail){
+            var domainName = userEmail.split("@")[1];
+            var isAccepted = false;
+            switch(domainName) {
+                case "childrenscolorado.org":
+                    isAccepted = true;
+                    break;
+                case "ucdenver.edu":
+                    isAccepted = true;
+                    break;
+                case "cuanschutz.edu":
+                    isAccepted = true;
+                    break;
+                default:
+                    break;
+            }
+            return isAccepted;
         }
 
         @Override
