@@ -58,6 +58,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static edu.harvard.catalyst.hccrc.core.util.LazyList.lazy;
 import static edu.harvard.catalyst.hccrc.core.util.ListUtils.enrich;
@@ -573,7 +574,10 @@ public class AppointmentService {
     }
 
 
-    void sendCancelAppointmentMessage(){
+    void sendCancelAppointmentMessage(final BookedVisit bv){
+        List<String> resourceTypeName = appointmentDAO.findBookedResourcesByBookedVisit(bv).stream().map(x -> x.getResource().getResourceType().getName()).collect(Collectors.toList());
+        sendCancelMessages(authDAO.findUserByRole(RoleType.ROLE_NUTRITIONIST),"Cancellation Notification","Appointment scheduled at "+ bv.getScheduledStartTime() +" " + "has been cancelled");
+
 
     }
 
@@ -683,6 +687,15 @@ public class AppointmentService {
         mailHandler.sendOptionalEmails(builder.build());
     }
 
+
+    public void sendCancelMessages(final List<User> nutritionGroup, final String title, final String text) {
+
+        final Function<User, SimpleMailMessage> toMessage = u -> new MailMessageBuilder().to(u.getEmail()).subject(title).text(text).build();
+
+        enrich(nutritionGroup).map(toMessage).forEach(mailHandler::sendMandatoryEmails);
+    }
+
+
     private void sendReminderMessage(UserSession us, BookedVisit bv) {
         final CalendarRequest.Builder builder = new CalendarRequest.Builder();
 
@@ -691,9 +704,10 @@ public class AppointmentService {
             final Subject subject = subjectDAO.findBySubjectId(bv.getSubjectMrn().getId());
             subjectLastName = subject.getLastName();
         }
-        builder.withSubject("CCTSI Scheduler Appointment Reminder for "+ subjectLastName);
-        builder.withBody("This is a test event");
+        builder.withSubject(bv.getVisitTemplate().getName() + "/"+ subjectLastName);
+        builder.withBody("Always cancel appointments in Scheduler before making adjustments or cancellations to this calendar appointment");
         builder.withToEmail(us.getUser().getEmail());
+        builder.withLocation(bv.getRooms());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HHmmss");
         builder.withMeetingStartTime(LocalDateTime.ofInstant(bv.getScheduledStartTime().toInstant(), ZoneId.systemDefault()));
         builder.withMeetingEndTime(LocalDateTime.ofInstant(bv.getScheduledEndTime().toInstant(), ZoneId.systemDefault()));
@@ -2924,7 +2938,7 @@ public class AppointmentService {
         }
         auditService.logAppointmentActivity(ipAddress, bv, user, BookedVisitActivityLogStatics.CANCELLED);
         result.setResult(true);
-        sendCancelAppointmentMessage();
+        sendCancelAppointmentMessage(bv);
         return bv;
     }
 

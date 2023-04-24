@@ -212,7 +212,7 @@ public class AuthDAO extends SiteDAO {
     }
 
     @SuppressWarnings("unchecked")
-    private List<User> findUserByRole(final RoleType roleType){
+    public List<User> findUserByRole(final RoleType roleType){
         final String hql = "select u from User u where u.role = (select r from Role r where r.type = :roleType)";
         final Query query = newQuery(hql).setParameter("roleType", roleType);
         return query.list();

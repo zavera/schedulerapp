@@ -12,6 +12,8 @@ public class CalendarRequest {
     private String toEmail;
     private String subject;
     private String body;
+
+    private String location;
     private LocalDateTime meetingStartTime;
     private LocalDateTime meetingEndTime;
 
@@ -21,6 +23,7 @@ public class CalendarRequest {
         body = builder.body;
         meetingStartTime = builder.meetingStartTime;
         meetingEndTime = builder.meetingEndTime;
+        location = builder.location;
     }
 
 
@@ -44,6 +47,10 @@ public class CalendarRequest {
         return meetingStartTime;
     }
 
+    public String getLocation(){
+        return location;
+    }
+
     public LocalDateTime getMeetingEndTime() {
         return meetingEndTime;
     }
@@ -55,6 +62,7 @@ public class CalendarRequest {
         private LocalDateTime meetingStartTime;
         private LocalDateTime meetingEndTime;
 
+        private String location;
         public Builder() {
         }
 
@@ -65,6 +73,11 @@ public class CalendarRequest {
 
         public Builder withSubject(String val) {
             subject = val;
+            return this;
+        }
+
+        public Builder withLocation(String val){
+            location = val;
             return this;
         }
 

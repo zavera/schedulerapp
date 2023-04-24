@@ -137,7 +137,8 @@ public class MailHandler {
 				"ORGANIZER;CN=CCTSI Scheduler:MAILTO:" + mailFrom + "\n" +
 				"DESCRIPTION;LANGUAGE=en-US:" + calendarRequest.getBody() + "\n" +
 				"UID:" + calendarRequest.getUid() + "\n" +
-				"SUMMARY;LANGUAGE=en-US:Appointment Reminder\n" +
+				"SUMMARY;LANGUAGE=en-US:"+calendarRequest.getSubject()+"\n" +
+				"LOCATION:" +calendarRequest.getLocation()+"\n"+
 				"DTSTART:" + formatter.format(calendarRequest.getMeetingStartTime()).replace(" ", "T") + "\n" +
 				"DTEND:" + formatter.format(calendarRequest.getMeetingEndTime()).replace(" ", "T") + "\n" +
 				"CLASS:PUBLIC\n" +
