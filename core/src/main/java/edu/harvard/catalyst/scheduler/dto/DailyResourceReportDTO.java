@@ -200,43 +200,23 @@ public class DailyResourceReportDTO implements CsvAbleDTO {
     if (scheduledVisitComment.equals("None")) {
       row[18] += q(comment + " ");
     }
-    if (schedulingFlavor.equals("Overbooked")) {
-      if (scheduledVisitComment.equals("Nutrition")) {
-        row[11] += q(comment + " ");
-      } else if (scheduledVisitComment.equals("EBL")) {
-        row[12] += q(comment + " ");
-      } else if (scheduledVisitComment.equals("Nursing")) {
-        row[13] += q(comment + " ");
-      } else if (scheduledVisitComment.equals("Cardiovascular Imaging")) {
-        row[14] += q(comment + " ");
-      } else if (scheduledVisitComment.equals("Lab")) {
-        row[15] += q(comment + " ");
-      } else if (scheduledVisitComment.equals("Pharmacy")) {
-        row[16] += q(comment + " ");
-      } else if (scheduledVisitComment.equals("Other")) {
-        row[17] += q(comment + " ");
-      }
-    }
-    if (schedulingFlavor.equals("Scheduled")) {
-      if (scheduledVisitComment.equals("Nutrition")) {
-        row[11] = q(comment);
-      } else if (scheduledVisitComment.equals("EBL")) {
-        row[12] = q(comment);
-      } else if (scheduledVisitComment.equals("Nursing")) {
-        row[13] = q(comment);
-      } else if (scheduledVisitComment.equals("Cardiovascular Imaging")) {
-        row[14] = q(comment);
-      } else if (scheduledVisitComment.equals("Lab")) {
-        row[15] = q(comment);
-      } else if (scheduledVisitComment.equals("Pharmacy")) {
-        row[16] = q(comment);
-      } else if (scheduledVisitComment.equals("Other")) {
-        row[17] = q(comment);
-      }
 
+    if (scheduledVisitComment.equals("Nutrition")) {
+        row[11] += q(comment + "\n");
+      } else if (scheduledVisitComment.equals("EBL")) {
+        row[12] += q(comment + "\n");
+      } else if (scheduledVisitComment.equals("Nursing")) {
+        row[13] += q(comment + "\n");
+      } else if (scheduledVisitComment.equals("Cardiovascular Imaging")) {
+        row[14] += q(comment + "\n");
+      } else if (scheduledVisitComment.equals("Lab")) {
+        row[15] += q(comment + "\n");
+      } else if (scheduledVisitComment.equals("Pharmacy")) {
+        row[16] += q(comment + "\n");
+      } else if (scheduledVisitComment.equals("Other")) {
+        row[17] += q(comment + "\n");
     }
     return row;
-
   }
 
 

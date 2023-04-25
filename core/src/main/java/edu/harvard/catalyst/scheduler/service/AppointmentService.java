@@ -576,9 +576,8 @@ public class AppointmentService {
 
     void sendCancelAppointmentMessage(final BookedVisit bv){
         List<String> resourceTypeName = appointmentDAO.findBookedResourcesByBookedVisit(bv).stream().map(x -> x.getResource().getResourceType().getName()).collect(Collectors.toList());
-        sendCancelMessages(authDAO.findUserByRole(RoleType.ROLE_NUTRITIONIST),"Cancellation Notification","Appointment scheduled at "+ bv.getScheduledStartTime() +" " + "has been cancelled");
-
-
+        if(resourceTypeName.contains("Nutrition"))
+            sendCancelMessages(authDAO.findUserByRole(RoleType.ROLE_NUTRITIONIST),"Cancellation Notification","Appointment scheduled at "+ bv.getScheduledStartTime() +" " + "has been cancelled");
     }
 
     void sendVisitTemplateResourceUpdatedEmail(final VisitTemplate visit, final String institution, final boolean
@@ -707,12 +706,25 @@ public class AppointmentService {
         builder.withSubject(bv.getVisitTemplate().getName() + "/"+ subjectLastName);
         builder.withBody("Always cancel appointments in Scheduler before making adjustments or cancellations to this calendar appointment");
         builder.withToEmail(us.getUser().getEmail());
-        builder.withLocation(bv.getRooms());
+        var location = "";
+        if(appointmentDAO.findBookedResourcesByBookedVisit(bv).size() > 0) {
+            var firstBookedResource = getFirstBookedResource(appointmentDAO.findBookedResourcesByBookedVisit(bv));
+            if(firstBookedResource.getResource().getName().equals("Room")) {
+                location = firstBookedResource.getResource().getName();
+            }
+
+        }
+        builder.withLocation(location);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HHmmss");
         builder.withMeetingStartTime(LocalDateTime.ofInstant(bv.getScheduledStartTime().toInstant(), ZoneId.systemDefault()));
         builder.withMeetingEndTime(LocalDateTime.ofInstant(bv.getScheduledEndTime().toInstant(), ZoneId.systemDefault()));
         final CalendarRequest calendarRequest = new CalendarRequest(builder);
         mailHandler.sendCalendarInvite(calendarRequest);
+    }
+
+    private BookedResource getFirstBookedResource(List<BookedResource> listOfResources){
+        listOfResources.sort((o1,o2) -> o1.getScheduledStartTime().compareTo(o2.getScheduledStartTime()));
+        return listOfResources.get(0);
     }
 
     public BooleanResultDTO updateTemplateResourcesBillable(
@@ -4040,7 +4052,7 @@ public class AppointmentService {
 
 
         public boolean isAcceptedEmailDomain(final String userEmail){
-            var domainName = userEmail.split("@")[1];
+            var domainName = userEmail.split("@")[1].toLowerCase();
             var isAccepted = false;
             switch(domainName) {
                 case "childrenscolorado.org":
@@ -4052,6 +4064,8 @@ public class AppointmentService {
                 case "cuanschutz.edu":
                     isAccepted = true;
                     break;
+                case "uchealth.org":
+                    isAccepted = true;
                 default:
                     break;
             }
