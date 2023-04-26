@@ -51,6 +51,7 @@ import org.hibernate.type.DateType;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.function.Function;
@@ -1517,8 +1518,8 @@ public class ReportDAO extends SiteDAO {
 		logHqlQuery(resultRows, query);
 
 		 final Function<Object[], DailyResourceReportDTO> toDailyResourceReportDTO = row -> {
-		    final DailyResourceReportDTO newObj = new DailyResourceReportDTO();
-            newObj.setResourceTypeId((Integer) row[0]);
+ 		    final DailyResourceReportDTO newObj = new DailyResourceReportDTO();
+           newObj.setResourceTypeId((Integer) row[0]);
             newObj.setResourceTypeName(((ResourceType) row[1]).getName());
             newObj.setResourceName((String) row[2]);
 
@@ -1666,7 +1667,7 @@ public class ReportDAO extends SiteDAO {
 		//need left join on subjectMRN. id match with bv.subjectMrn means bv without subjects are not selected.
 
 		String hql = "select bv.id, s.firstName, s.middleName, s.lastName, s.birthdate, sm.mrn, s.gender, st.localId, st.irb, v, " +
-                "r.name, br.scheduledStartTime, br.scheduledEndTime, bv.checkInDate, bv.appointmentStatus, bv.schedulingFlavor, c " +
+                "r.name, r.id, r.resourceType, br.scheduledStartTime, br.scheduledEndTime, bv.checkInDate, bv.appointmentStatus, bv.schedulingFlavor, c " +
                 "from Subject s, Study st, VisitTemplate v, Resource r, BookedResource br, BookedVisit bv LEFT JOIN Comments c on c.bookedVisit = bv.id, SubjectMrn sm " +
                 "where bv.subjectMrn = sm.id and sm.subject = s.id and br.bookedVisit = bv.id " +
 				" and br.resource = r.id and bv.study = st.id and bv.visitTemplate = v.id " +
@@ -1705,6 +1706,7 @@ public class ReportDAO extends SiteDAO {
 			final DailyAdmReportDTO newObj = new DailyAdmReportDTO();
 
 			// !! should call it visitId, not subjectId
+			newObj.setVisitId((Integer) row[0]);
 			newObj.setSubjectId((Integer) row[0]);
 			newObj.setSubjectFirstName(SubjectDataEncryptor.decrypt((String) row[1]));
 			newObj.setSubjectMiddleName(SubjectDataEncryptor.decrypt((String) row[2]));
@@ -1725,13 +1727,15 @@ public class ReportDAO extends SiteDAO {
 			final VisitTemplate visit = (VisitTemplate) row[9];
 			newObj.setVisitName(visit.getName());
 			newObj.setResourceName((String) row[10]);
-			newObj.setScheduledStartTime((Date) row[11]);
-			newObj.setScheduledEndTime((Date) row[12]);
+			newObj.setResourceTypeId((Integer) row[11]);
+			newObj.setResourceTypeName(((ResourceType) row[12]).getName());
+			newObj.setScheduledStartTime((Date) row[13]);
+			newObj.setScheduledEndTime((Date) row[14]);
 
-			newObj.setCheckInTime((Date) row[13]);
-			newObj.setVisitStatus(((AppointmentStatus) row[14]).getName());
-			newObj.setSchedulingFlavor((String) row[15]);
-			final Comments comment = (Comments) row[16];
+			newObj.setCheckInTime((Date) row[15]);
+			newObj.setVisitStatus(((AppointmentStatus) row[16]).getName());
+			newObj.setSchedulingFlavor((String) row[17]);
+			final Comments comment = (Comments) row[18];
 
 			if(comment  == null ){
 				newObj.setComment(" ");
@@ -4457,7 +4461,7 @@ public class ReportDAO extends SiteDAO {
 	};
 
 	static final Comparator<DailyAdmReportDTO> DailyAdmNameComparator = (p1, p2) -> {
-		final int nameOrder = p1.getSubjectId().compareTo(p2.getSubjectId());
+		final int nameOrder = p1.getVisitId().compareTo(p2.getVisitId());
 		if (nameOrder != 0){
 			return nameOrder;
 		}
@@ -4465,7 +4469,7 @@ public class ReportDAO extends SiteDAO {
 	};
 
 	static final Comparator<DailyAdmReportDTO> DailyAdmNameComparatorDesc = (p1, p2) -> {
-		final int nameOrder = p1.getSubjectId().compareTo(p2.getSubjectId());
+		final int nameOrder = p1.getVisitId().compareTo(p2.getVisitId());
 		if (nameOrder != 0){
 			return nameOrder;
 		}

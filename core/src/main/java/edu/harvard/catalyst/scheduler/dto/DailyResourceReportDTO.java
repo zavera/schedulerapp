@@ -196,7 +196,7 @@ public class DailyResourceReportDTO implements CsvAbleDTO {
   }
 
 
-  public String[] getCommentedRow(String[] row, String comment, String scheduledVisitComment, String schedulingFlavor) {
+  public String[] getCommentedRow(String[] row, String comment, String scheduledVisitComment) {
     if (scheduledVisitComment.equals("None")) {
       row[18] += q(comment + " ");
     }
@@ -204,17 +204,17 @@ public class DailyResourceReportDTO implements CsvAbleDTO {
     if (scheduledVisitComment.equals("Nutrition")) {
         row[11] += q(comment + "\n");
       } else if (scheduledVisitComment.equals("EBL")) {
-        row[12] += q(comment + "\n");
+        row[12] += q(comment+ "\n" );
       } else if (scheduledVisitComment.equals("Nursing")) {
         row[13] += q(comment + "\n");
       } else if (scheduledVisitComment.equals("Cardiovascular Imaging")) {
-        row[14] += q(comment + "\n");
+        row[14] += q(comment+ "\n" );
       } else if (scheduledVisitComment.equals("Lab")) {
-        row[15] += q(comment + "\n");
+        row[15] += q(comment+ "\n" );
       } else if (scheduledVisitComment.equals("Pharmacy")) {
-        row[16] += q(comment + "\n");
+        row[16] += q(comment+ "\n" );
       } else if (scheduledVisitComment.equals("Other")) {
-        row[17] += q(comment + "\n");
+        row[17] += q(comment+ "\n");
     }
     return row;
   }
@@ -244,7 +244,7 @@ public class DailyResourceReportDTO implements CsvAbleDTO {
       String rowMapKey = d.visitId + d.resourceName + d.resourceTypeId;
 
       if (rowMap.containsKey(rowMapKey)) {
-        String[] newRow = getCommentedRow(rowMap.get(rowMapKey), d.comment, d.scheduledVisitComment, d.schedulingFlavor);
+        String[] newRow = getCommentedRow(rowMap.get(rowMapKey), d.comment, d.scheduledVisitComment);
         rowMap.put(rowMapKey, newRow);
 
       } else {
@@ -266,7 +266,7 @@ public class DailyResourceReportDTO implements CsvAbleDTO {
         row[9] = q(showDateTime(d.scheduledEndTime));
         row[10] = q(formatEndMinusStart(
                 d.scheduledStartTime, d.scheduledEndTime));
-        String[] newRow = getCommentedRow(row, d.comment, d.scheduledVisitComment, d.schedulingFlavor);
+        String[] newRow = getCommentedRow(row, d.comment, d.scheduledVisitComment);
         rowMap.put(rowMapKey, newRow);
 
       }

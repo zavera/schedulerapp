@@ -82,9 +82,6 @@ var report_billableResourcesResult;
 var report_transactionsResult;
 var report_dailyResourceResult;
 var report_dailyAdmResult;
-var export_dailyAdmResult;
-
-
 var report_metaKitchenResult;
 var report_metaKitchenByTimeResult;
 var report_deptAndPiResult;
@@ -896,52 +893,16 @@ function getReportSelectedRowId(id) {
     });
 }
 
-
-function customExport(url,jsonObj,csvName){
-    clearMiscMessages();
-    $('#report_loadMessage').css({display: "block"});
-        $.post(url, {data: jsonObj}, function(data) {
-            var parsedData = JSON.parse(data);
-            window["export_dailyAdmResult"] = parsedData['dailyAdmReport'];
-            var csvData =  parse_dailyAdmResults(true);
-
-            var fileName = csvName + ".csv";
-
-            var blob = new Blob([csvData], {type: "application/octet-binary"});
-
-            var size = csvData.length;
-            console.log('Downloaded file: ' + fileName + ', size: ' + size);
-            if (size > 500 * 1000 * 1000) {
-                throw size + ' is too many bytes to download';
-            }
-
-            saveAs(blob, fileName);
-
-            $('#report_loadMessage').css({display: "none"});
-            return
-
-        })
-}
-
-
-
-
-
 function submitActionAndDataForCsv(actionUrl, jsonData, csvOutput, csvName) {
 
     if (actionUrl === undefined || jsonData == undefined) {
         return;
     }
 
-    if(csvName == 'dailyAdmReport'){
-        customExport(actionUrl,jsonData,csvName);
-    }
+    var separator = (actionUrl.indexOf('?') === -1) ? '?' : '&';
+    actionUrl = actionUrl + separator + "output=" + csvOutput;
 
-    else {
-        var separator = (actionUrl.indexOf('?') === -1) ? '?' : '&';
-        actionUrl = actionUrl + separator + "output=" + csvOutput;
-        fileSaverSubmit(actionUrl, 'data=' + jsonData, csvName);
-    }
+    fileSaverSubmit(actionUrl, 'data=' +  jsonData, csvName );
 }
 
 function fileSaverSubmit(actionUrl, data, csvName) {

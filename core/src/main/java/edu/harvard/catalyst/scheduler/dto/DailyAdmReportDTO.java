@@ -31,7 +31,9 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static edu.harvard.catalyst.scheduler.util.MiscUtil.fullName;
 import static edu.harvard.catalyst.scheduler.util.MiscUtil.q;
@@ -39,6 +41,9 @@ import static edu.harvard.catalyst.scheduler.util.MiscUtil.showDateTime;
 
 public class DailyAdmReportDTO implements CsvAbleDTO {
 
+  protected Integer resourceTypeId;
+  protected String resourceTypeName;
+  protected Integer visitId;
   private Integer subjectId;
   private Integer visitTempId;
   private String subjectFirstName;
@@ -208,42 +213,112 @@ public void setVisitStatus(String visitStatus) {
     this.visitStatus = visitStatus;
 }
 
+  public Integer getVisitId() {
+    return visitId;
+  }
+
+  public void setVisitId(Integer visitId) {
+    this.visitId = visitId;
+  }
+  public Integer getResourceTypeId() {
+    return resourceTypeId;
+  }
+
+  public void setResourceTypeId(Integer resourceTypeId) {
+    this.resourceTypeId = resourceTypeId;
+  }
+
+  public String getResourceTypeName() {
+    return resourceTypeName;
+  }
+
+  public void setResourceTypeName(String resourceTypeName) {
+    this.resourceTypeName = resourceTypeName;
+  }
+
+
+
+  public String[] getCommentedRow(String[] row, String comment, String scheduledVisitComment) {
+    if (scheduledVisitComment.equals("None")) {
+      row[19] += q(comment + " ");
+    }
+
+    if (scheduledVisitComment.equals("Nutrition")) {
+      row[12] += q(comment + "\n");
+    } else if (scheduledVisitComment.equals("EBL")) {
+      row[13] += q(comment + "\n");
+    } else if (scheduledVisitComment.equals("Nursing")) {
+      row[14] += q(comment + "\n");
+    } else if (scheduledVisitComment.equals("Cardiovascular Imaging")) {
+      row[15] += q(comment + "\n");
+    } else if (scheduledVisitComment.equals("Lab")) {
+      row[16] += q(comment + "\n");
+    } else if (scheduledVisitComment.equals("Pharmacy")) {
+      row[17] += q(comment + "\n");
+    } else if (scheduledVisitComment.equals("Other")) {
+      row[18] += q(comment + "\n");
+    }
+    return row;
+  }
+
+
+
 
   @Override
   public String toCsvHeaders() {
     return "Subject Name,DOB,MRN,Gender,Local ID,IRB #,Visit Name," +
             "Visit Status, Check In Time,Resource Name," +
-            "Resource Start Time,Resource End Time,Comment";
+            "Resource Start Time,Resource End Time, Nutrition, EBL, Nursing, Cardiovascular Imaging, Lab, Pharmacy, Other, None";
   }
+
+
+
 
   @Override
   public List<String> toCsvRows(List<?> dtoList) {
     List<String> result = Lists.newArrayList();
     result.add(toCsvHeaders() + "\n");
 
+    Map<String, String[]> rowMap = new HashMap<>();
+
     for (Object object: dtoList) {
       DailyAdmReportDTO d = (DailyAdmReportDTO) object;
 
       List<String> columns = Lists.newArrayList();
 
-      columns.add(q(fullName(
-              d.subjectFirstName,
-              d.subjectMiddleName,
-              d.subjectLastName)));
-      columns.add(q(d.birthdate));
-      columns.add(q(d.mrn));
-      columns.add(q(d.genderName));
-      columns.add(q(d.localId));
-      columns.add(q(d.irb));
-      columns.add(q(d.visitName));
-      columns.add(q(d.visitStatus));
-      columns.add(q(showDateTime(d.checkInTime)));
-      columns.add(q(d.resourceName));
-      columns.add(q(showDateTime(d.scheduledStartTime)));
-      columns.add(q(showDateTime(d.scheduledEndTime)));
-      columns.add(q(d.comment));
+      String rowMapKey = d.visitId + d.resourceName + d.resourceTypeId;
 
-      String rows = Joiner.on(",").join(columns);
+      if (rowMap.containsKey(rowMapKey)) {
+        String[] newRow = getCommentedRow(rowMap.get(rowMapKey), d.comment, d.scheduledVisitComment);
+        rowMap.put(rowMapKey, newRow);
+
+      } else {
+
+        String[] row = new String[21];
+        row = new String[]{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "","",""};
+        row[0] = q(fullName(
+                d.subjectFirstName,
+                d.subjectMiddleName,
+                d.subjectLastName));
+        row[1] = q(d.birthdate);
+        row[2] = q(d.mrn);
+        row[3] = q(d.genderName);
+        row[4] = q(d.localId);
+        row[5] = q(d.irb);
+        row[6] = q(d.visitName);
+        row[7] = q(d.visitStatus);
+        row[8] = q(showDateTime(d.checkInTime));
+        row[9] = q(d.resourceName);
+        row[10] = q(showDateTime(d.scheduledStartTime));
+        row[11] = q(showDateTime(d.scheduledEndTime));
+        String[] newRow = getCommentedRow(row, d.comment, d.scheduledVisitComment);
+        rowMap.put(rowMapKey, newRow);
+
+      }
+    }
+
+    for (Map.Entry<String, String[]> entry : rowMap.entrySet()) {
+      String rows = Joiner.on(",").join(entry.getValue());
       result.add(rows + "\n");
     }
     return result;
