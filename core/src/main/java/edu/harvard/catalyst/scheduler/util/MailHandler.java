@@ -120,7 +120,7 @@ public class MailHandler {
 		mimeMessage.addHeaderLine("method=REQUEST");
 		mimeMessage.addHeaderLine("charset=UTF-8");
 		mimeMessage.addHeaderLine("component=VEVENT");
-		mimeMessage.setFrom(new InternetAddress(mailFrom));
+		mimeMessage.setFrom(new InternetAddress(calendarRequest.getFromEmail()));
 		mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(calendarRequest.getToEmail()));
 		mimeMessage.setSubject(calendarRequest.getSubject());
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd HHmmss");
@@ -134,7 +134,7 @@ public class MailHandler {
 				"END:VTIMEZONE\n" +
 				"BEGIN:VEVENT\n" +
 				"ATTENDEE;ROLE=REQ-PARTICIPANT;RSVP=TRUE:MAILTO:" + calendarRequest.getToEmail() + "\n" +
-				"ORGANIZER;CN=CCTSI Scheduler:MAILTO:" + mailFrom + "\n" +
+				"ORGANIZER;CN=CCTSI Scheduler:MAILTO:" + calendarRequest.getFromEmail() + "\n" +
 				"DESCRIPTION;LANGUAGE=en-US:" + calendarRequest.getBody() + "\n" +
 				"UID:" + calendarRequest.getUid() + "\n" +
 				"SUMMARY;LANGUAGE=en-US:"+calendarRequest.getSubject()+"\n" +
@@ -171,7 +171,7 @@ public class MailHandler {
 		mailSender.send(mimeMessage);
 	}
 	catch (Exception e) {
-		final String complaint = "ERROR: sending mail to: " + calendarRequest.getToEmail() + ", from: " + mailFrom + ", with subject: " + calendarRequest.getSubject();
+		final String complaint = "ERROR: sending mail to: " + calendarRequest.getToEmail() + ", from: " + calendarRequest.getFromEmail() + ", with subject: " + calendarRequest.getSubject();
 		logUtil.info(complaint);
 
 	}

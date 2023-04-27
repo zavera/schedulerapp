@@ -10,6 +10,8 @@ import java.util.UUID;
 public class CalendarRequest {
     private String uid = UUID.randomUUID().toString();
     private String toEmail;
+
+    private String fromEmail;
     private String subject;
     private String body;
 
@@ -19,6 +21,7 @@ public class CalendarRequest {
 
     public CalendarRequest(Builder builder) {
         toEmail = builder.toEmail;
+        fromEmail = builder.fromEmail;
         subject = builder.subject;
         body = builder.body;
         meetingStartTime = builder.meetingStartTime;
@@ -34,6 +37,8 @@ public class CalendarRequest {
     public String getToEmail() {
         return toEmail;
     }
+
+    public String getFromEmail() {return fromEmail;}
 
     public String getSubject() {
         return subject;
@@ -57,6 +62,8 @@ public class CalendarRequest {
 
     public static final class Builder {
         private String toEmail;
+
+        private String fromEmail;
         private String subject;
         private String body;
         private LocalDateTime meetingStartTime;
@@ -68,6 +75,11 @@ public class CalendarRequest {
 
         public Builder withToEmail(String val) {
             toEmail = val;
+            return this;
+        }
+
+        public Builder withFromEmail(String val){
+            fromEmail = val;
             return this;
         }
 

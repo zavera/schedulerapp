@@ -295,7 +295,7 @@ public void setVisitStatus(String visitStatus) {
       } else {
 
         String[] row = new String[21];
-        row = new String[]{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "","",""};
+        row = new String[]{"", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",""};
         row[0] = q(fullName(
                 d.subjectFirstName,
                 d.subjectMiddleName,

@@ -706,6 +706,7 @@ public class AppointmentService {
         builder.withSubject(bv.getVisitTemplate().getName() + "/"+ subjectLastName);
         builder.withBody("Always cancel appointments in Scheduler before making adjustments or cancellations to this calendar appointment");
         builder.withToEmail(us.getUser().getEmail());
+        builder.withFromEmail("noreply@ucdenver.edu");
         var location = "";
         if(appointmentDAO.findBookedResourcesByBookedVisit(bv).size() > 0) {
             var firstBookedResource = getFirstBookedResource(appointmentDAO.findBookedResourcesByBookedVisit(bv));
