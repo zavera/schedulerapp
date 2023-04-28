@@ -709,10 +709,11 @@ public class AppointmentService {
         builder.withFromEmail("noreply@ucdenver.edu");
         var location = "";
         if(appointmentDAO.findBookedResourcesByBookedVisit(bv).size() > 0) {
-            var firstBookedResource = getFirstBookedResource(appointmentDAO.findBookedResourcesByBookedVisit(bv));
-            if(firstBookedResource.getResource().getName().equals("Room")) {
+            List<BookedResource> allRoomResources = appointmentDAO.findBookedResourcesByBookedVisit(bv).stream().filter(f -> "Room".compareTo(f.getResource().getResourceType().getName()) == 0).collect(Collectors.toList());
+            if (allRoomResources.size() > 0){
+                var firstBookedResource = getFirstBookedResource(allRoomResources);
                 location = firstBookedResource.getResource().getName();
-            }
+        }
 
         }
         builder.withLocation(location);
