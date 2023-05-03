@@ -331,6 +331,29 @@ public class User extends BaseEntity implements Serializable, HasFirstName, HasL
         return notificationEmail;    	
     }
 
+    @Transient
+    public boolean isAcceptedEmailDomain(){
+        var domainName = email.split("@")[1].toLowerCase();
+        var isAccepted = false;
+        switch(domainName) {
+            case "childrenscolorado.org":
+                isAccepted = true;
+                break;
+            case "ucdenver.edu":
+                isAccepted = true;
+                break;
+            case "cuanschutz.edu":
+                isAccepted = true;
+                break;
+            case "uchealth.org":
+                isAccepted = true;
+            default:
+                break;
+        }
+        return isAccepted;
+    }
+
+
     @Column(name = "notification_email")
     public String getNotificationEmail() {
         return notificationEmail;

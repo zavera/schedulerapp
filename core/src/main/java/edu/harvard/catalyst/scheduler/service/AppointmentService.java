@@ -576,8 +576,15 @@ public class AppointmentService {
 
     void sendCancelAppointmentMessage(final BookedVisit bv){
         List<String> resourceTypeName = appointmentDAO.findBookedResourcesByBookedVisit(bv).stream().map(x -> x.getResource().getResourceType().getName()).collect(Collectors.toList());
-        if(resourceTypeName.contains("Nutrition"))
-            sendCancelMessages(authDAO.findUserByRole(RoleType.ROLE_NUTRITIONIST),"Cancellation Notification","Appointment scheduled at "+ bv.getScheduledStartTime() +" " + "has been cancelled");
+        if(resourceTypeName.contains("Nutrition")) {
+            var subjectLastName = "None";
+            if(bv.getSubjectMrn() != null) {
+                final Subject subject = subjectDAO.findBySubjectId(bv.getSubjectMrn().getId());
+                subjectLastName = subject.getLastName();
+            }
+            sendCancelMessages(authDAO.findUserByRole(RoleType.ROLE_NUTRITIONIST),"Cancellation Notification","Appointment scheduled for "+
+                    subjectLastName + " with local id " + bv.getStudy().getLocalId() + " at " + bv.getScheduledStartTime()  + " has been cancelled");
+        }
     }
 
     void sendVisitTemplateResourceUpdatedEmail(final VisitTemplate visit, final String institution, final boolean
@@ -689,9 +696,10 @@ public class AppointmentService {
 
     public void sendCancelMessages(final List<User> nutritionGroup, final String title, final String text) {
 
+        List<User> filteredUserList =  nutritionGroup.stream().filter(User -> User.isAcceptedEmailDomain()).collect(Collectors.toList());
         final Function<User, SimpleMailMessage> toMessage = u -> new MailMessageBuilder().to(u.getEmail()).subject(title).text(text).build();
 
-        enrich(nutritionGroup).map(toMessage).forEach(mailHandler::sendMandatoryEmails);
+        enrich(filteredUserList).map(toMessage).forEach(mailHandler::sendMandatoryEmails);
     }
 
 
@@ -703,7 +711,7 @@ public class AppointmentService {
             final Subject subject = subjectDAO.findBySubjectId(bv.getSubjectMrn().getId());
             subjectLastName = subject.getLastName();
         }
-        builder.withSubject(bv.getVisitTemplate().getName() + "/"+ subjectLastName);
+        builder.withSubject(bv.getVisitTemplate().getName() + "/"+ subjectLastName + "/" + bv.getStudy().getLocalId());
         builder.withBody("Always cancel appointments in Scheduler before making adjustments or cancellations to this calendar appointment");
         builder.withToEmail(us.getUser().getEmail());
         builder.withFromEmail("noreply@ucdenver.edu");
@@ -4047,32 +4055,12 @@ public class AppointmentService {
                 visitSpecsDTO.setDoubleRoomMessage(genderBlockMessage);
             }
 
-            if(visitSpecsDTO.sendEmailReminder() && isAcceptedEmailDomain(userSession.getUser().getEmail())) {
+            if(visitSpecsDTO.sendEmailReminder() && userSession.getUser().isAcceptedEmailDomain()){
                 appointmentService.sendReminderMessage(userSession, bookedVisit);
             }
         }
 
 
-        public boolean isAcceptedEmailDomain(final String userEmail){
-            var domainName = userEmail.split("@")[1].toLowerCase();
-            var isAccepted = false;
-            switch(domainName) {
-                case "childrenscolorado.org":
-                    isAccepted = true;
-                    break;
-                case "ucdenver.edu":
-                    isAccepted = true;
-                    break;
-                case "cuanschutz.edu":
-                    isAccepted = true;
-                    break;
-                case "uchealth.org":
-                    isAccepted = true;
-                default:
-                    break;
-            }
-            return isAccepted;
-        }
 
         @Override
         public void confirmVisitBookingAfterDoubleRoomMessage(final AppointmentService appointmentService,
