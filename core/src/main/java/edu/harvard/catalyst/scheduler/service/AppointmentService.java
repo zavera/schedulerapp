@@ -711,7 +711,7 @@ public class AppointmentService {
             final Subject subject = subjectDAO.findBySubjectId(bv.getSubjectMrn().getId());
             subjectLastName = subject.getLastName();
         }
-        builder.withSubject(bv.getVisitTemplate().getName() + "/"+ subjectLastName + "/" + bv.getStudy().getLocalId());
+        builder.withSubject(  bv.getStudy().getLocalId() + "/" + bv.getVisitTemplate().getName() + "/" + subjectLastName );
         builder.withBody("Always cancel appointments in Scheduler before making adjustments or cancellations to this calendar appointment");
         builder.withToEmail(us.getUser().getEmail());
         builder.withFromEmail("noreply@ucdenver.edu");
